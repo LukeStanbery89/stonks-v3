@@ -1,0 +1,10 @@
+{
+    "compilerOptions": {
+        "allowJs": true,
+        "jsx": "react",
+        "esModuleInterop": true,
+        "outDir": "build"
+        // other options...
+    },
+    // other configurations...
+}

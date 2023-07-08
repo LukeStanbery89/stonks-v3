@@ -1,0 +1,41 @@
+{
+    "name": "stonks-v3",
+    "version": "1.0.0",
+    "description": "",
+    "scripts": {
+        "build": "npm run build:server && npm run build:client",
+        "build:client": "cd client && npm run build",
+        "build:server": "webpack",
+        "dev": "node scripts/start-dev.js",
+        "dev:client": "cd client && npm run start",
+        "dev:server": "ts-node-dev --transpile-only src/app.ts",
+        "lint": "eslint . --ext .ts",
+        "lint:fix": "eslint . --ext .ts --fix",
+        "prepare": "husky install",
+        "start": "node dist/app.bundle.js"
+    },
+    "author": "Luke Stanbery",
+    "license": "ISC",
+    "dependencies": {
+        "express": "^4.18.2"
+    },
+    "devDependencies": {
+        "@types/express": "^4.17.17",
+        "@types/jest": "^29.5.2",
+        "@types/node": "^20.4.0",
+        "@typescript-eslint/eslint-plugin": "^5.61.0",
+        "@typescript-eslint/parser": "^5.61.0",
+        "chalk": "^5.3.0",
+        "concurrently": "^8.2.0",
+        "eslint": "^8.44.0",
+        "eslint-plugin-react": "^7.32.2",
+        "husky": "^8.0.3",
+        "terser-webpack-plugin": "^5.3.9",
+        "ts-loader": "^9.4.4",
+        "ts-node-dev": "^2.0.0",
+        "typescript": "^5.1.6",
+        "webpack": "^5.88.1",
+        "webpack-cli": "^5.1.4",
+        "webpack-node-externals": "^3.0.0"
+    }
+}
