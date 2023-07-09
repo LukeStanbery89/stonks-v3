@@ -1,22 +1,36 @@
-import React, { useEffect, useState } from "react";
-// import { io, Socket } from "socket.io-client";
-import socket from "../../utils/socketEmitter";
+import React, { useState, useEffect } from "react";
+import socketEmitter from "../../utils/socketEmitter";
 
 const WebSocketTest = () => {
     const [data, setData] = useState<{ message: string }>({ message: "" });
 
-    useEffect(() => {
-        // Inside a component or event handler
-        socket.emit("myEvent", { data: "WebSocket data from the client" });
+    function emitTestWebSocketEvent() {
+        setData({ message: "Emitting event..." });
+        socketEmitter.emit("myEvent", { data: "WebSocket data from the client" });
+    }
 
-        // Handle custom events from the server
-        socket.on("update", (receivedData: any) => {
-            console.log("Received update:", receivedData);
+    useEffect(() => {
+        // Define the event listener function
+        const handleUpdate = (receivedData: any) => {
+            console.log("response from WebSocket:", receivedData);
             setData(receivedData);
-        });
+        };
+
+        // Register the event listener only once
+        socketEmitter.on("update", handleUpdate);
+
+        // Clean up the event listener when the component is unmounted
+        return () => {
+            socketEmitter.off("update", handleUpdate);
+        };
     }, []);
 
-    return <div><strong>WebSocket Test</strong>: {data.message}</div>;
+    return (
+        <div>
+            <button onClick={emitTestWebSocketEvent}>Test WebSockets</button>
+            <p><strong>WebSocket Result</strong>: {data.message}</p>
+        </div>
+    );
 };
 
 export default WebSocketTest;

@@ -1,20 +1,21 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import axios from "axios";
+
 
 const XHRTest: React.FC = () => {
     const [data, setData] = useState<{ message: string }>({ message: "" });
 
-    useEffect(() => {
-        const fetchData = async () => {
-            const response = await axios.get("/api/data"); // Replace with your API endpoint
-            setData(response.data);
-        };
+    async function testXHR() {
+        setData({ message: "Sending XHR..." });
+        const response = await axios.get("/api/data");
+        console.log("response from XHR:", response.data);
+        setData(response.data);
+    }
 
-        fetchData();
-    }, []);
     return (
         <div>
-            <p><strong>XHR Test</strong>: {data.message}</p> {/* Access the 'message' property */}
+            <button onClick={testXHR}>Test XHR</button>
+            <p><strong>XHR Result</strong>: {data.message}</p> {/* Access the 'message' property */}
         </div>
     );
 };

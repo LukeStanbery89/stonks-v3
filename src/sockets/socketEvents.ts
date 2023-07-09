@@ -7,7 +7,7 @@ export function registerSocketEvents(io: any) {
 
         // Handle custom events from the client
         socket.on("myEvent", (data: any) => {
-            console.log("Received data:", data);
+            console.log("WebSocket data from client:", data);
 
             // Process the data and emit updates or perform any other actions
             // You can define your own logic here based on your application's requirements
