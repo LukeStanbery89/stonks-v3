@@ -1,12 +1,15 @@
 import express, { Request, Response } from "express";
 import http from "http";
 import path from "path";
-import { Server, Socket } from "socket.io";
+import { Server } from "socket.io";
+import { registerSocketEvents } from "./sockets/socketEvents";
 
 const app = express();
 const port = process.env.PORT || 3000;
 const server = http.createServer(app);
-const io = new Server(server);
+
+// Register socket events
+registerSocketEvents(new Server(server));
 
 app.use(express.static(path.join(__dirname, "../client/build")));
 
@@ -20,26 +23,6 @@ app.get("/api/data", (req: Request, res: Response) => {
 // Serve the React app
 app.get("/", (req: Request, res: Response) => {
     res.sendFile(path.join(__dirname, "../client/build", "index.html"));
-});
-
-io.on("connection", (socket: Socket) => {
-    console.log("New socket connection");
-
-    // Handle custom events from the client
-    socket.on("myEvent", (data: any) => {
-        console.log("Received data:", data);
-
-        // Process the data and emit updates or perform any other actions
-        // You can define your own logic here based on your application's requirements
-
-        // Emit updates to the client
-        io.emit("update", { message: "Websocket data from server" });
-    });
-
-    // Handle socket disconnection
-    socket.on("disconnect", () => {
-        console.log("Socket connection closed");
-    });
 });
 
 server.listen(port, () => {
