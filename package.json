@@ -1,7 +1,9 @@
 {
     "name": "stonks-v3",
     "version": "1.0.0",
-    "description": "",
+    "description": "An app for auto-trading cryptocurrency",
+    "author": "Luke Stanbery",
+    "license": "ISC",
     "scripts": {
         "build": "npm run build:server && npm run build:client",
         "build:client": "cd client && npm run build",
@@ -12,10 +14,10 @@
         "lint": "eslint . --ext .ts",
         "lint:fix": "eslint . --ext .ts --fix",
         "prepare": "husky install",
-        "start": "node dist/app.bundle.js"
+        "start": "node dist/app.bundle.js",
+        "test": "npm run test:server",
+        "test:server": "jest"
     },
-    "author": "Luke Stanbery",
-    "license": "ISC",
     "dependencies": {
         "bootstrap": "^5.3.0",
         "cors": "^2.8.5",
@@ -35,7 +37,9 @@
         "eslint": "^8.44.0",
         "eslint-plugin-react": "^7.32.2",
         "husky": "^8.0.3",
+        "jest": "^29.6.1",
         "terser-webpack-plugin": "^5.3.9",
+        "ts-jest": "^29.1.1",
         "ts-loader": "^9.4.4",
         "ts-node-dev": "^2.0.0",
         "typescript": "^5.1.6",

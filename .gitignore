@@ -5,6 +5,9 @@ node_modules
 dist/
 client/build/
 
+# coverage
+coverage/
+
 # env
 .env
 
