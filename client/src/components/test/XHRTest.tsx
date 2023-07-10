@@ -14,7 +14,7 @@ const XHRTest: React.FC = () => {
 
     return (
         <div>
-            <button onClick={testXHR}>Test XHR</button>
+            <button type='button' className='btn btn-primary' onClick={testXHR}>Test XHR</button>
             <p><strong>XHR Result</strong>: {data.message}</p> {/* Access the 'message' property */}
         </div>
     );
