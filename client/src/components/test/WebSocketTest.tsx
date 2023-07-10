@@ -6,7 +6,7 @@ const WebSocketTest = () => {
 
     function emitTestWebSocketEvent() {
         setData({ message: "Emitting event..." });
-        socketEmitter.emit("myEvent", { data: "WebSocket data from the client" });
+        socketEmitter.emit("my_websocket_event", { data: "WebSocket data from the client" });
     }
 
     useEffect(() => {
