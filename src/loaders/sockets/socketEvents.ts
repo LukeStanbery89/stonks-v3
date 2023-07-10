@@ -2,11 +2,13 @@ import { Socket } from "socket.io";
 import socketEmitter from "./socketEmitter";
 
 export function registerSocketEvents(io: any) {
+    console.log("Registering WebSocket handlers...");
+
     io.on("connection", (socket: Socket) => {
-        console.log("New socket connection");
+        console.log("Opening new WebSocket connection");
 
         // Handle custom events from the client
-        socket.on("myEvent", (data: any) => {
+        socket.on("my_websocket_event", (data: any) => {
             console.log("WebSocket data from client:", data);
 
             // Process the data and emit updates or perform any other actions

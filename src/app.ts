@@ -1,16 +1,14 @@
 import express, { Request, Response } from "express";
 import http from "http";
 import path from "path";
-import { Server as SocketIOServer } from "socket.io";
-import { registerEventListeners } from "./events/eventListeners";
-import { registerSocketEvents } from "./sockets/socketEvents";
+import initLoaders from "./loaders";
+import eventEmitter from "./loaders/events/eventEmitter";
 
-const app = express();
 const port = process.env.PORT || 3000;
+const app = express();
 const server = http.createServer(app);
 
-registerEventListeners();
-registerSocketEvents(new SocketIOServer(server));
+initLoaders(server);
 
 app.use(express.static(path.join(__dirname, "../client/build")));
 
@@ -18,6 +16,7 @@ app.use(express.static(path.join(__dirname, "../client/build")));
 app.get("/api/data", (req: Request, res: Response) => {
     // Replace this with your actual data retrieval logic
     const data = { message: "XHR data from server" };
+    eventEmitter.emit("my_event", { message: "Server-side event" });
     res.json(data);
 });
 
