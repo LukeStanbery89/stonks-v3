@@ -38,6 +38,8 @@ Stonks v3 provides the following npm scripts for different purposes:
 - `lint`: Run ESLint to check for lint errors.
 - `lint:fix`: Run ESLint and automatically fix lint errors.
 - `start`: Start the application.
+- `test`: Run all tests.
+- `test:server`: Run server-side unit tests.
 
 To start the application in development mode, run the following command:
 
