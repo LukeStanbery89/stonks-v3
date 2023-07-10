@@ -1,17 +1,17 @@
 import fs from "fs";
 import path from "path";
 
-const webSocketHandlersDir = path.join(__dirname, "handlers");
+const handlers: { [key: string]: any } = {};
 
-const webSocketHandlers: { [key: string]: any } = {};
+const handlersDir = path.join(__dirname, "handlers");
+const files = fs.readdirSync(handlersDir);
 
-fs.readdirSync(webSocketHandlersDir).forEach((file) => {
-    const handlerName = path.basename(file, ".ts");
-    const handlerPath = path.join(webSocketHandlersDir, file);
+files.forEach((file) => {
+    const handlerName = path.parse(file).name;
+    const HandlerPath = path.join(handlersDir, file);
     // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const handler = require(handlerPath).default;
-    webSocketHandlers[handlerName] = handler;
+    const handler = require(HandlerPath).default;
+    handlers[handlerName] = handler;
 });
 
-console.log("webSocketHandlers", webSocketHandlers);
-export default webSocketHandlers;
+export default handlers;

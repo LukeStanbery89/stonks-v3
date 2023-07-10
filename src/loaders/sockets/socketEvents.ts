@@ -1,5 +1,5 @@
 import { Socket } from "socket.io";
-import socketEmitter from "./socketEmitter";
+import socketEmitter from "../../lib/socketEmitter";
 import webSocketEventHandlers from "../../subscribers/sockets/index";
 
 export function registerSocketEvents(io: any) {

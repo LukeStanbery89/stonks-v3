@@ -1,4 +1,4 @@
-import eventEmitter from "./eventEmitter";
+import eventEmitter from "../../lib/eventEmitter";
 import eventListeners from "../../subscribers/events/index";
 
 export function registerEventListeners() {

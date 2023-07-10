@@ -1,4 +1,4 @@
-import socketEmitter from "../../../loaders/sockets/socketEmitter";
+import socketEmitter from "../../../lib/socketEmitter";
 
 export default function my_websocket_event(data: any) {
     console.log("WebSocket data from client:", data);
