@@ -15,7 +15,8 @@
         "lint:fix": "eslint . --ext .ts --fix",
         "prepare": "husky install",
         "start": "node dist/app.bundle.js",
-        "test": "npm run test:server",
+        "test": "npm run test:server && npm run test:client",
+        "test:client": "cd client && npm run test",
         "test:server": "jest"
     },
     "dependencies": {
