@@ -4,6 +4,7 @@ node_modules
 # production builds
 dist/
 client/build/
+client_OLD
 
 # coverage
 coverage/
