@@ -1,6 +1,7 @@
-// client/index.tsx
 import React from "react";
-import ReactDOM from "react-dom";
-import App from "./App"; // Replace "App" with your main application component
+import { createRoot } from "react-dom/client";
+import App from "./App";
 
-ReactDOM.render(<App />, document.getElementById("root"));
+const domNode = document.getElementById("root");
+const root = createRoot(domNode);
+root.render(<App />);

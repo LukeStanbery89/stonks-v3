@@ -4,7 +4,7 @@ const ReactRefreshWebpackPlugin = require("@pmmmwh/react-refresh-webpack-plugin"
 
 module.exports = {
     mode: "development", // Switch to development mode
-    entry: "./client/src/index.tsx",
+    entry: "./src/index.tsx",
     output: {
         path: path.resolve(__dirname, "build"),
         filename: "client.bundle.js",
@@ -32,5 +32,8 @@ module.exports = {
         hot: true,
         open: true,
         port: 3001, // Set the desired port here
+        proxy: {
+            "/api": "http://localhost:3000",
+        },
     },
 };

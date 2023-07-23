@@ -6,10 +6,10 @@
     "license": "ISC",
     "scripts": {
         "build": "npm run build:client && npm run build:server",
-        "build:client": "webpack --config client/webpack.client.js",
+        "build:client": "cd client && npm run build",
         "build:server": "webpack --config webpack.server.js",
         "dev": "node scripts/start-dev.js",
-        "dev:client": "webpack serve --config client/webpack.client.js",
+        "dev:client": "cd client && npm run dev",
         "dev:server": "ts-node-dev --transpile-only src/app.ts",
         "lint": "eslint . --ext .ts",
         "lint:fix": "eslint . --ext .ts --fix",

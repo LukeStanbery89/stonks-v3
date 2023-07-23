@@ -1,0 +1,10 @@
+{
+    "name": "client",
+    "version": "1.0.0",
+    "private": true,
+    "proxy": "http://localhost:3000",
+    "scripts": {
+        "build": "webpack --config webpack.client.js",
+        "dev": "webpack serve --config webpack.client.js"
+    }
+}
