@@ -1,4 +1,4 @@
-import { add, subtract } from "../../src/services/myService";
+import { add, subtract } from "../../services/myService";
 
 describe("MyService Tests", () => {
     test("add", () => {

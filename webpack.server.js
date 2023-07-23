@@ -19,7 +19,7 @@ module.exports = {
             {
                 test: /\.ts$/,
                 loader: "ts-loader",
-                exclude: /node_modules/,
+                exclude: [/node_modules/, /client_OLD/], // Exclude both node_modules and client_OLD
             },
         ],
     },
