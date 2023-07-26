@@ -5,6 +5,7 @@
     "proxy": "http://localhost:3000",
     "scripts": {
         "build": "webpack --config webpack.client.js",
-        "dev": "webpack serve --config webpack.client.js"
+        "dev": "webpack serve --config webpack.client.js",
+        "test": "jest"
     }
 }
