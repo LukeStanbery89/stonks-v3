@@ -33,7 +33,7 @@ module.exports = {
         open: true,
         port: 3001, // Set the desired port here
         proxy: {
-            "/api": "http://localhost:3000",
+            "/": "http://localhost:3000",
         },
     },
 };
