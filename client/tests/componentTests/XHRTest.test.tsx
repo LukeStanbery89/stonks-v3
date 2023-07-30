@@ -1,6 +1,6 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
-import XHRTest from "./XHRTest";
+import XHRTest from "../../src/components/test/XHRTest";
 
 test("Renders the XHRTest component", () => {
     render(<XHRTest />);

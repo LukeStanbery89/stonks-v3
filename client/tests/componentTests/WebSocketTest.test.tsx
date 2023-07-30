@@ -1,6 +1,6 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
-import WebSocketTest from "./WebSocketTest";
+import WebSocketTest from "../../src/components/test/WebSocketTest";
 
 test("Renders the WebSocketTest component", () => {
     render(<WebSocketTest />);
