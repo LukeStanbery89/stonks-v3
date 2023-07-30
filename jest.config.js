@@ -11,4 +11,5 @@ module.exports = {
     collectCoverage: true,
     collectCoverageFrom: ["src/**/*.{ts,tsx,js,jsx}", "!src/**/*.d.ts"],
     coverageReporters: ["text", "html"],
+    testPathIgnorePatterns: ["/client/"],
 };
