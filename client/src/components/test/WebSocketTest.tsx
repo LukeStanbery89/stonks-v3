@@ -28,7 +28,7 @@ const WebSocketTest = () => {
     return (
         <div>
             <button type='button' className='btn btn-primary' onClick={emitTestWebSocketEvent}>Test WebSockets</button>
-            <p><strong>WebSocket Result</strong>: {data.message}</p>
+            <p>WebSocket Result: {data.message}</p>
         </div>
     );
 };

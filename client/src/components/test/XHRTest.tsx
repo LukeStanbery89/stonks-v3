@@ -24,9 +24,7 @@ const XHRTest: React.FC = () => {
             <button type="button" className="btn btn-primary" onClick={testXHR}>
         Test XHR
             </button>
-            <p>
-                <strong>XHR Result</strong>: {data.message}
-            </p>
+            <p>XHR Result: {data.message}</p>
         </div>
     );
 };
