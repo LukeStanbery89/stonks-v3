@@ -1,8 +1,14 @@
 import React from "react";
-import { render, screen } from "@testing-library/react";
+import { render, fireEvent } from "@testing-library/react";
 import WebSocketTest from "../../src/components/test/WebSocketTest";
 
-test("Renders the WebSocketTest component", () => {
-    render(<WebSocketTest />);
-    expect(screen.getByText("WebSocket Result")).toBeInTheDocument();
+describe("WebSocketTest component", () => {
+    it("should display the loading message when the WebSocket button is clicked", async () => {
+        const { getByText } = render(<WebSocketTest />);
+
+        const button = getByText("Test WebSockets");
+        fireEvent.click(button);
+
+        expect(getByText("WebSocket Result: Emitting event...")).toBeInTheDocument();
+    });
 });
