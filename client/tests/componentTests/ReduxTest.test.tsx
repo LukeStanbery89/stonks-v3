@@ -1,13 +1,12 @@
-// ReduxTest.test.tsx
 import React from "react";
 import { render, fireEvent } from "@testing-library/react";
 import { Provider } from "react-redux";
-import { createStore } from "redux";
-import rootReducer from "../../src/store/reducers"; // Assuming you have a rootReducer that combines all reducers
+import { configureStore } from "@reduxjs/toolkit";
+import rootReducer from "../../src/store/reducers";
 import ReduxTest from "../../src/components/test/ReduxTest";
 
 test("renders the ReduxTest component", () => {
-    const store = createStore(rootReducer); // Create a mock store with your rootReducer
+    const store = configureStore({ reducer: rootReducer });
 
     const { getByText } = render(
         <Provider store={store}>

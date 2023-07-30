@@ -1,11 +1,8 @@
-// client/src/store/index.ts
 import { configureStore } from "@reduxjs/toolkit";
-import counterReducer from "./reducers/counterReducer";
+import rootReducer from "./reducers";
 
 const store = configureStore({
-    reducer: {
-        counter: counterReducer,
-    },
+    reducer: rootReducer,
 });
 
-export default store as ReturnType<typeof configureStore>; // Provide return type
+export default store;
