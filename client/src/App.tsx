@@ -1,6 +1,7 @@
 import React from "react";
 import XHRTest from "./components/test/XHRTest";
 import WebSocketTest from "./components/test/WebSocketTest";
+import ReduxTest from "./components/test/ReduxTest";
 
 const App = () => {
     return (
@@ -8,6 +9,7 @@ const App = () => {
             <h1>Hello, World!</h1>
             <XHRTest />
             <WebSocketTest />
+            <ReduxTest />
         </div>
     );
 };
