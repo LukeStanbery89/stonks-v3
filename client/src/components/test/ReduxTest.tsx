@@ -12,7 +12,7 @@ const ReduxTest: React.FC = () => {
         <div>
             <button onClick={() => dispatch(increment())}>Increment</button>
             <button onClick={() => dispatch(decrement())}>Decrement</button>
-            <p><strong>ReduxTest Counter</strong>: {count}</p>
+            <p>ReduxTest Counter: {count}</p>
         </div>
     );
 };
