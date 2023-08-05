@@ -10,8 +10,8 @@ const ReduxTest: React.FC = () => {
 
     return (
         <div>
-            <button onClick={() => dispatch(increment())}>Increment</button>
-            <button onClick={() => dispatch(decrement())}>Decrement</button>
+            <button className="btn btn-primary me-2" onClick={() => dispatch(increment())}>Increment</button>
+            <button className="btn btn-primary me-2" onClick={() => dispatch(decrement())}>Decrement</button>
             <p>ReduxTest Counter: {count}</p>
         </div>
     );
