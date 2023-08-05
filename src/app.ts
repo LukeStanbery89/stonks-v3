@@ -3,7 +3,7 @@ import http from "http";
 import path from "path";
 import initLoaders from "./loaders";
 import routes from "./api/routes";
-import config from "./config/config";
+import config from "./config";
 
 const app = express();
 const server = http.createServer(app);
