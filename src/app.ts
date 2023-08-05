@@ -9,9 +9,9 @@ const app = express();
 const server = http.createServer(app);
 
 // Event listeners, WebSockets, etc.
-initLoaders(server);
+initLoaders({ app, server });
 
-// serve client/public directory
+// serve client/build directory
 app.use(express.static(path.join(__dirname, "../client/build")));
 
 // Routes

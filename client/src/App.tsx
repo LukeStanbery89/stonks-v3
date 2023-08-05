@@ -4,10 +4,12 @@ import NavBar from "./components/NavBar";
 
 const App = () => {
     return (
-        <div>
+        <>
             <NavBar />
-            <Router />
-        </div>
+            <div className="container">
+                <Router />
+            </div>
+        </>
     );
 };
 
