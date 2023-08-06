@@ -1,22 +1,22 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 const concurrently = require("concurrently");
 
 (async () => {
-    const { default: chalk } = await import("chalk");
-
     try {
         await concurrently([
             {
                 name: "server",
                 command: "npm run dev:server",
-                prefixColor: chalk.blue.toString(),
+                prefixColor: "magenta",
             },
             {
                 name: "client",
                 command: "npm run dev:client",
-                prefixColor: chalk.green.toString(),
+                prefixColor: "cyan",
             },
-        ]);
+        ], {
+            prefix: "{time} [{name}]",
+            timestampFormat: "yyyy-MM-dd HH:mm:ss",
+        });
     } catch (err) {
         console.error(err);
     }

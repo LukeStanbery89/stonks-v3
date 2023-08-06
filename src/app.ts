@@ -11,7 +11,7 @@ const server = http.createServer(app);
 // Event listeners, WebSockets, etc.
 initLoaders({ app, server });
 
-// serve client/build directory
+// Serve client/build directory
 app.use(express.static(path.join(__dirname, "../client/build")));
 
 // Routes
