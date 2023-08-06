@@ -2,7 +2,7 @@ import express from "express";
 import http from "http";
 import path from "path";
 import initLoaders from "./loaders";
-import routes from "./api/routes";
+import routes from "./routes";
 import config from "./config";
 
 const app = express();
