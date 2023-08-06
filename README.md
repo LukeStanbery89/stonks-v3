@@ -1,6 +1,6 @@
-# Stonks v3
+# Stonks
 
-Stonks v3 is an auto-trading cryptocurrency application that allows you to trade cryptocurrencies using customizable strategies and swappable brokerage APIs. It provides a simulation mode for analyzing the effectiveness of various trading strategies.
+Stonks is an auto-trading cryptocurrency application that allows you to trade cryptocurrencies using customizable strategies and swappable brokerage APIs. It provides a simulation mode for analyzing the effectiveness of various trading strategies.
 
 ## Features
 
@@ -15,7 +15,7 @@ To get started with Stonks v3, follow these steps:
 1. Clone the repository:
 
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/LukeStanbery89/stonks-v3.git
    cd stonks-v3
    ```
 
