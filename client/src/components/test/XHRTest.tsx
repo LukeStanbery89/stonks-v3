@@ -6,7 +6,7 @@ const XHRTest: React.FC = () => {
     async function testXHR() {
         setData({ message: "Sending XHR..." });
         try {
-            const response = await fetch("/api/data");
+            const response = await fetch("/api/xhrTest");
             if (!response.ok) {
                 throw new Error("Network response was not ok.");
             }
@@ -22,7 +22,7 @@ const XHRTest: React.FC = () => {
     return (
         <div>
             <button type="button" className="btn btn-primary" onClick={testXHR}>
-        Test XHR
+                Test XHR
             </button>
             <p>XHR Result: {data.message}</p>
         </div>
