@@ -6,7 +6,7 @@ import ReduxTest from "../components/test/ReduxTest";
 const Test = () => {
     return (
         <div className='container'>
-            <h1>Hello, World!</h1>
+            <h1>Testing Page</h1>
             <XHRTest />
             <WebSocketTest />
             <ReduxTest />

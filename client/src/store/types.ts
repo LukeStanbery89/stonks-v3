@@ -1,7 +1,14 @@
-// client/src/store/types.ts
+export interface AppState {
+    simProgress: number | null;
+    simInProgress: boolean;
+}
+
+export interface CounterState {
+    value: number;
+}
+
 export interface RootState {
-    counter: {
-      value: number;
-      // Add other properties for your other reducers here, if any.
-    };
+    app: AppState,
+    counter: CounterState;
+    // ...Add other properties for your other reducers here, if any.
   }
