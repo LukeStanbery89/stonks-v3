@@ -24,15 +24,15 @@ module.exports = {
                 test: /\.(scss)$/,
                 use: [
                     {
-                    // Adds CSS to the DOM by injecting a `<style>` tag
+                        // Adds CSS to the DOM by injecting a `<style>` tag
                         loader: "style-loader",
                     },
                     {
-                    // Interprets `@import` and `url()` like `import/require()` and will resolve them
+                        // Interprets `@import` and `url()` like `import/require()` and will resolve them
                         loader: "css-loader",
                     },
                     {
-                    // Loader for webpack to process CSS with PostCSS
+                        // Loader for webpack to process CSS with PostCSS
                         loader: "postcss-loader",
                         options: {
                             postcssOptions: {
@@ -43,7 +43,7 @@ module.exports = {
                         },
                     },
                     {
-                    // Loads a SASS/SCSS file and compiles it to CSS
+                        // Loads a SASS/SCSS file and compiles it to CSS
                         loader: "sass-loader",
                     },
                 ],
@@ -62,7 +62,8 @@ module.exports = {
         open: true,
         port: 3001,
         proxy: {
-            "/": "http://localhost:3000",
+            "/api": "http://localhost:3000",
+            "/socket.io": "http://localhost:3000",
         },
     },
 };
