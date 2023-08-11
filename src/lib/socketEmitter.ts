@@ -19,7 +19,7 @@ class SocketEmitter {
         this.io = io;
     }
 
-    public emit(event: string, data: any) {
+    public emit(event: string, data?: object) {
         if (this.io) {
             this.io.emit(event, data);
         }

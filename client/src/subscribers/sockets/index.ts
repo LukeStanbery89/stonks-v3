@@ -1,8 +1,7 @@
-import store from "../../store";
-import { setSimProgress } from "../../store/reducers/appReducer";
+import socketHandlers from "./handlers";
 
 const registerSocketEvents = (socket) => {
-    // Event registrations
+    // Base socket event registrations
     socket.on("connect_error", (err) => console.log("socket connect_error", err));
     socket.on("connect_timeout", () => console.log("socket connect_timeout"));
     socket.on("connect_failed", () => console.log("socket connect_failed"));
@@ -13,11 +12,10 @@ const registerSocketEvents = (socket) => {
     socket.on("reconnect_error", () => console.log("socket reconnect_error"));
     socket.on("reconnect_failed", () => console.log("socket reconnect_failed"));
 
-    // Additional event registrations go here...
-    socket.on("update_progress", (payload) => {
-        console.log("update_progress", payload);
-        store.dispatch(setSimProgress(payload.progress));
-    });
+    // Additional event registrations
+    for (const [event, handler] of Object.entries(socketHandlers)) {
+        socket.on(event, handler);
+    }
 
     return socket;
 };

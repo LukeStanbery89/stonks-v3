@@ -1,9 +1,9 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { AppState } from "../types";
+import { AppState, SimulationStatus } from "../../types/types";
 
 const initialState: AppState = {
     simProgress: 0,
-    simInProgress: false,
+    simulationStatus: SimulationStatus.NOT_STARTED,
 };
 
 const appSlice = createSlice({
@@ -13,11 +13,11 @@ const appSlice = createSlice({
         setSimProgress: (state, action: PayloadAction<number>) => {
             state.simProgress = action.payload;
         },
-        setSimInProgress: (state, action: PayloadAction<boolean>) => {
-            state.simInProgress = action.payload;
+        setSimulationStatus: (state, action: PayloadAction<SimulationStatus>) => {
+            state.simulationStatus = action.payload;
         },
     },
 });
 
-export const { setSimProgress } = appSlice.actions;
+export const { setSimProgress, setSimulationStatus } = appSlice.actions;
 export default appSlice.reducer;
