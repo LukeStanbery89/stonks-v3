@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const XHRTest: React.FC = () => {
+const XHRTest = () => {
     const [data, setData] = useState<{ message: string }>({ message: "" });
 
     async function testXHR() {

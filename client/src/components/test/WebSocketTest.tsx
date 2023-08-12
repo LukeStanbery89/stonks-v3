@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import socketEmitter from "../../utils/socketEmitter";
+import socketEmitter from "../../lib/socketEmitter";
 
 const WebSocketTest = () => {
     const [data, setData] = useState<{ message: string }>({ message: "" });
