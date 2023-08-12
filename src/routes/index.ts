@@ -10,6 +10,7 @@ router.get("/", (req, res) => {
 });
 
 router.use("/api", apiRouter);
+
 // Additional routers go here...
 
 export default router;

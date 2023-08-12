@@ -5,7 +5,7 @@ import { Server } from "http";
 import { registerEventListeners } from "./events/eventListeners";
 import { registerSocketEvents } from "./sockets/socketEvents";
 
-type LoaderParams = {
+interface LoaderParams {
     app: Express,
     server: Server,
 }
