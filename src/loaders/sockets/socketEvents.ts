@@ -1,6 +1,6 @@
 import { Socket } from "socket.io";
 import socketEmitter from "../../lib/socketEmitter";
-import webSocketEventHandlers from "../../subscribers/sockets/index";
+import webSocketEventHandlers from "../../subscribers/sockets/handlers/index";
 
 export function registerSocketEvents(io: any) {
     console.log("Registering WebSocket handlers...");
