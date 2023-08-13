@@ -1,5 +1,5 @@
 import eventEmitter from "../../lib/eventEmitter";
-import eventListeners from "../../subscribers/events";
+import eventListeners from "../../subscribers/events/handlers";
 
 export function registerEventListeners() {
     console.log("Registering event handlers...");

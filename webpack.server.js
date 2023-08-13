@@ -21,6 +21,12 @@ module.exports = {
                 loader: "ts-loader",
                 exclude: [/node_modules/],
             },
+            // Aggregates event handlers into a single module
+            {
+                test: /handlers\/index.ts$/,
+                loader: "@lukestanbery/meta-importer",
+                exclude: [/node_modules/],
+            },
         ],
     },
     optimization: {

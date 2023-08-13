@@ -48,6 +48,12 @@ module.exports = {
                     },
                 ],
             },
+            // Aggregates event handlers into a single module
+            {
+                test: /handlers\/index.ts$/,
+                loader: "@lukestanbery/meta-importer",
+                exclude: [/node_modules/],
+            },
         ],
     },
     plugins: [

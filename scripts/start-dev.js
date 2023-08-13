@@ -5,7 +5,12 @@ const concurrently = require("concurrently");
         await concurrently([
             {
                 name: "server",
-                command: "npm run dev:server",
+                command: "npm run dev:server:watch",
+                prefixColor: "magenta",
+            },
+            {
+                name: "server",
+                command: "npm run dev:server:serve",
                 prefixColor: "magenta",
             },
             {
