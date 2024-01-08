@@ -5,6 +5,13 @@ const TRADE_LOOP_START = "trade_loop_start";
 const TRADE_LOOP_UPDATE = "trade_loop_update";
 const TRADE_LOOP_END = "trade_loop_end";
 
+const resultStyle = {
+    background: "#EEE",
+    borderRadius: "5px",
+    padding: "10px",
+    border: "1px solid #666",
+};
+
 const WebSocketTest = () => {
     const [data, setData] = useState<{ message: string }>({ message: "" });
 
@@ -33,8 +40,9 @@ const WebSocketTest = () => {
 
     return (
         <div>
-            <button type='button' className='btn btn-primary' onClick={emitTestWebSocketEvent}>Test WebSockets</button>
-            <p>Trade Loop Result: {data.message}</p>
+            <button type='button' className='btn btn-primary' onClick={emitTestWebSocketEvent}>Test Trade</button>
+            <p>Trade Result:</p>
+            <pre style={resultStyle}>{JSON.stringify(data, null, 4)}</pre>
         </div>
     );
 };
