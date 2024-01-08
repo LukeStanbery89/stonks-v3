@@ -1,8 +1,7 @@
-import { buySecurity } from "./alpacaService";
+import AlpacaProvider from "../lib/brokerage/providers/AlpacaProvider";
 
-// TODO: Replace return type
-async function run(): Promise<object> {
-    return await buySecurity();
+function getBrokerProvider() {
+    return new AlpacaProvider();
 }
 
-export default run;
+export default getBrokerProvider;
