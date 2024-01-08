@@ -11,9 +11,36 @@ function getSecurities(): Promise<Security[]> {
                 "APCA-API-SECRET-KEY": config.APCA_API_SECRET_KEY,
             },
         })
-            .then(resp => resp.json())
+            .then((resp: Response) => resp.json())
             .then(resp => resolve(convertToSecuritiesArray(resp)))
-            .catch(err => reject(err));
+            .catch((err: Error) => reject(err));
+    });
+}
+
+// TODO replace return type
+function buySecurity(): object {
+    return new Promise((resolve, reject) => {
+        const options = {
+            method: "POST",
+            headers: {
+                accept: "application/json",
+                "content-type": "application/json",
+                "APCA-API-KEY-ID": "PKSELCPRA4U89ZZ09K25",
+                "APCA-API-SECRET-KEY": "tlwjgvhbhx7qarkQ2egfB4G53EwkmNwvz3y2nVU9",
+            },
+            body: JSON.stringify({
+                side: "buy",
+                type: "market",
+                time_in_force: "gtc",
+                symbol: "ETH/USD",
+                qty: "1",
+            }),
+        };
+
+        fetch("https://paper-api.alpaca.markets/v2/orders", options)
+            .then((resp: Response) => resp.json())
+            .then(resp => resolve(resp))
+            .catch((err: Error) => reject(err));
     });
 }
 
@@ -28,4 +55,7 @@ function convertToSecurity(result: AlpacaSecurity): Security {
     };
 }
 
-export default getSecurities;
+export {
+    buySecurity,
+    getSecurities,
+};

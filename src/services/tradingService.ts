@@ -1,7 +1,8 @@
-import getSecurities from "./alpacaService";
+import { buySecurity } from "./alpacaService";
 
-async function run() {
-    return await getSecurities();
+// TODO: Replace return type
+async function run(): Promise<object> {
+    return await buySecurity();
 }
 
 export default run;
