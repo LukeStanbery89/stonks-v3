@@ -4,24 +4,36 @@ import {
     ProviderSecurity,
     RestMethods,
     Security,
+    BuyOrder,
+    SellOrder,
+    SellResult,
+    ProviderSellResult,
 } from "../../types/types";
 
 abstract class BrokerageProvider {
+    // Headers
     protected defaultHeaders = {
         accept: "application/json",
     };
+    protected abstract providerCommonHeaders: object;
+
+    // URI values
     protected abstract devAPIDomain: string;
     protected abstract prodAPIDomain: string;
-    protected abstract providerCommonHeaders: object;
     protected abstract securitiesEndpoint: string;
-    protected securitiesQueryStringParams = "";
     protected abstract buyEndpoint: string;
+
+    // Query string params
+    protected securitiesQueryStringParams = "";
     protected buyQueryStringParams = "";
 
-    // TODO: Remove explicit anys
-    protected abstract convertToBuyResult(params: ProviderBuyResult): BuyResult;
-    protected abstract convertToSecurity(params: ProviderSecurity): Security;
-    protected abstract convertToSecuritiesArray(params:ProviderSecurity[]): Security[];
+    // Helper methods
+    protected abstract convertToSecurity(security: ProviderSecurity): Security;
+    protected abstract convertToBuyResult(buyResult: ProviderBuyResult): BuyResult;
+    protected abstract convertToSellResult(buyResult: ProviderSellResult): SellResult;
+    protected convertToSecuritiesArray(securities: ProviderSecurity[]): Security[] {
+        return securities.map((security: ProviderSecurity) => this.convertToSecurity(security));
+    }
 
     protected getAPIDomain(): string {
         if (process.env.env == "production") {
@@ -47,7 +59,7 @@ abstract class BrokerageProvider {
         });
     }
 
-    public buy(): Promise<BuyResult> {
+    public buy(buyOrder: BuyOrder): Promise<BuyResult> {
         return new Promise((resolve, reject) => {
             const buyURI = `${this.getAPIDomain()}${this.buyEndpoint}?${this.buyQueryStringParams}`;
             fetch(buyURI, {
@@ -56,9 +68,49 @@ abstract class BrokerageProvider {
                     ...this.defaultHeaders,
                     ...this.providerCommonHeaders,
                 },
+                body: JSON.stringify({
+                    side: "buy",
+                    type: "market",
+                    time_in_force: "gtc",
+                    symbol: buyOrder.symbol,
+                    notional: buyOrder.notional,
+                    qty: buyOrder.qty,
+                }),
             })
                 .then((resp: Response) => resp.json())
+                .then((resp: Response) => {
+                    console.log(resp);
+                    return resp;
+                })
                 .then(resp => resolve(this.convertToBuyResult(resp)))
+                .catch((err: Error) => reject(err));
+        });
+    }
+
+    public sell(sellOrder: SellOrder): Promise<SellResult> {
+        return new Promise((resolve, reject) => {
+            const sellURI = `${this.getAPIDomain()}${this.buyEndpoint}?${this.buyQueryStringParams}`;
+            fetch(sellURI, {
+                method: RestMethods.POST,
+                headers: {
+                    ...this.defaultHeaders,
+                    ...this.providerCommonHeaders,
+                },
+                body: JSON.stringify({
+                    side: "sell",
+                    type: "market",
+                    time_in_force: "gtc",
+                    symbol: sellOrder.symbol,
+                    notional: sellOrder.notional,
+                    qty: sellOrder.qty,
+                }),
+            })
+                .then((resp: Response) => resp.json())
+                .then((resp: Response) => {
+                    console.log(resp);
+                    return resp;
+                })
+                .then(resp => resolve(this.convertToSellResult(resp)))
                 .catch((err: Error) => reject(err));
         });
     }
