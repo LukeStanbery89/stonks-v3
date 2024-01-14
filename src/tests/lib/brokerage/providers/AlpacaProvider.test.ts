@@ -159,7 +159,7 @@ describe("Alpaca Provider", () => {
         return expect(sellPromise).rejects.toEqual(expectedError);
     });
 
-    test("getAPIDomain() returns the dev domain when NODE_ENV is 'development'", () => {
+    test("getAPIDomain() returns the dev domain when ENV is 'development'", () => {
         // Arrange
         const testAlpacaProvider = new TestAlpacaProvider();
         const expectedDomain = "https://paper-api.alpaca.markets";
@@ -171,9 +171,9 @@ describe("Alpaca Provider", () => {
         expect(actualDomain).toEqual(expectedDomain);
     });
 
-    test("getAPIDomain() returns the prod domain when NODE_ENV is 'production'", () => {
+    test("getAPIDomain() returns the prod domain when ENV is 'production'", () => {
         // Arrange
-        process.env.NODE_ENV = "production";
+        process.env.ENV = "production";
         const testAlpacaProvider = new TestAlpacaProvider();
         const expectedDomain = "https://api.alpaca.markets";
 

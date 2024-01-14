@@ -2,6 +2,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 export default {
+    ENV: process.env.ENV || "development",
     PORT: process.env.PORT || 3000,
     RATE_LIMITER: {
         windowMs: 15 * 60 * 1000, // 15 minutes
