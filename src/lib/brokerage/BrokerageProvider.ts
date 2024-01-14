@@ -1,8 +1,8 @@
+import axios from "axios";
 import {
     BuyResult,
     ProviderBuyResult,
     ProviderSecurity,
-    RestMethods,
     Security,
     BuyOrder,
     SellOrder,
@@ -36,83 +36,61 @@ abstract class BrokerageProvider {
     }
 
     protected getAPIDomain(): string {
-        if (process.env.NODE_ENV == "production") {
+        if (process.env.ENV == "production") {
             return this.prodAPIDomain;
         } else {
             return this.devAPIDomain;
         }
     }
 
-    public securities(): Promise<Security[]> {
-        return new Promise((resolve, reject) => {
-            const securitiesURI = `${this.getAPIDomain()}${this.securitiesEndpoint}?${this.securitiesQueryStringParams}`;
-            fetch(securitiesURI, {
-                method: RestMethods.GET,
-                headers: {
-                    ...this.defaultHeaders,
-                    ...this.providerCommonHeaders,
-                },
-            })
-                .then((resp: Response) => resp.json())
-                .then(resp => resolve(this.convertToSecuritiesArray(resp)))
-                .catch((err: Error) => reject(err));
+    public async securities(): Promise<Security[]> {
+        const securitiesURI = `${this.getAPIDomain()}${this.securitiesEndpoint}?${this.securitiesQueryStringParams}`;
+        const response = await axios.get(securitiesURI, {
+            headers: {
+                ...this.defaultHeaders,
+                ...this.providerCommonHeaders,
+            },
         });
+        console.log(response.data);
+        return this.convertToSecuritiesArray(response.data);
     }
 
-    public buy(buyOrder: BuyOrder): Promise<BuyResult> {
-        return new Promise((resolve, reject) => {
-            const buyURI = `${this.getAPIDomain()}${this.buyEndpoint}?${this.buyQueryStringParams}`;
-            fetch(buyURI, {
-                method: RestMethods.POST,
-                headers: {
-                    ...this.defaultHeaders,
-                    ...this.providerCommonHeaders,
-                },
-                body: JSON.stringify({
-                    side: "buy",
-                    type: "market",
-                    time_in_force: "gtc",
-                    symbol: buyOrder.symbol,
-                    notional: buyOrder.notional,
-                    qty: buyOrder.qty,
-                }),
-            })
-                .then((resp: Response) => resp.json())
-                .then((resp: Response) => {
-                    console.log(resp);
-                    return resp;
-                })
-                .then(resp => resolve(this.convertToBuyResult(resp)))
-                .catch((err: Error) => reject(err));
+    public async buy(buyOrder: BuyOrder): Promise<BuyResult> {
+        const buyURI = `${this.getAPIDomain()}${this.buyEndpoint}?${this.buyQueryStringParams}`;
+        const response = await axios.post(buyURI, {
+            side: "buy",
+            type: "market",
+            time_in_force: "gtc",
+            symbol: buyOrder.symbol,
+            notional: buyOrder.notional,
+            qty: buyOrder.qty,
+        }, {
+            headers: {
+                ...this.defaultHeaders,
+                ...this.providerCommonHeaders,
+            },
         });
+        console.log(response.data);
+        return this.convertToBuyResult(response.data);
     }
 
-    public sell(sellOrder: SellOrder): Promise<SellResult> {
-        return new Promise((resolve, reject) => {
-            const sellURI = `${this.getAPIDomain()}${this.buyEndpoint}?${this.buyQueryStringParams}`;
-            fetch(sellURI, {
-                method: RestMethods.POST,
-                headers: {
-                    ...this.defaultHeaders,
-                    ...this.providerCommonHeaders,
-                },
-                body: JSON.stringify({
-                    side: "sell",
-                    type: "market",
-                    time_in_force: "gtc",
-                    symbol: sellOrder.symbol,
-                    notional: sellOrder.notional,
-                    qty: sellOrder.qty,
-                }),
-            })
-                .then((resp: Response) => resp.json())
-                .then((resp: Response) => {
-                    console.log(resp);
-                    return resp;
-                })
-                .then(resp => resolve(this.convertToSellResult(resp)))
-                .catch((err: Error) => reject(err));
+    public async sell(sellOrder: SellOrder): Promise<SellResult> {
+        const sellURI = `${this.getAPIDomain()}${this.buyEndpoint}?${this.buyQueryStringParams}`;
+        const response = await axios.post(sellURI, {
+            side: "sell",
+            type: "market",
+            time_in_force: "gtc",
+            symbol: sellOrder.symbol,
+            notional: sellOrder.notional,
+            qty: sellOrder.qty,
+        }, {
+            headers: {
+                ...this.defaultHeaders,
+                ...this.providerCommonHeaders,
+            },
         });
+        console.log(response.data);
+        return this.convertToSellResult(response.data);
     }
 }
 
