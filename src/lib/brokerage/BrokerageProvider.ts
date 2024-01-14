@@ -36,7 +36,7 @@ abstract class BrokerageProvider {
     }
 
     protected getAPIDomain(): string {
-        if (process.env.env == "production") {
+        if (process.env.NODE_ENV == "production") {
             return this.prodAPIDomain;
         } else {
             return this.devAPIDomain;
