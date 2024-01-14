@@ -1,5 +1,6 @@
 import AlpacaProvider from "../../../../lib/brokerage/providers/AlpacaProvider";
 import { BuyOrder, OrderType, SellOrder } from "../../../../types/types";
+import axios from "axios";
 
 class TestAlpacaProvider extends AlpacaProvider {
     public testGetAPIDomain(): string {
@@ -12,7 +13,7 @@ describe("Alpaca Provider", () => {
         jest.restoreAllMocks();
     });
 
-    test("securities() retrieves a list of buyable securities", () => {
+    test("securities() retrieves a list of buyable securities", async () => {
         // Arrange
         const alpacaProvider = new AlpacaProvider();
         const expectedSecurities = [
@@ -30,36 +31,32 @@ describe("Alpaca Provider", () => {
             },
         ];
 
-        // Mock the response from fetch()
-        const mockFetchPromise = Promise.resolve({
-            json: () => Promise.resolve(expectedSecurities),
-        } as Response);
-        jest.spyOn(global, "fetch").mockImplementation(() => mockFetchPromise);
+        // Mock the response from axios
+        jest.spyOn(axios, "get").mockResolvedValueOnce({ data: expectedSecurities });
 
         // Act
         const securitiesPromise = alpacaProvider.securities();
 
         // Assert
-        return expect(securitiesPromise).resolves.toEqual(expectedSecurities);
+        await expect(securitiesPromise).resolves.toEqual(expectedSecurities);
     });
 
-    test("securities() rejects with an error when fetch() rejects", () => {
+    test("securities() rejects with an error when axios.get() rejects", async () => {
         // Arrange
         const alpacaProvider = new AlpacaProvider();
         const expectedError = new Error("Test error");
 
-        // Mock the response from fetch()
-        const mockFetchPromise = Promise.reject(expectedError);
-        jest.spyOn(global, "fetch").mockImplementation(() => mockFetchPromise);
+        // Mock the response from axios
+        jest.spyOn(axios, "get").mockRejectedValueOnce(expectedError);
 
         // Act
         const securitiesPromise = alpacaProvider.securities();
 
         // Assert
-        return expect(securitiesPromise).rejects.toEqual(expectedError);
+        await expect(securitiesPromise).rejects.toEqual(expectedError);
     });
 
-    test("buy() returns a BuyResult", () => {
+    test("buy() returns a BuyResult", async () => {
         // Arrange
         const alpacaProvider = new AlpacaProvider();
         const buyOrder: BuyOrder = {
@@ -74,20 +71,17 @@ describe("Alpaca Provider", () => {
             notional: 100,
         };
 
-        // Mock the response from fetch()
-        const mockFetchPromise = Promise.resolve({
-            json: () => Promise.resolve(expectedBuyResult),
-        } as Response);
-        jest.spyOn(global, "fetch").mockImplementation(() => mockFetchPromise);
+        // Mock the response from axios
+        jest.spyOn(axios, "post").mockResolvedValueOnce({ data: expectedBuyResult });
 
         // Act
         const buyPromise = alpacaProvider.buy(buyOrder);
 
         // Assert
-        return expect(buyPromise).resolves.toEqual(expectedBuyResult);
+        await expect(buyPromise).resolves.toEqual(expectedBuyResult);
     });
 
-    test("buy() rejects with an error when fetch() rejects", () => {
+    test("buy() rejects with an error when axios.post() rejects", async () => {
         // Arrange
         const alpacaProvider = new AlpacaProvider();
         const buyOrder: BuyOrder = {
@@ -98,18 +92,17 @@ describe("Alpaca Provider", () => {
 
         const expectedError = new Error("Test error");
 
-        // Mock the response from fetch()
-        const mockFetchPromise = Promise.reject(expectedError);
-        jest.spyOn(global, "fetch").mockImplementation(() => mockFetchPromise);
+        // Mock the response from axios
+        jest.spyOn(axios, "post").mockRejectedValueOnce(expectedError);
 
         // Act
         const buyPromise = alpacaProvider.buy(buyOrder);
 
         // Assert
-        return expect(buyPromise).rejects.toEqual(expectedError);
+        await expect(buyPromise).rejects.toEqual(expectedError);
     });
 
-    test("sell() returns a SellResult", () => {
+    test("sell() returns a SellResult", async () => {
         // Arrange
         const alpacaProvider = new AlpacaProvider();
         const sellOrder: SellOrder = {
@@ -124,20 +117,17 @@ describe("Alpaca Provider", () => {
             notional: 100,
         };
 
-        // Mock the response from fetch()
-        const mockFetchPromise = Promise.resolve({
-            json: () => Promise.resolve(expectedSellResult),
-        } as Response);
-        jest.spyOn(global, "fetch").mockImplementation(() => mockFetchPromise);
+        // Mock the response from axios
+        jest.spyOn(axios, "post").mockResolvedValueOnce({ data: expectedSellResult });
 
         // Act
         const sellPromise = alpacaProvider.sell(sellOrder);
 
         // Assert
-        return expect(sellPromise).resolves.toEqual(expectedSellResult);
+        await expect(sellPromise).resolves.toEqual(expectedSellResult);
     });
 
-    test("sell() rejects with an error when fetch() rejects", () => {
+    test("sell() rejects with an error when axios.post() rejects", async () => {
         // Arrange
         const alpacaProvider = new AlpacaProvider();
         const sellOrder: SellOrder = {
@@ -148,15 +138,14 @@ describe("Alpaca Provider", () => {
 
         const expectedError = new Error("Test error");
 
-        // Mock the response from fetch()
-        const mockFetchPromise = Promise.reject(expectedError);
-        jest.spyOn(global, "fetch").mockImplementation(() => mockFetchPromise);
+        // Mock the response from axios
+        jest.spyOn(axios, "post").mockRejectedValueOnce(expectedError);
 
         // Act
         const sellPromise = alpacaProvider.sell(sellOrder);
 
         // Assert
-        return expect(sellPromise).rejects.toEqual(expectedError);
+        await expect(sellPromise).rejects.toEqual(expectedError);
     });
 
     test("getAPIDomain() returns the dev domain when ENV is 'development'", () => {

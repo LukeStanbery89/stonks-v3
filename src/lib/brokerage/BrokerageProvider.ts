@@ -1,16 +1,14 @@
-import axios, { AxiosResponse } from "axios";
+import axios from "axios";
 import {
     BuyResult,
     ProviderBuyResult,
     ProviderSecurity,
-    RestMethods,
     Security,
     BuyOrder,
     SellOrder,
     SellResult,
     ProviderSellResult,
 } from "../../types/types";
-import config from "../../config";
 
 abstract class BrokerageProvider {
     // Headers
@@ -38,8 +36,7 @@ abstract class BrokerageProvider {
     }
 
     protected getAPIDomain(): string {
-        console.log("config.ENV: ", config.ENV);
-        if (config.ENV == "production") {
+        if (process.env.ENV == "production") {
             return this.prodAPIDomain;
         } else {
             return this.devAPIDomain;
