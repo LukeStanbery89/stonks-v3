@@ -76,7 +76,6 @@ export interface AlpacaSecurity extends ProviderSecurity {
     symbol: string,
     name: string,
 }
-
 export interface AlpacaOrderResult extends ProviderBuyResult {
     symbol: string,
     qty: NullableNumber,
@@ -89,3 +88,31 @@ export interface AlpacaSellResult extends AlpacaOrderResult {
     type: OrderType.SELL,
 }
 
+// Market data types
+export type ProviderPriceData = object;
+export interface AlpacaPriceData extends ProviderPriceData {
+    "c": number,
+    "h": number,
+    "l": number,
+    "n": number,
+    "o": number,
+    "t": string,
+    "v": number,
+    "vw": number,
+}
+
+export type HistoricalPriceDataRequestParams = {
+    symbol: string;
+    start: string;
+    end: string;
+    limit: number;
+};
+
+export type PriceData = {
+    timestamp: string;
+    open: number;
+    high: number;
+    low: number;
+    close: number;
+    volume: number;
+};
