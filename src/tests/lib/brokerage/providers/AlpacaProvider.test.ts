@@ -3,8 +3,8 @@ import { BuyOrder, OrderType, SellOrder } from "../../../../types/types";
 import axios from "axios";
 
 class TestAlpacaProvider extends AlpacaProvider {
-    public testGetAPIDomain(): string {
-        return this.getAPIDomain();
+    public testIsLive() {
+        return this.isLive();
     }
 }
 
@@ -148,28 +148,200 @@ describe("Alpaca Provider", () => {
         await expect(sellPromise).rejects.toEqual(expectedError);
     });
 
-    test("getAPIDomain() returns the dev domain when ENV is 'development'", () => {
+    test("historicalPriceData() returns an array of PriceData objects", async () => {
         // Arrange
-        const testAlpacaProvider = new TestAlpacaProvider();
-        const expectedDomain = "https://paper-api.alpaca.markets";
+        const alpacaProvider = new AlpacaProvider();
+        const expectedPriceData = {
+            bars: {
+                "ETH/USD": [
+                    {
+                        c: 2281.185,
+                        h: 2281.755,
+                        l: 2281.185,
+                        n: 0,
+                        o: 2281.755,
+                        t: "2024-01-01T00:00:00Z",
+                        v: 0,
+                        vw: 0,
+                    },
+                    {
+                        c: 2282.205,
+                        h: 2282.205,
+                        l: 2282.205,
+                        n: 0,
+                        o: 2282.205,
+                        t: "2024-01-01T00:01:00Z",
+                        v: 0,
+                        vw: 0,
+                    },
+                ],
+            },
+            next_page_token: null,
+        };
+
+        const expectedPriceDataParams = {
+            symbol: "ETH/USD",
+            start: "2024-01-01T00:00:00.000Z",
+            end: "2024-01-01T00:01:00.000Z",
+            limit: 1000,
+        };
+
+        const expectedResponse = [
+            {
+                close: 2281.185,
+                high: 2281.755,
+                low: 2281.185,
+                open: 2281.755,
+                timestamp: "2024-01-01T00:00:00Z",
+                volume: 0,
+            },
+            {
+                close: 2282.205,
+                high: 2282.205,
+                low: 2282.205,
+                open: 2282.205,
+                timestamp: "2024-01-01T00:01:00Z",
+                volume: 0,
+            },
+        ];
+
+        // Mock the response from axios
+        jest.spyOn(axios, "get").mockResolvedValueOnce({ data: expectedPriceData });
 
         // Act
-        const actualDomain = testAlpacaProvider.testGetAPIDomain();
+        const priceData = alpacaProvider.historicalPriceData(expectedPriceDataParams);
 
         // Assert
-        expect(actualDomain).toEqual(expectedDomain);
+        await expect(priceData).resolves.toEqual(expectedResponse);
     });
 
-    test("getAPIDomain() returns the prod domain when ENV is 'production'", () => {
+    test("historicalPriceData() makes multiple requests when there are multiple pages of data", async () => {
+        // Arrange
+        const alpacaProvider = new AlpacaProvider();
+        const expectedPriceData = {
+            bars: {
+                "ETH/USD": [
+                    {
+                        c: 2281.185,
+                        h: 2281.755,
+                        l: 2281.185,
+                        n: 0,
+                        o: 2281.755,
+                        t: "2024-01-01T00:00:00Z",
+                        v: 0,
+                        vw: 0,
+                    },
+                    {
+                        c: 2282.205,
+                        h: 2282.205,
+                        l: 2282.205,
+                        n: 0,
+                        o: 2282.205,
+                        t: "2024-01-01T00:01:00Z",
+                        v: 0,
+                        vw: 0,
+                    },
+                ],
+            },
+            next_page_token: "testPageToken",
+        };
+
+        const expectedPriceDataParams = {
+            symbol: "ETH/USD",
+            start: "2024-01-01T00:00:00.000Z",
+            end: "2024-01-01T00:01:00.000Z",
+            limit: 1000,
+        };
+
+        const expectedResponse = [
+            {
+                close: 2281.185,
+                high: 2281.755,
+                low: 2281.185,
+                open: 2281.755,
+                timestamp: "2024-01-01T00:00:00Z",
+                volume: 0,
+            },
+            {
+                close: 2282.205,
+                high: 2282.205,
+                low: 2282.205,
+                open: 2282.205,
+                timestamp: "2024-01-01T00:01:00Z",
+                volume: 0,
+            },
+            {
+                close: 2281.185,
+                high: 2281.755,
+                low: 2281.185,
+                open: 2281.755,
+                timestamp: "2024-01-01T00:00:00Z",
+                volume: 0,
+            },
+            {
+                close: 2282.205,
+                high: 2282.205,
+                low: 2282.205,
+                open:
+                2282.205,
+                timestamp: "2024-01-01T00:01:00Z",
+                volume: 0,
+            },
+        ];
+
+        // Mock the response from axios
+        jest.spyOn(axios, "get").mockResolvedValueOnce({ data: expectedPriceData });
+
+        // Act
+        const priceData = alpacaProvider.historicalPriceData(expectedPriceDataParams);
+
+        // Assert
+        await expect(priceData).resolves.toEqual(expectedResponse);
+    });
+
+    test("historicalPriceData() rejects with an error when axios.get() rejects", async () => {
+        // Arrange
+        const alpacaProvider = new AlpacaProvider();
+        const expectedPriceDataParams = {
+            symbol: "ETH/USD",
+            start: "2024-01-01T00:00:00.000Z",
+            end: "2024-01-01T00:01:00.000Z",
+            limit: 1000,
+        };
+
+        const expectedError = new Error("Test error");
+
+        // Mock the response from axios
+        jest.spyOn(axios, "get").mockRejectedValueOnce(expectedError);
+
+        // Act
+        const priceData = alpacaProvider.historicalPriceData(expectedPriceDataParams);
+
+        // Assert
+        await expect(priceData).rejects.toEqual(expectedError);
+    });
+
+    test("isLive() returns true when ENV is 'production'", () => {
         // Arrange
         process.env.ENV = "production";
         const testAlpacaProvider = new TestAlpacaProvider();
-        const expectedDomain = "https://api.alpaca.markets";
 
         // Act
-        const actualDomain = testAlpacaProvider.testGetAPIDomain();
+        const isLive = testAlpacaProvider.testIsLive();
 
         // Assert
-        expect(actualDomain).toEqual(expectedDomain);
+        expect(isLive).toEqual(true);
+    });
+
+    test("isLive() returns false when ENV is 'development'", () => {
+        // Arrange
+        process.env.ENV = "development";
+        const testAlpacaProvider = new TestAlpacaProvider();
+
+        // Act
+        const isLive = testAlpacaProvider.testIsLive();
+
+        // Assert
+        expect(isLive).toEqual(false);
     });
 });

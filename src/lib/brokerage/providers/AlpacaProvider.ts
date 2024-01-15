@@ -1,10 +1,13 @@
 import config from "../../../config";
 import {
     AlpacaBuyResult,
+    AlpacaPriceData,
     AlpacaSecurity,
     AlpacaSellResult,
     BuyResult,
+    HistoricalPriceDataRequestParams,
     OrderType,
+    PriceData,
     Security,
     SellResult,
 } from "../../../types/types";
@@ -20,8 +23,12 @@ class AlpacaProvider extends BrokerageProvider {
     // URI values
     protected devAPIDomain = "https://paper-api.alpaca.markets";
     protected prodAPIDomain = "https://api.alpaca.markets";
+    private marketDataURI = "https://data.alpaca.markets";
+
     protected securitiesEndpoint = "/v2/assets";
     protected buyEndpoint = "/v2/orders";
+    protected historicalPriceDataURIPath = "/v1beta3/crypto/us/bars";
+    private historicalPriceDataTimeframe = "1Min";
 
     // Query string params
     protected securitiesQueryStringParams: string = new URLSearchParams({
@@ -52,6 +59,31 @@ class AlpacaProvider extends BrokerageProvider {
             notional: sellResult.notional,
             qty: sellResult.qty,
         };
+    }
+
+    protected convertToPriceData(priceData: AlpacaPriceData): PriceData {
+        return {
+            timestamp: priceData.t,
+            open: priceData.o,
+            high: priceData.h,
+            low: priceData.l,
+            close: priceData.c,
+            volume: priceData.v,
+        };
+    }
+
+    protected getHistoricalPriceDataUri(): string {
+        return `${this.marketDataURI}${this.historicalPriceDataURIPath}`;
+    }
+
+    protected getHistoricalPriceDataQueryStringParams(priceDataParams: HistoricalPriceDataRequestParams): string {
+        return new URLSearchParams({
+            symbols: priceDataParams.symbol,
+            start: priceDataParams.start,
+            end: priceDataParams.end,
+            limit: priceDataParams.limit.toString(),
+            timeframe: this.historicalPriceDataTimeframe,
+        }).toString();
     }
 }
 
