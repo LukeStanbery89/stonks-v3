@@ -27,8 +27,9 @@ class AlpacaProvider extends BrokerageProvider {
     protected prodAPIDomain = "https://api.alpaca.markets";
     private marketDataURI = "https://data.alpaca.markets";
 
-    protected securitiesEndpoint = "/v2/assets";
-    protected buyEndpoint = "/v2/orders";
+    protected securitiesPath = "/v2/assets";
+    protected buyPath = "/v2/orders";
+    protected sellPath = "/v2/orders";
     protected historicalPriceDataURIPath = "/v1beta3/crypto/us/bars";
     private historicalPriceDataTimeframe = "1Min";
 
