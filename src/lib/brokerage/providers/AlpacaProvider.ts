@@ -4,11 +4,13 @@ import {
     AlpacaPriceData,
     AlpacaSecurity,
     AlpacaSellResult,
+    BuyOrder,
     BuyResult,
     HistoricalPriceDataRequestParams,
     OrderType,
     PriceData,
     Security,
+    SellOrder,
     SellResult,
 } from "../../../types/types";
 import BrokerageProvider from "../BrokerageProvider";
@@ -35,6 +37,36 @@ class AlpacaProvider extends BrokerageProvider {
         status: "active",
         asset_class: "crypto",
     }).toString();
+
+    constructor() {
+        super();
+    }
+
+    /*********************
+     * Protected Methods *
+     *********************/
+
+    protected convertBuyOrderToRequestData(buyOrder: BuyOrder): object {
+        return {
+            side: "buy",
+            type: "market",
+            time_in_force: "gtc",
+            symbol: buyOrder.symbol,
+            notional: buyOrder.notional,
+            qty: buyOrder.qty,
+        };
+    }
+
+    protected convertSellOrderToRequestData(sellOrder: SellOrder): object {
+        return {
+            side: "sell",
+            type: "market",
+            time_in_force: "gtc",
+            symbol: sellOrder.symbol,
+            notional: sellOrder.notional,
+            qty: sellOrder.qty,
+        };
+    }
 
     protected convertToSecurity(security: AlpacaSecurity): Security {
         return {
@@ -84,6 +116,42 @@ class AlpacaProvider extends BrokerageProvider {
             limit: priceDataParams.limit.toString(),
             timeframe: this.historicalPriceDataTimeframe,
         }).toString();
+    }
+
+    /******************
+     * Public Methods *
+     ******************/
+
+    public async historicalPriceData(priceDataParams: HistoricalPriceDataRequestParams): Promise<PriceData[]> {
+        const historicalPriceDataURI = `${this.getHistoricalPriceDataUri()}?${this.getHistoricalPriceDataQueryStringParams(priceDataParams)}`;
+        let morePages = true;
+        let pageToken = "";
+        const priceData = [];
+
+        while(morePages) {
+            // Request
+            const response = await this.axios.get(historicalPriceDataURI, {
+                headers: this.getHistoricalPriceDataHeaders(),
+                data: {
+                    ...priceDataParams,
+                    timeframe: "1Min",
+                    page_token: pageToken,
+                },
+            });
+            console.log("historicalPriceData response", JSON.stringify(response.data));
+
+            // Transform
+            priceData.push(...this.convertToPriceDataArray(response.data.bars[priceDataParams.symbol]));
+
+            // Update loop variables
+            if (response.data.next_page_token) {
+                pageToken = response.data.next_page_token;
+            } else {
+                morePages = false;
+            }
+        }
+
+        return priceData;
     }
 }
 
