@@ -6,6 +6,14 @@ class TestAlpacaProvider extends AlpacaProvider {
     public testIsLive() {
         return this.isLive();
     }
+
+    public testGetHistoricalPriceDataUri() {
+        return this.getHistoricalPriceDataUri();
+    }
+
+    public testGetHistoricalPriceDataQueryStringParams(priceDataRequestParams: any): string {
+        return this.getHistoricalPriceDataQueryStringParams(priceDataRequestParams);
+    }
 }
 
 describe("Alpaca Provider", () => {
@@ -321,6 +329,25 @@ describe("Alpaca Provider", () => {
         await expect(priceData).rejects.toEqual(expectedError);
     });
 
+    test("getHistoricalPriceDataQueryStringParams() returns the correct query string params", () => {
+        // Arrange
+        const alpacaProvider = new TestAlpacaProvider();
+        const expectedQueryStringParams = "symbols=ETH%2FUSD&start=2024-01-01T00%3A00%3A00.000Z&end=2024-01-01T00%3A01%3A00.000Z&limit=1000&timeframe=1Min";
+        const priceDataParams = {
+            symbol: "ETH/USD",
+            start: "2024-01-01T00:00:00.000Z",
+            end: "2024-01-01T00:01:00.000Z",
+            limit: 1000,
+        };
+
+        // Act
+        const queryStringParams = alpacaProvider.testGetHistoricalPriceDataQueryStringParams(priceDataParams);
+
+        // Assert
+        expect(queryStringParams).toEqual(expectedQueryStringParams);
+    });
+
+    // TODO Move these to BrokerageProvider.test.ts
     test("isLive() returns true when ENV is 'production'", () => {
         // Arrange
         process.env.ENV = "production";
@@ -343,5 +370,17 @@ describe("Alpaca Provider", () => {
 
         // Assert
         expect(isLive).toEqual(false);
+    });
+
+    test("getHistoricalPriceDataUri() returns the correct URI", () => {
+        // Arrange
+        const testAlpacaProvider = new TestAlpacaProvider();
+        const expectedURI = "https://data.alpaca.markets/v1beta3/crypto/us/bars";
+
+        // Act
+        const uri = testAlpacaProvider.testGetHistoricalPriceDataUri();
+
+        // Assert
+        expect(uri).toEqual(expectedURI);
     });
 });
