@@ -1,6 +1,6 @@
 import { Server } from "socket.io";
 
-class SocketEmitter {
+export class SocketEmitter {
     private static instance: SocketEmitter;
     private io?: Server;
 
@@ -21,7 +21,11 @@ class SocketEmitter {
 
     public emit(event: string, data?: object) {
         if (this.io) {
-            this.io.emit(event, data);
+            if (data) {
+                this.io.emit(event, data);
+            } else {
+                this.io.emit(event);
+            }
         }
     }
 }
