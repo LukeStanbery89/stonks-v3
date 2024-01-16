@@ -17,370 +17,383 @@ class TestAlpacaProvider extends AlpacaProvider {
 }
 
 describe("Alpaca Provider", () => {
+    beforeAll(() => {
+        console.log = jest.fn();
+    });
+
     afterEach(() => {
         jest.restoreAllMocks();
     });
 
-    test("securities() retrieves a list of buyable securities", async () => {
-        // Arrange
-        const alpacaProvider = new AlpacaProvider();
-        const expectedSecurities = [
-            {
+    describe("securities()", () => {
+        it("retrieves a list of buyable securities", async () => {
+            // Arrange
+            const alpacaProvider = new AlpacaProvider();
+            const expectedSecurities = [
+                {
+                    symbol: "BTCUSD",
+                    name: "Bitcoin",
+                },
+                {
+                    symbol: "ETHUSD",
+                    name: "Ethereum",
+                },
+                {
+                    symbol: "LTCUSD",
+                    name: "Litecoin",
+                },
+            ];
+
+            // Mock the response from axios
+            jest.spyOn(axios, "get").mockResolvedValueOnce({ data: expectedSecurities });
+
+            // Act
+            const securitiesPromise = alpacaProvider.securities();
+
+            // Assert
+            await expect(securitiesPromise).resolves.toEqual(expectedSecurities);
+        });
+
+        it("rejects with an error when axios.get() rejects", async () => {
+            // Arrange
+            const alpacaProvider = new AlpacaProvider();
+            const expectedError = new Error("Test error");
+
+            // Mock the response from axios
+            jest.spyOn(axios, "get").mockRejectedValueOnce(expectedError);
+
+            // Act
+            const securitiesPromise = alpacaProvider.securities();
+
+            // Assert
+            await expect(securitiesPromise).rejects.toEqual(expectedError);
+        });
+    });
+
+    describe("buy()", () => {
+        it("returns a BuyResult", async () => {
+            // Arrange
+            const alpacaProvider = new AlpacaProvider();
+            const buyOrder: BuyOrder = {
+                type: OrderType.BUY,
                 symbol: "BTCUSD",
-                name: "Bitcoin",
-            },
-            {
-                symbol: "ETHUSD",
-                name: "Ethereum",
-            },
-            {
-                symbol: "LTCUSD",
-                name: "Litecoin",
-            },
-        ];
+                notional: 100,
+            };
 
-        // Mock the response from axios
-        jest.spyOn(axios, "get").mockResolvedValueOnce({ data: expectedSecurities });
+            const expectedBuyResult = {
+                type: "BUY",
+                symbol: "BTCUSD",
+                notional: 100,
+            };
 
-        // Act
-        const securitiesPromise = alpacaProvider.securities();
+            // Mock the response from axios
+            jest.spyOn(axios, "post").mockResolvedValueOnce({ data: expectedBuyResult });
 
-        // Assert
-        await expect(securitiesPromise).resolves.toEqual(expectedSecurities);
+            // Act
+            const buyPromise = alpacaProvider.buy(buyOrder);
+
+            // Assert
+            await expect(buyPromise).resolves.toEqual(expectedBuyResult);
+        });
+
+        it("rejects with an error when axios.post() rejects", async () => {
+            // Arrange
+            const alpacaProvider = new AlpacaProvider();
+            const buyOrder: BuyOrder = {
+                type: OrderType.BUY,
+                symbol: "BTCUSD",
+                notional: 100,
+            };
+
+            const expectedError = new Error("Test error");
+
+            // Mock the response from axios
+            jest.spyOn(axios, "post").mockRejectedValueOnce(expectedError);
+
+            // Act
+            const buyPromise = alpacaProvider.buy(buyOrder);
+
+            // Assert
+            await expect(buyPromise).rejects.toEqual(expectedError);
+        });
     });
 
-    test("securities() rejects with an error when axios.get() rejects", async () => {
-        // Arrange
-        const alpacaProvider = new AlpacaProvider();
-        const expectedError = new Error("Test error");
+    describe("sell()", () => {
+        it("returns a SellResult", async () => {
+            // Arrange
+            const alpacaProvider = new AlpacaProvider();
+            const sellOrder: SellOrder = {
+                type: OrderType.SELL,
+                symbol: "BTCUSD",
+                notional: 100,
+            };
 
-        // Mock the response from axios
-        jest.spyOn(axios, "get").mockRejectedValueOnce(expectedError);
+            const expectedSellResult = {
+                type: "SELL",
+                symbol: "BTCUSD",
+                notional: 100,
+            };
 
-        // Act
-        const securitiesPromise = alpacaProvider.securities();
+            // Mock the response from axios
+            jest.spyOn(axios, "post").mockResolvedValueOnce({ data: expectedSellResult });
 
-        // Assert
-        await expect(securitiesPromise).rejects.toEqual(expectedError);
+            // Act
+            const sellPromise = alpacaProvider.sell(sellOrder);
+
+            // Assert
+            await expect(sellPromise).resolves.toEqual(expectedSellResult);
+        });
+
+        it("rejects with an error when axios.post() rejects", async () => {
+            // Arrange
+            const alpacaProvider = new AlpacaProvider();
+            const sellOrder: SellOrder = {
+                type: OrderType.SELL,
+                symbol: "BTCUSD",
+                notional: 100,
+            };
+
+            const expectedError = new Error("Test error");
+
+            // Mock the response from axios
+            jest.spyOn(axios, "post").mockRejectedValueOnce(expectedError);
+
+            // Act
+            const sellPromise = alpacaProvider.sell(sellOrder);
+
+            // Assert
+            await expect(sellPromise).rejects.toEqual(expectedError);
+        });
     });
 
-    test("buy() returns a BuyResult", async () => {
-        // Arrange
-        const alpacaProvider = new AlpacaProvider();
-        const buyOrder: BuyOrder = {
-            type: OrderType.BUY,
-            symbol: "BTCUSD",
-            notional: 100,
-        };
+    describe("historicalPriceData()", () => {
+        it("returns an array of PriceData objects", async () => {
+            // Arrange
+            const alpacaProvider = new AlpacaProvider();
+            const expectedPriceData = {
+                bars: {
+                    "ETH/USD": [
+                        {
+                            c: 2281.185,
+                            h: 2281.755,
+                            l: 2281.185,
+                            n: 0,
+                            o: 2281.755,
+                            t: "2024-01-01T00:00:00Z",
+                            v: 0,
+                            vw: 0,
+                        },
+                        {
+                            c: 2282.205,
+                            h: 2282.205,
+                            l: 2282.205,
+                            n: 0,
+                            o: 2282.205,
+                            t: "2024-01-01T00:01:00Z",
+                            v: 0,
+                            vw: 0,
+                        },
+                    ],
+                },
+                next_page_token: null,
+            };
 
-        const expectedBuyResult = {
-            type: "BUY",
-            symbol: "BTCUSD",
-            notional: 100,
-        };
+            const expectedPriceDataParams = {
+                symbol: "ETH/USD",
+                start: "2024-01-01T00:00:00.000Z",
+                end: "2024-01-01T00:01:00.000Z",
+                limit: 1000,
+            };
 
-        // Mock the response from axios
-        jest.spyOn(axios, "post").mockResolvedValueOnce({ data: expectedBuyResult });
+            const expectedResponse = [
+                {
+                    close: 2281.185,
+                    high: 2281.755,
+                    low: 2281.185,
+                    open: 2281.755,
+                    timestamp: "2024-01-01T00:00:00Z",
+                    volume: 0,
+                },
+                {
+                    close: 2282.205,
+                    high: 2282.205,
+                    low: 2282.205,
+                    open: 2282.205,
+                    timestamp: "2024-01-01T00:01:00Z",
+                    volume: 0,
+                },
+            ];
 
-        // Act
-        const buyPromise = alpacaProvider.buy(buyOrder);
+            // Mock the response from axios
+            jest.spyOn(axios, "get").mockResolvedValueOnce({ data: expectedPriceData });
 
-        // Assert
-        await expect(buyPromise).resolves.toEqual(expectedBuyResult);
+            // Act
+            const priceData = alpacaProvider.historicalPriceData(expectedPriceDataParams);
+
+            // Assert
+            await expect(priceData).resolves.toEqual(expectedResponse);
+        });
+
+        it("makes multiple requests when there are multiple pages of data", async () => {
+            // Arrange
+            const alpacaProvider = new AlpacaProvider();
+            const expectedPriceData = {
+                bars: {
+                    "ETH/USD": [
+                        {
+                            c: 2281.185,
+                            h: 2281.755,
+                            l: 2281.185,
+                            n: 0,
+                            o: 2281.755,
+                            t: "2024-01-01T00:00:00Z",
+                            v: 0,
+                            vw: 0,
+                        },
+                        {
+                            c: 2282.205,
+                            h: 2282.205,
+                            l: 2282.205,
+                            n: 0,
+                            o: 2282.205,
+                            t: "2024-01-01T00:01:00Z",
+                            v: 0,
+                            vw: 0,
+                        },
+                    ],
+                },
+                next_page_token: "testPageToken",
+            };
+
+            const expectedPriceDataParams = {
+                symbol: "ETH/USD",
+                start: "2024-01-01T00:00:00.000Z",
+                end: "2024-01-01T00:01:00.000Z",
+                limit: 1000,
+            };
+
+            const expectedResponse = [
+                {
+                    close: 2281.185,
+                    high: 2281.755,
+                    low: 2281.185,
+                    open: 2281.755,
+                    timestamp: "2024-01-01T00:00:00Z",
+                    volume: 0,
+                },
+                {
+                    close: 2282.205,
+                    high: 2282.205,
+                    low: 2282.205,
+                    open: 2282.205,
+                    timestamp: "2024-01-01T00:01:00Z",
+                    volume: 0,
+                },
+                {
+                    close: 2281.185,
+                    high: 2281.755,
+                    low: 2281.185,
+                    open: 2281.755,
+                    timestamp: "2024-01-01T00:00:00Z",
+                    volume: 0,
+                },
+                {
+                    close: 2282.205,
+                    high: 2282.205,
+                    low: 2282.205,
+                    open:
+                    2282.205,
+                    timestamp: "2024-01-01T00:01:00Z",
+                    volume: 0,
+                },
+            ];
+
+            // Mock the response from axios
+            jest.spyOn(axios, "get").mockResolvedValueOnce({ data: expectedPriceData });
+
+            // Act
+            const priceData = alpacaProvider.historicalPriceData(expectedPriceDataParams);
+
+            // Assert
+            await expect(priceData).resolves.toEqual(expectedResponse);
+        });
+
+        it("rejects with an error when axios.get() rejects", async () => {
+            // Arrange
+            const alpacaProvider = new AlpacaProvider();
+            const expectedPriceDataParams = {
+                symbol: "ETH/USD",
+                start: "2024-01-01T00:00:00.000Z",
+                end: "2024-01-01T00:01:00.000Z",
+                limit: 1000,
+            };
+
+            const expectedError = new Error("Test error");
+
+            // Mock the response from axios
+            jest.spyOn(axios, "get").mockRejectedValueOnce(expectedError);
+
+            // Act
+            const priceData = alpacaProvider.historicalPriceData(expectedPriceDataParams);
+
+            // Assert
+            await expect(priceData).rejects.toEqual(expectedError);
+        });
+
+        it("returns the correct query string params", () => {
+            // Arrange
+            const alpacaProvider = new TestAlpacaProvider();
+            const expectedQueryStringParams = "symbols=ETH%2FUSD&start=2024-01-01T00%3A00%3A00.000Z&end=2024-01-01T00%3A01%3A00.000Z&limit=1000&timeframe=1Min";
+            const priceDataParams = {
+                symbol: "ETH/USD",
+                start: "2024-01-01T00:00:00.000Z",
+                end: "2024-01-01T00:01:00.000Z",
+                limit: 1000,
+            };
+
+            // Act
+            const queryStringParams = alpacaProvider.testGetHistoricalPriceDataQueryStringParams(priceDataParams);
+
+            // Assert
+            expect(queryStringParams).toEqual(expectedQueryStringParams);
+        });
+
+        it("returns the correct URI", () => {
+            // Arrange
+            const testAlpacaProvider = new TestAlpacaProvider();
+            const expectedURI = "https://data.alpaca.markets/v1beta3/crypto/us/bars";
+
+            // Act
+            const uri = testAlpacaProvider.testGetHistoricalPriceDataUri();
+
+            // Assert
+            expect(uri).toEqual(expectedURI);
+        });
     });
 
-    test("buy() rejects with an error when axios.post() rejects", async () => {
-        // Arrange
-        const alpacaProvider = new AlpacaProvider();
-        const buyOrder: BuyOrder = {
-            type: OrderType.BUY,
-            symbol: "BTCUSD",
-            notional: 100,
-        };
+    describe("isLive()", () => {
+        it("returns true when ENV is 'production'", () => {
+            // Arrange
+            process.env.ENV = "production";
+            const testAlpacaProvider = new TestAlpacaProvider();
 
-        const expectedError = new Error("Test error");
+            // Act
+            const isLive = testAlpacaProvider.testIsLive();
 
-        // Mock the response from axios
-        jest.spyOn(axios, "post").mockRejectedValueOnce(expectedError);
+            // Assert
+            expect(isLive).toEqual(true);
+        });
 
-        // Act
-        const buyPromise = alpacaProvider.buy(buyOrder);
+        it("returns false when ENV is 'development'", () => {
+            // Arrange
+            process.env.ENV = "development";
+            const testAlpacaProvider = new TestAlpacaProvider();
 
-        // Assert
-        await expect(buyPromise).rejects.toEqual(expectedError);
-    });
+            // Act
+            const isLive = testAlpacaProvider.testIsLive();
 
-    test("sell() returns a SellResult", async () => {
-        // Arrange
-        const alpacaProvider = new AlpacaProvider();
-        const sellOrder: SellOrder = {
-            type: OrderType.SELL,
-            symbol: "BTCUSD",
-            notional: 100,
-        };
-
-        const expectedSellResult = {
-            type: "SELL",
-            symbol: "BTCUSD",
-            notional: 100,
-        };
-
-        // Mock the response from axios
-        jest.spyOn(axios, "post").mockResolvedValueOnce({ data: expectedSellResult });
-
-        // Act
-        const sellPromise = alpacaProvider.sell(sellOrder);
-
-        // Assert
-        await expect(sellPromise).resolves.toEqual(expectedSellResult);
-    });
-
-    test("sell() rejects with an error when axios.post() rejects", async () => {
-        // Arrange
-        const alpacaProvider = new AlpacaProvider();
-        const sellOrder: SellOrder = {
-            type: OrderType.SELL,
-            symbol: "BTCUSD",
-            notional: 100,
-        };
-
-        const expectedError = new Error("Test error");
-
-        // Mock the response from axios
-        jest.spyOn(axios, "post").mockRejectedValueOnce(expectedError);
-
-        // Act
-        const sellPromise = alpacaProvider.sell(sellOrder);
-
-        // Assert
-        await expect(sellPromise).rejects.toEqual(expectedError);
-    });
-
-    test("historicalPriceData() returns an array of PriceData objects", async () => {
-        // Arrange
-        const alpacaProvider = new AlpacaProvider();
-        const expectedPriceData = {
-            bars: {
-                "ETH/USD": [
-                    {
-                        c: 2281.185,
-                        h: 2281.755,
-                        l: 2281.185,
-                        n: 0,
-                        o: 2281.755,
-                        t: "2024-01-01T00:00:00Z",
-                        v: 0,
-                        vw: 0,
-                    },
-                    {
-                        c: 2282.205,
-                        h: 2282.205,
-                        l: 2282.205,
-                        n: 0,
-                        o: 2282.205,
-                        t: "2024-01-01T00:01:00Z",
-                        v: 0,
-                        vw: 0,
-                    },
-                ],
-            },
-            next_page_token: null,
-        };
-
-        const expectedPriceDataParams = {
-            symbol: "ETH/USD",
-            start: "2024-01-01T00:00:00.000Z",
-            end: "2024-01-01T00:01:00.000Z",
-            limit: 1000,
-        };
-
-        const expectedResponse = [
-            {
-                close: 2281.185,
-                high: 2281.755,
-                low: 2281.185,
-                open: 2281.755,
-                timestamp: "2024-01-01T00:00:00Z",
-                volume: 0,
-            },
-            {
-                close: 2282.205,
-                high: 2282.205,
-                low: 2282.205,
-                open: 2282.205,
-                timestamp: "2024-01-01T00:01:00Z",
-                volume: 0,
-            },
-        ];
-
-        // Mock the response from axios
-        jest.spyOn(axios, "get").mockResolvedValueOnce({ data: expectedPriceData });
-
-        // Act
-        const priceData = alpacaProvider.historicalPriceData(expectedPriceDataParams);
-
-        // Assert
-        await expect(priceData).resolves.toEqual(expectedResponse);
-    });
-
-    test("historicalPriceData() makes multiple requests when there are multiple pages of data", async () => {
-        // Arrange
-        const alpacaProvider = new AlpacaProvider();
-        const expectedPriceData = {
-            bars: {
-                "ETH/USD": [
-                    {
-                        c: 2281.185,
-                        h: 2281.755,
-                        l: 2281.185,
-                        n: 0,
-                        o: 2281.755,
-                        t: "2024-01-01T00:00:00Z",
-                        v: 0,
-                        vw: 0,
-                    },
-                    {
-                        c: 2282.205,
-                        h: 2282.205,
-                        l: 2282.205,
-                        n: 0,
-                        o: 2282.205,
-                        t: "2024-01-01T00:01:00Z",
-                        v: 0,
-                        vw: 0,
-                    },
-                ],
-            },
-            next_page_token: "testPageToken",
-        };
-
-        const expectedPriceDataParams = {
-            symbol: "ETH/USD",
-            start: "2024-01-01T00:00:00.000Z",
-            end: "2024-01-01T00:01:00.000Z",
-            limit: 1000,
-        };
-
-        const expectedResponse = [
-            {
-                close: 2281.185,
-                high: 2281.755,
-                low: 2281.185,
-                open: 2281.755,
-                timestamp: "2024-01-01T00:00:00Z",
-                volume: 0,
-            },
-            {
-                close: 2282.205,
-                high: 2282.205,
-                low: 2282.205,
-                open: 2282.205,
-                timestamp: "2024-01-01T00:01:00Z",
-                volume: 0,
-            },
-            {
-                close: 2281.185,
-                high: 2281.755,
-                low: 2281.185,
-                open: 2281.755,
-                timestamp: "2024-01-01T00:00:00Z",
-                volume: 0,
-            },
-            {
-                close: 2282.205,
-                high: 2282.205,
-                low: 2282.205,
-                open:
-                2282.205,
-                timestamp: "2024-01-01T00:01:00Z",
-                volume: 0,
-            },
-        ];
-
-        // Mock the response from axios
-        jest.spyOn(axios, "get").mockResolvedValueOnce({ data: expectedPriceData });
-
-        // Act
-        const priceData = alpacaProvider.historicalPriceData(expectedPriceDataParams);
-
-        // Assert
-        await expect(priceData).resolves.toEqual(expectedResponse);
-    });
-
-    test("historicalPriceData() rejects with an error when axios.get() rejects", async () => {
-        // Arrange
-        const alpacaProvider = new AlpacaProvider();
-        const expectedPriceDataParams = {
-            symbol: "ETH/USD",
-            start: "2024-01-01T00:00:00.000Z",
-            end: "2024-01-01T00:01:00.000Z",
-            limit: 1000,
-        };
-
-        const expectedError = new Error("Test error");
-
-        // Mock the response from axios
-        jest.spyOn(axios, "get").mockRejectedValueOnce(expectedError);
-
-        // Act
-        const priceData = alpacaProvider.historicalPriceData(expectedPriceDataParams);
-
-        // Assert
-        await expect(priceData).rejects.toEqual(expectedError);
-    });
-
-    test("getHistoricalPriceDataQueryStringParams() returns the correct query string params", () => {
-        // Arrange
-        const alpacaProvider = new TestAlpacaProvider();
-        const expectedQueryStringParams = "symbols=ETH%2FUSD&start=2024-01-01T00%3A00%3A00.000Z&end=2024-01-01T00%3A01%3A00.000Z&limit=1000&timeframe=1Min";
-        const priceDataParams = {
-            symbol: "ETH/USD",
-            start: "2024-01-01T00:00:00.000Z",
-            end: "2024-01-01T00:01:00.000Z",
-            limit: 1000,
-        };
-
-        // Act
-        const queryStringParams = alpacaProvider.testGetHistoricalPriceDataQueryStringParams(priceDataParams);
-
-        // Assert
-        expect(queryStringParams).toEqual(expectedQueryStringParams);
-    });
-
-    // TODO Move these to BrokerageProvider.test.ts
-    test("isLive() returns true when ENV is 'production'", () => {
-        // Arrange
-        process.env.ENV = "production";
-        const testAlpacaProvider = new TestAlpacaProvider();
-
-        // Act
-        const isLive = testAlpacaProvider.testIsLive();
-
-        // Assert
-        expect(isLive).toEqual(true);
-    });
-
-    test("isLive() returns false when ENV is 'development'", () => {
-        // Arrange
-        process.env.ENV = "development";
-        const testAlpacaProvider = new TestAlpacaProvider();
-
-        // Act
-        const isLive = testAlpacaProvider.testIsLive();
-
-        // Assert
-        expect(isLive).toEqual(false);
-    });
-
-    test("getHistoricalPriceDataUri() returns the correct URI", () => {
-        // Arrange
-        const testAlpacaProvider = new TestAlpacaProvider();
-        const expectedURI = "https://data.alpaca.markets/v1beta3/crypto/us/bars";
-
-        // Act
-        const uri = testAlpacaProvider.testGetHistoricalPriceDataUri();
-
-        // Assert
-        expect(uri).toEqual(expectedURI);
+            // Assert
+            expect(isLive).toEqual(false);
+        });
     });
 });
