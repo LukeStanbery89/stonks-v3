@@ -26,8 +26,9 @@ abstract class BrokerageProvider {
     // URI values
     protected abstract devAPIDomain: string;
     protected abstract prodAPIDomain: string;
-    protected abstract securitiesEndpoint: string;
-    protected abstract buyEndpoint: string;
+    protected abstract securitiesPath: string;
+    protected abstract buyPath: string;
+    protected abstract sellPath: string;
     protected abstract historicalPriceDataURIPath: string;
 
     // Query string params
@@ -41,7 +42,7 @@ abstract class BrokerageProvider {
     protected abstract convertSellOrderToRequestData(sellOrder: SellOrder): object;
     protected abstract convertToSecurity(security: ProviderSecurity): Security;
     protected abstract convertToBuyResult(buyResult: ProviderBuyResult): BuyResult;
-    protected abstract convertToSellResult(buyResult: ProviderSellResult): SellResult;
+    protected abstract convertToSellResult(sellResult: ProviderSellResult): SellResult;
     protected abstract convertToPriceData(priceData: ProviderPriceData): PriceData;
 
     constructor() {
@@ -68,17 +69,17 @@ abstract class BrokerageProvider {
     // URI methods
     protected getSecuritiesUri(): string {
         const domain = this.isLive() ? this.prodAPIDomain : this.devAPIDomain;
-        return `${domain}${this.securitiesEndpoint}`;
+        return `${domain}${this.securitiesPath}`;
     }
 
     protected getBuyUri(): string {
         const domain = this.isLive() ? this.prodAPIDomain : this.devAPIDomain;
-        return `${domain}${this.buyEndpoint}`;
+        return `${domain}${this.buyPath}`;
     }
 
     protected getSellUri(): string {
         const domain = this.isLive() ? this.prodAPIDomain : this.devAPIDomain;
-        return `${domain}${this.buyEndpoint}`;
+        return `${domain}${this.sellPath}`;
     }
 
     protected getHistoricalPriceDataUri(): string {
