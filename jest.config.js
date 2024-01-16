@@ -11,7 +11,11 @@ module.exports = {
     },
     collectCoverage: true,
     collectCoverageFrom: ["src/**/*.{ts,tsx,js,jsx}", "!src/**/*.d.ts"],
+    coveragePathIgnorePatterns: [
+        "/node_modules/",
+        "/tests/",
+    ],
     coverageReporters: ["text", "html"],
     testPathIgnorePatterns: ["/client/"],
-    verbose: true,
+    // verbose: true,
 };

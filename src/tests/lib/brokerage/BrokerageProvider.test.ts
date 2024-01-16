@@ -43,8 +43,17 @@ describe("Brokerage Provider", () => {
     });
 
     describe("getSecuritiesUri()", () => {
-        it("should return the URI for the securities endpoint", () => {
+        it("should return the URI for the productin securities endpoint when isLive() returns true", () => {
             const brokerageProvider = new ConcreteBrokerageProvider();
+            process.env.ENV = "production";
+            const expectedURI = "https://prod.example.com/securities";
+            const uri = brokerageProvider.testGetSecuritiesUri();
+            expect(uri).toEqual(expectedURI);
+        });
+
+        it("should return the URI for the development securities endpoint when isLive() returns false", () => {
+            const brokerageProvider = new ConcreteBrokerageProvider();
+            process.env.ENV = "development";
             const expectedURI = "https://dev.example.com/securities";
             const uri = brokerageProvider.testGetSecuritiesUri();
             expect(uri).toEqual(expectedURI);
@@ -52,8 +61,17 @@ describe("Brokerage Provider", () => {
     });
 
     describe("getBuyUri()", () => {
-        it("should return the URI for the buy endpoint", () => {
+        it("should return the URL for the production buy endpoint when isLive() returns true", () => {
             const brokerageProvider = new ConcreteBrokerageProvider();
+            process.env.ENV = "production";
+            const expectedURI = "https://prod.example.com/buy";
+            const uri = brokerageProvider.testGetBuyUri();
+            expect(uri).toEqual(expectedURI);
+        });
+
+        it("should return the URL for the development buy endpoint when isLive() returns false", () => {
+            const brokerageProvider = new ConcreteBrokerageProvider();
+            process.env.ENV = "development";
             const expectedURI = "https://dev.example.com/buy";
             const uri = brokerageProvider.testGetBuyUri();
             expect(uri).toEqual(expectedURI);
@@ -61,17 +79,35 @@ describe("Brokerage Provider", () => {
     });
 
     describe("getSellUri()", () => {
-        it("should return the URI for the sell endpoint", () => {
+        it("should return the URL for the production sell endpoint when isLive() returns true", () => {
             const brokerageProvider = new ConcreteBrokerageProvider();
+            process.env.ENV = "production";
+            const expectedURI = "https://prod.example.com/sell";
+            const uri = brokerageProvider.testGetSellUri();
+            expect(uri).toEqual(expectedURI);
+        });
+
+        it("should return the URL for the development sell endpoint when isLive() returns false", () => {
+            const brokerageProvider = new ConcreteBrokerageProvider();
+            process.env.ENV = "development";
             const expectedURI = "https://dev.example.com/sell";
             const uri = brokerageProvider.testGetSellUri();
             expect(uri).toEqual(expectedURI);
         });
     });
 
-    describe("getHistoricalPriceDataUri", () => {
-        it("should return the URI for the historical price data endpoint", () => {
+    describe("getHistoricalPriceDataUri()", () => {
+        it("should return the URL for the production historical price data endpoint when isLive() returns true", () => {
             const brokerageProvider = new ConcreteBrokerageProvider();
+            process.env.ENV = "production";
+            const expectedURI = "https://prod.example.com/historical-price-data";
+            const uri = brokerageProvider.testGetHistoricalPriceDataUri();
+            expect(uri).toEqual(expectedURI);
+        });
+
+        it("should return the URL for the development historical price data endpoint when isLive() returns false", () => {
+            const brokerageProvider = new ConcreteBrokerageProvider();
+            process.env.ENV = "development";
             const expectedURI = "https://dev.example.com/historical-price-data";
             const uri = brokerageProvider.testGetHistoricalPriceDataUri();
             expect(uri).toEqual(expectedURI);
