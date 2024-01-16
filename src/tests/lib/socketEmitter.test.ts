@@ -5,6 +5,10 @@ describe("SocketEmitter", () => {
     let socketEmitter: SocketEmitter;
     let io: Server;
 
+    beforeAll(() => {
+        console.log = jest.fn();
+    });
+
     beforeEach(() => {
         socketEmitter = emitter;
         io = {} as Server;

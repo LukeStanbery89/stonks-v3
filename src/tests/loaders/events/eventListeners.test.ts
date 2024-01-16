@@ -12,6 +12,10 @@ jest.mock(
 );
 
 describe("eventListeners", () => {
+    beforeAll(() => {
+        console.log = jest.fn();
+    });
+
     beforeEach(() => {
         jest.clearAllMocks();
     });

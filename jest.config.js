@@ -17,5 +17,5 @@ module.exports = {
     ],
     coverageReporters: ["text", "html"],
     testPathIgnorePatterns: ["/client/"],
-    verbose: true,
+    // verbose: true,
 };
