@@ -1,6 +1,7 @@
 // Generic Types
 export type NullOrUndefined = null | undefined;
 export type NullableNumber = number | null;
+export type NumericString = `${number}` | number;
 
 export enum RestMethods {
     GET = "GET",
@@ -88,6 +89,10 @@ export interface AlpacaSellResult extends AlpacaOrderResult {
     type: OrderType.SELL,
 }
 
+export type AlpacaExchange = "CRYPTO";
+export type AlpacaAssetClass = "crypto";
+export type AlpacaSide = "long" |  "short";
+
 // Market data types
 export type ProviderPriceData = object;
 export interface AlpacaPriceData extends ProviderPriceData {
@@ -116,3 +121,31 @@ export type PriceData = {
     close: number;
     volume: number;
 };
+
+// Positions
+export type ProviderPosition = object;
+export interface AlpacaPosition extends ProviderPosition {
+    asset_id: string;
+    symbol: string;
+    exchange: AlpacaExchange;
+    asset_class: AlpacaAssetClass;
+    asset_marginable: boolean;
+    qty: NumericString;
+    avg_entry_price: NumericString;
+    side: AlpacaSide;
+    market_value: NumericString;
+    cost_basis: NumericString;
+    unrealized_pl: NumericString;
+    unrealized_plpc: NumericString;
+    unrealized_intraday_pl: NumericString;
+    unrealized_intraday_plpc: NumericString;
+    current_price: NumericString;
+    lastday_price: NumericString;
+    change_today: NumericString;
+    qty_available: NumericString;
+}
+
+export type Position = {
+    symbol: string;
+    qty: number;
+}

@@ -114,6 +114,24 @@ describe("Brokerage Provider", () => {
         });
     });
 
+    describe("getLiquidateUri()", () => {
+        it("should return the URL for the production liquidate endpoint when isLive() returns true", () => {
+            const brokerageProvider = new ConcreteBrokerageProvider();
+            process.env.ENV = "production";
+            const expectedURI = "https://prod.example.com/liquidate";
+            const uri = brokerageProvider.testGetLiquidateUri();
+            expect(uri).toEqual(expectedURI);
+        });
+
+        it("should return the URL for the development liquidate endpoint when isLive() returns false", () => {
+            const brokerageProvider = new ConcreteBrokerageProvider();
+            process.env.ENV = "development";
+            const expectedURI = "https://dev.example.com/liquidate";
+            const uri = brokerageProvider.testGetLiquidateUri();
+            expect(uri).toEqual(expectedURI);
+        });
+    });
+
     describe("getPositionsUri()", () => {
         it("should return the URL for the production positions endpoint when isLive() returns true", () => {
             const brokerageProvider = new ConcreteBrokerageProvider();
@@ -224,6 +242,30 @@ describe("Brokerage Provider", () => {
                 accept: "application/json",
             };
             const headers = brokerageProvider.testGetHistoricalPriceDataHeaders();
+            expect(headers).toEqual(expectedHeaders);
+        });
+    });
+
+    describe("getLiquidateHeaders()", () => {
+        it("should return the headers for the liquidate endpoint", () => {
+            const brokerageProvider = new ConcreteBrokerageProvider();
+            const expectedHeaders = {
+                foo: "bar",
+                accept: "application/json",
+            };
+            const headers = brokerageProvider.testGetLiquidateHeaders();
+            expect(headers).toEqual(expectedHeaders);
+        });
+    });
+
+    describe("getPositionsHeaders()", () => {
+        it("should return the headers for the positions endpoint", () => {
+            const brokerageProvider = new ConcreteBrokerageProvider();
+            const expectedHeaders = {
+                foo: "bar",
+                accept: "application/json",
+            };
+            const headers = brokerageProvider.testGetPositionsHeaders();
             expect(headers).toEqual(expectedHeaders);
         });
     });
