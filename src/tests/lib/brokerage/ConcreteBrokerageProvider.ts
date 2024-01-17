@@ -1,5 +1,5 @@
 import BrokerageProvider from "../../../lib/brokerage/BrokerageProvider";
-import { BuyOrder, BuyResult, HistoricalPriceDataRequestParams, PriceData, Security, SellOrder, SellResult } from "../../../types/types";
+import { BuyOrder, BuyResult, HistoricalPriceDataRequestParams, OrderType, PriceData, Security, SellOrder, SellResult } from "../../../types/types";
 
 type Transformable = {
     transformed: boolean,
@@ -15,13 +15,17 @@ class ConcreteBrokerageProvider extends BrokerageProvider {
         foo: "bar",
         accept: "application/json",
     };
+
     protected providerCommonHeaders = {};
     protected devAPIDomain = "https://dev.example.com";
     protected prodAPIDomain = "https://prod.example.com";
+
     protected securitiesPath = "/securities";
     protected buyPath = "/buy";
     protected sellPath = "/sell";
     protected historicalPriceDataURIPath = "/historical-price-data";
+    protected positionsPath = "/positions";
+
     protected securitiesQueryStringParams = "foo=bar";
     protected buyQueryStringParams = "foo=bar";
     protected sellQueryStringParams = "foo=bar";
@@ -73,6 +77,15 @@ class ConcreteBrokerageProvider extends BrokerageProvider {
         );
     }
 
+    public liquidate(symbol: string): Promise<SellResult> {
+        return Promise.resolve({
+            type: OrderType.SELL,
+            symbol,
+            qty: 1,
+            notional: 0,
+        });
+    }
+
     // Test helper methods
     public testConvertToSecuritiesArray(securities: Security[]): Security[] {
         return this.convertToSecuritiesArray(securities);
@@ -91,6 +104,9 @@ class ConcreteBrokerageProvider extends BrokerageProvider {
     }
     public testGetHistoricalPriceDataUri(): string {
         return this.getHistoricalPriceDataUri();
+    }
+    public testGetPositionsUri(): string {
+        return this.getPositionsUri();
     }
     public testGetSecuritiesQueryStringParams(): string {
         return this.getSecuritiesQueryStringParams();

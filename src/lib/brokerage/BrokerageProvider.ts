@@ -30,6 +30,7 @@ abstract class BrokerageProvider {
     protected abstract buyPath: string;
     protected abstract sellPath: string;
     protected abstract historicalPriceDataURIPath: string;
+    protected abstract positionsPath: string;
 
     // Query string params
     protected securitiesQueryStringParams = "";
@@ -87,6 +88,11 @@ abstract class BrokerageProvider {
         return `${domain}${this.historicalPriceDataURIPath}`;
     }
 
+    protected getPositionsUri(): string {
+        const domain = this.isLive() ? this.prodAPIDomain : this.devAPIDomain;
+        return `${domain}${this.positionsPath}`;
+    }
+
     // Query string params methods
     protected getSecuritiesQueryStringParams(): string {
         return this.securitiesQueryStringParams;
@@ -128,6 +134,10 @@ abstract class BrokerageProvider {
     }
 
     protected getHistoricalPriceDataHeaders(): object {
+        return this.getRequestHeaders();
+    }
+
+    protected getPositionsHeaders(): object {
         return this.getRequestHeaders();
     }
 
@@ -198,6 +208,14 @@ abstract class BrokerageProvider {
      * @returns {Promise<PriceData[]>} A promise that resolves to an array of PriceData objects
      */
     public abstract historicalPriceData(priceDataParams: HistoricalPriceDataRequestParams): Promise<PriceData[]>;
+
+    /**
+     * Liquidates all shares of a security hwld in the brokerage account.
+     *
+     * @param symbol The symbol of the security to liquidate
+     * @returns {Promise<SellResult>} A promise that resolves to a SellResult object
+     */
+    public abstract liquidate(symbol: string): Promise<SellResult>;
 }
 
 export default BrokerageProvider;

@@ -114,6 +114,24 @@ describe("Brokerage Provider", () => {
         });
     });
 
+    describe("getPositionsUri()", () => {
+        it("should return the URL for the production positions endpoint when isLive() returns true", () => {
+            const brokerageProvider = new ConcreteBrokerageProvider();
+            process.env.ENV = "production";
+            const expectedURI = "https://prod.example.com/positions";
+            const uri = brokerageProvider.testGetPositionsUri();
+            expect(uri).toEqual(expectedURI);
+        });
+
+        it("should return the URL for the development positions endpoint when isLive() returns false", () => {
+            const brokerageProvider = new ConcreteBrokerageProvider();
+            process.env.ENV = "development";
+            const expectedURI = "https://dev.example.com/positions";
+            const uri = brokerageProvider.testGetPositionsUri();
+            expect(uri).toEqual(expectedURI);
+        });
+    });
+
     describe("getSecuritiesQueryStringParams()", () => {
         it("should return the query string params for the securities endpoint", () => {
             const brokerageProvider = new ConcreteBrokerageProvider();
