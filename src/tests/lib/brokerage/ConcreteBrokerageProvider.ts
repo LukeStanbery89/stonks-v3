@@ -1,5 +1,5 @@
 import BrokerageProvider from "../../../lib/brokerage/BrokerageProvider";
-import { BuyOrder, BuyResult, HistoricalPriceDataRequestParams, OrderType, PriceData, Security, SellOrder, SellResult } from "../../../types/types";
+import { BuyOrder, BuyResult, HistoricalPriceDataRequestParams, OrderType, Position, PriceData, ProviderPosition, Security, SellOrder, SellResult } from "../../../types/types";
 
 type Transformable = {
     transformed: boolean,
@@ -8,6 +8,7 @@ type TestSecurity = Security & Transformable;
 type TestBuyResult = BuyResult & Transformable;
 type TestSellResult = SellResult & Transformable;
 type TestPriceData = PriceData & Transformable;
+type TestPosition = Position & Transformable;
 
 class ConcreteBrokerageProvider extends BrokerageProvider {
     // Test implementations of abstract props
@@ -24,6 +25,7 @@ class ConcreteBrokerageProvider extends BrokerageProvider {
     protected buyPath = "/buy";
     protected sellPath = "/sell";
     protected historicalPriceDataURIPath = "/historical-price-data";
+    protected liquidatePath = "/liquidate";
     protected positionsPath = "/positions";
 
     protected securitiesQueryStringParams = "foo=bar";
@@ -68,6 +70,13 @@ class ConcreteBrokerageProvider extends BrokerageProvider {
             transformed: true,
         };
     }
+    protected convertToPosition(position: Position): TestPosition {
+        return {
+            ...position,
+            transformed: true,
+        };
+    }
+
     public historicalPriceData(priceDataParams: HistoricalPriceDataRequestParams): Promise<PriceData[]> {
         return Promise.resolve(
             [
@@ -105,6 +114,9 @@ class ConcreteBrokerageProvider extends BrokerageProvider {
     public testGetHistoricalPriceDataUri(): string {
         return this.getHistoricalPriceDataUri();
     }
+    public testGetLiquidateUri(): string {
+        return this.getLiquidateUri();
+    }
     public testGetPositionsUri(): string {
         return this.getPositionsUri();
     }
@@ -134,6 +146,12 @@ class ConcreteBrokerageProvider extends BrokerageProvider {
     }
     public testGetHistoricalPriceDataHeaders(): object {
         return this.getHistoricalPriceDataHeaders();
+    }
+    public testGetLiquidateHeaders(): object {
+        return this.getLiquidateHeaders();
+    }
+    public testGetPositionsHeaders(): object {
+        return this.getPositionsHeaders();
     }
 }
 

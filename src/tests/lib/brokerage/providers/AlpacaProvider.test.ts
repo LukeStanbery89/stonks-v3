@@ -1,5 +1,5 @@
 import AlpacaProvider from "../../../../lib/brokerage/providers/AlpacaProvider";
-import { BuyOrder, OrderType, SellOrder } from "../../../../types/types";
+import { AlpacaPosition, BuyOrder, OrderType, SellOrder } from "../../../../types/types";
 import axios from "axios";
 
 class TestAlpacaProvider extends AlpacaProvider {
@@ -462,6 +462,90 @@ describe("Alpaca Provider", () => {
 
             // Assert
             await expect(sellPromise).rejects.toEqual(expectedError);
+        });
+    });
+
+    describe("positions()", () => {
+        it("returns an array of Position objects", async () => {
+            // Arrange
+            const alpacaProvider = new AlpacaProvider();
+            const mockPositions: AlpacaPosition[] = [
+                {
+                    asset_id: "a1733398-6acc-4e92-af24-0d0667f78713",
+                    symbol: "ETHUSD",
+                    exchange: "CRYPTO",
+                    asset_class: "crypto",
+                    asset_marginable: false,
+                    qty: "0.9975",
+                    avg_entry_price: "2281.185",
+                    side: "long",
+                    market_value: "2277.07",
+                    cost_basis: "2277.07",
+                    unrealized_pl: "0",
+                    unrealized_plpc: "0",
+                    unrealized_intraday_pl: "0",
+                    unrealized_intraday_plpc: "0",
+                    current_price: "2281.755",
+                    lastday_price: "2281.185",
+                    change_today: "0.000259",
+                    qty_available: "0.9975",
+                },
+                {
+                    asset_id: "a1733398-6acc-4e92-af24-0d0667f78713",
+                    symbol: "BTCUSD",
+                    exchange: "CRYPTO",
+                    asset_class: "crypto",
+                    asset_marginable: false,
+                    qty: "0.998",
+                    avg_entry_price: "2281.185",
+                    side: "long",
+                    market_value: "2277.07",
+                    cost_basis: "2277.07",
+                    unrealized_pl: "0",
+                    unrealized_plpc: "0",
+                    unrealized_intraday_pl: "0",
+                    unrealized_intraday_plpc: "0",
+                    current_price: "2281.755",
+                    lastday_price: "2281.185",
+                    change_today: "0.000259",
+                    qty_available: "0.998",
+                },
+            ];
+
+            const expectedPositions = [
+                {
+                    symbol: "ETHUSD",
+                    qty: 0.9975,
+                },
+                {
+                    symbol: "BTCUSD",
+                    qty: 0.998,
+                },
+            ];
+
+            // Mock the response from axios
+            jest.spyOn(axios, "get").mockResolvedValueOnce({ data: mockPositions });
+
+            // Act
+            const positionsPromise = alpacaProvider.positions();
+
+            // Assert
+            await expect(positionsPromise).resolves.toEqual(expectedPositions);
+        });
+
+        it("rejects with an error when axios.get() rejects", async () => {
+            // Arrange
+            const alpacaProvider = new AlpacaProvider();
+            const expectedError = new Error("Test error");
+
+            // Mock the response from axios
+            jest.spyOn(axios, "get").mockRejectedValueOnce(expectedError);
+
+            // Act
+            const positionsPromise = alpacaProvider.positions();
+
+            // Assert
+            await expect(positionsPromise).rejects.toEqual(expectedError);
         });
     });
 

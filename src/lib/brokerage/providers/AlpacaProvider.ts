@@ -1,6 +1,7 @@
 import config from "../../../config";
 import {
     AlpacaBuyResult,
+    AlpacaPosition,
     AlpacaPriceData,
     AlpacaSecurity,
     AlpacaSellResult,
@@ -8,6 +9,7 @@ import {
     BuyResult,
     HistoricalPriceDataRequestParams,
     OrderType,
+    Position,
     PriceData,
     Security,
     SellOrder,
@@ -31,6 +33,7 @@ class AlpacaProvider extends BrokerageProvider {
     protected buyPath = "/v2/orders";
     protected sellPath = "/v2/orders";
     protected historicalPriceDataURIPath = "/v1beta3/crypto/us/bars";
+    protected liquidatePath = this.positionsPath;
     protected positionsPath = "/v2/positions";
 
     private HISTORICAL_PRICE_DATA_TIME_FRAME = "1Min";
@@ -108,6 +111,13 @@ class AlpacaProvider extends BrokerageProvider {
         };
     }
 
+    protected convertToPosition(position: AlpacaPosition): Position {
+        return {
+            symbol: position.symbol,
+            qty: parseFloat(position.qty_available.toString()),
+        };
+    }
+
     protected getHistoricalPriceDataUri(): string {
         return `${this.marketDataURI}${this.historicalPriceDataURIPath}`;
     }
@@ -120,6 +130,10 @@ class AlpacaProvider extends BrokerageProvider {
             limit: (priceDataParams.limit || this.DEFAULT_LIMIT).toString(),
             timeframe: this.HISTORICAL_PRICE_DATA_TIME_FRAME,
         }).toString();
+    }
+
+    protected getLiquidateHeaders(): object {
+        return this.getPositionsHeaders();
     }
 
     /******************
@@ -161,7 +175,7 @@ class AlpacaProvider extends BrokerageProvider {
     public async liquidate(symbol: string): Promise<SellResult> {
         // Setup
         const liquidateURI = `${this.getPositionsUri()}/${symbol}`;
-        const headers = this.getPositionsHeaders();
+        const headers = this.getLiquidateHeaders();
 
         // Request
         const response = await this.axios.delete(liquidateURI, { headers });

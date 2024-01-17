@@ -11,6 +11,8 @@ import {
     PriceData,
     HistoricalPriceDataRequestParams,
     ProviderPriceData,
+    Position,
+    ProviderPosition,
 } from "../../types/types";
 
 abstract class BrokerageProvider {
@@ -30,6 +32,7 @@ abstract class BrokerageProvider {
     protected abstract buyPath: string;
     protected abstract sellPath: string;
     protected abstract historicalPriceDataURIPath: string;
+    protected abstract liquidatePath: string;
     protected abstract positionsPath: string;
 
     // Query string params
@@ -37,6 +40,7 @@ abstract class BrokerageProvider {
     protected buyQueryStringParams = "";
     protected sellQueryStringParams = "";
     protected historicalPriceDataQueryStringParams = "";
+    protected positionsQueryStringParams = "";
 
     // Abstract helper methods
     protected abstract convertBuyOrderToRequestData(buyOrder: BuyOrder): object;
@@ -45,6 +49,7 @@ abstract class BrokerageProvider {
     protected abstract convertToBuyResult(buyResult: ProviderBuyResult): BuyResult;
     protected abstract convertToSellResult(sellResult: ProviderSellResult): SellResult;
     protected abstract convertToPriceData(priceData: ProviderPriceData): PriceData;
+    protected abstract convertToPosition(position: ProviderPosition): Position;
 
     constructor() {
         this.axios = axios;
@@ -67,6 +72,10 @@ abstract class BrokerageProvider {
         return priceData.map((priceDatum: ProviderPriceData) => this.convertToPriceData(priceDatum));
     }
 
+    protected convertToPositionsArray(positions: ProviderPosition[]): Position[] {
+        return positions.map((position: ProviderPosition) => this.convertToPosition(position));
+    }
+
     // URI methods
     protected getSecuritiesUri(): string {
         const domain = this.isLive() ? this.prodAPIDomain : this.devAPIDomain;
@@ -86,6 +95,11 @@ abstract class BrokerageProvider {
     protected getHistoricalPriceDataUri(): string {
         const domain = this.isLive() ? this.prodAPIDomain : this.devAPIDomain;
         return `${domain}${this.historicalPriceDataURIPath}`;
+    }
+
+    protected getLiquidateUri(): string {
+        const domain = this.isLive() ? this.prodAPIDomain : this.devAPIDomain;
+        return `${domain}${this.liquidatePath}`;
     }
 
     protected getPositionsUri(): string {
@@ -113,6 +127,10 @@ abstract class BrokerageProvider {
         return this.historicalPriceDataQueryStringParams;
     }
 
+    protected getPositionsQueryStringParams(): string {
+        return this.positionsQueryStringParams;
+    }
+
     // Header methods
     protected getRequestHeaders(): object {
         return {
@@ -134,6 +152,10 @@ abstract class BrokerageProvider {
     }
 
     protected getHistoricalPriceDataHeaders(): object {
+        return this.getRequestHeaders();
+    }
+
+    protected getLiquidateHeaders(): object {
         return this.getRequestHeaders();
     }
 
@@ -212,10 +234,32 @@ abstract class BrokerageProvider {
     /**
      * Liquidates all shares of a security hwld in the brokerage account.
      *
+     * TODO: Write a generic implementation of this
+     *
      * @param symbol The symbol of the security to liquidate
      * @returns {Promise<SellResult>} A promise that resolves to a SellResult object
      */
     public abstract liquidate(symbol: string): Promise<SellResult>;
+
+    /**
+     * Retrieves a list of positions held in the brokerage account.
+     *
+     * @returns {Promise<Position[]>} A promise that resolves to an array of Security objects
+     */
+    public async positions(): Promise<Position[]> {
+        // Setup
+        const positionsURI = `${this.getPositionsUri()}?${this.getPositionsQueryStringParams()}}`;
+        const headers = this.getPositionsHeaders();
+
+        // Request
+        const response = await axios.get(positionsURI, { headers });
+
+        // Transform
+        const positions: Position[] = this.convertToPositionsArray(response.data);
+
+        // Return
+        return positions;
+    }
 }
 
 export default BrokerageProvider;
