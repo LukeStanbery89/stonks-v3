@@ -105,7 +105,7 @@ export type HistoricalPriceDataRequestParams = {
     symbol: string;
     start: string;
     end: string;
-    limit: number;
+    limit?: number;
 };
 
 export type PriceData = {

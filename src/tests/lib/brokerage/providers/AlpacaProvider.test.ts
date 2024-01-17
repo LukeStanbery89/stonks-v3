@@ -369,6 +369,100 @@ describe("Alpaca Provider", () => {
             // Assert
             expect(uri).toEqual(expectedURI);
         });
+
+        it("makes the request using the default limit when no limit is provided", () => {
+            // Arrange
+            const alpacaProvider = new TestAlpacaProvider();
+            const expectedQueryStringParams = "symbols=ETH%2FUSD&start=2024-01-01T00%3A00%3A00.000Z&end=2024-01-01T00%3A01%3A00.000Z&limit=1000&timeframe=1Min";
+            const priceDataParams = {
+                symbol: "ETH/USD",
+                start: "2024-01-01T00:00:00.000Z",
+                end: "2024-01-01T00:01:00.000Z",
+            };
+
+            // Act
+            const queryStringParams = alpacaProvider.testGetHistoricalPriceDataQueryStringParams(priceDataParams);
+
+            // Assert
+            expect(queryStringParams).toEqual(expectedQueryStringParams);
+        });
+    });
+
+    describe("liquidate()", () => {
+        it("returns a SellResult", async () => {
+            // Arrange
+            const alpacaProvider = new AlpacaProvider();
+            const symbol = "ETHUSD";
+
+            const mockLiquidateResponse = {
+                id: "7a1eec71-654e-4188-adda-a1fb39d6491e",
+                client_order_id: "0fa0d7f3-1715-4799-80f3-656a5b35ffe8",
+                created_at: "2024-01-17T06:35:21.876570575Z",
+                updated_at: "2024-01-17T06:35:21.876606175Z",
+                submitted_at: "2024-01-17T06:35:21.875363396Z",
+                filled_at: null,
+                expired_at: null,
+                canceled_at: null,
+                failed_at: null,
+                replaced_at: null,
+                replaced_by: null,
+                replaces: null,
+                asset_id: "a1733398-6acc-4e92-af24-0d0667f78713",
+                symbol: "ETH/USD",
+                asset_class: "crypto",
+                notional: null,
+                qty: "0.9975",
+                filled_qty: "0",
+                filled_avg_price: null,
+                order_class: "",
+                order_type: "market",
+                type: "market",
+                side: "sell",
+                time_in_force: "gtc",
+                limit_price: null,
+                stop_price: null,
+                status: "pending_new",
+                extended_hours: false,
+                legs: null,
+                trail_percent: null,
+                trail_price: null,
+                hwm: null,
+                subtag: null,
+                source: null,
+            };
+
+            const expectedSellResult = {
+                type: OrderType.SELL,
+                symbol: "ETHUSD",
+                qty: 0.9975,
+            };
+
+            // Mock the response from axios
+            jest.spyOn(axios, "delete").mockResolvedValueOnce({ data: expectedSellResult });
+
+            // Act
+            const sellPromise = alpacaProvider.liquidate(symbol);
+
+            // Assert
+            await expect(sellPromise).resolves.toEqual(expectedSellResult);
+        });
+
+        it("rejects with an error when axios.delete() rejects", async () => {
+            // Arrange
+            const alpacaProvider = new AlpacaProvider();
+            const symbol = "BTCUSD";
+
+            const expectedError = new Error("Test error");
+
+            // Mock the response from axios
+            jest.spyOn(axios, "delete").mockRejectedValueOnce(expectedError);
+
+            // Act
+            const sellPromise = alpacaProvider.liquidate(symbol);
+
+            // Assert
+            await expect(sellPromise).rejects.toEqual(expectedError);
+        });
     });
 
     describe("isLive()", () => {

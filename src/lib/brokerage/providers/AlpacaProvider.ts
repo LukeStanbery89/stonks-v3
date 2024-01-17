@@ -31,7 +31,10 @@ class AlpacaProvider extends BrokerageProvider {
     protected buyPath = "/v2/orders";
     protected sellPath = "/v2/orders";
     protected historicalPriceDataURIPath = "/v1beta3/crypto/us/bars";
-    private historicalPriceDataTimeframe = "1Min";
+    protected positionsPath = "/v2/positions";
+
+    private HISTORICAL_PRICE_DATA_TIME_FRAME = "1Min";
+    private DEFAULT_LIMIT = 1000;
 
     // Query string params
     protected securitiesQueryStringParams: string = new URLSearchParams({
@@ -114,8 +117,8 @@ class AlpacaProvider extends BrokerageProvider {
             symbols: priceDataParams.symbol,
             start: priceDataParams.start,
             end: priceDataParams.end,
-            limit: priceDataParams.limit.toString(),
-            timeframe: this.historicalPriceDataTimeframe,
+            limit: (priceDataParams.limit || this.DEFAULT_LIMIT).toString(),
+            timeframe: this.HISTORICAL_PRICE_DATA_TIME_FRAME,
         }).toString();
     }
 
@@ -135,7 +138,7 @@ class AlpacaProvider extends BrokerageProvider {
                 headers: this.getHistoricalPriceDataHeaders(),
                 data: {
                     ...priceDataParams,
-                    timeframe: "1Min",
+                    timeframe: this.HISTORICAL_PRICE_DATA_TIME_FRAME,
                     page_token: pageToken,
                 },
             });
@@ -153,6 +156,21 @@ class AlpacaProvider extends BrokerageProvider {
         }
 
         return priceData;
+    }
+
+    public async liquidate(symbol: string): Promise<SellResult> {
+        // Setup
+        const liquidateURI = `${this.getPositionsUri()}/${symbol}`;
+        const headers = this.getPositionsHeaders();
+
+        // Request
+        const response = await this.axios.delete(liquidateURI, { headers });
+
+        // Transform
+        const sellResult: SellResult = this.convertToSellResult(response.data);
+
+        // Return
+        return sellResult;
     }
 }
 
