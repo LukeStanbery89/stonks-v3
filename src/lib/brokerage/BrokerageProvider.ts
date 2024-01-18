@@ -64,6 +64,10 @@ abstract class BrokerageProvider {
         return process.env.ENV == "production";
     }
 
+    private getDomain() {
+        return this.isLive() ? this.prodAPIDomain : this.devAPIDomain;
+    }
+
     protected convertToSecuritiesArray(securities: ProviderSecurity[]): Security[] {
         return securities.map((security: ProviderSecurity) => this.convertToSecurity(security));
     }
@@ -78,33 +82,28 @@ abstract class BrokerageProvider {
 
     // URI methods
     protected getSecuritiesUri(): string {
-        const domain = this.isLive() ? this.prodAPIDomain : this.devAPIDomain;
-        return `${domain}${this.securitiesPath}`;
+        return `${this.getDomain()}${this.securitiesPath}`;
     }
 
     protected getBuyUri(): string {
-        const domain = this.isLive() ? this.prodAPIDomain : this.devAPIDomain;
-        return `${domain}${this.buyPath}`;
+        return `${this.getDomain()}${this.buyPath}`;
     }
 
     protected getSellUri(): string {
-        const domain = this.isLive() ? this.prodAPIDomain : this.devAPIDomain;
-        return `${domain}${this.sellPath}`;
+        return `${this.getDomain()}${this.sellPath}`;
     }
 
     protected getHistoricalPriceDataUri(): string {
-        const domain = this.isLive() ? this.prodAPIDomain : this.devAPIDomain;
-        return `${domain}${this.historicalPriceDataURIPath}`;
+        return `${this.getDomain()}${this.historicalPriceDataURIPath}`;
     }
 
-    protected getLiquidateUri(): string {
-        const domain = this.isLive() ? this.prodAPIDomain : this.devAPIDomain;
-        return `${domain}${this.liquidatePath}`;
+    protected getLiquidateUri(symbol: string): string {
+        console.log("getLiquidateUri", symbol);
+        return `${this.getDomain()}${this.liquidatePath}/${symbol}`;
     }
 
     protected getPositionsUri(): string {
-        const domain = this.isLive() ? this.prodAPIDomain : this.devAPIDomain;
-        return `${domain}${this.positionsPath}`;
+        return `${this.getDomain()}${this.positionsPath}`;
     }
 
     // Query string params methods
@@ -113,17 +112,17 @@ abstract class BrokerageProvider {
     }
 
     protected getBuyQueryStringParams(buyOrder: BuyOrder): string {
-        console.log(buyOrder);
+        console.log("getBuyQueryStringParams", buyOrder);
         return this.buyQueryStringParams;
     }
 
     protected getSellQueryStringParams(sellOrder: SellOrder): string {
-        console.log(sellOrder);
+        console.log("getSellQueryStringParams", sellOrder);
         return this.sellQueryStringParams;
     }
 
     protected getHistoricalPriceDataQueryStringParams(priceDataRequestParams: HistoricalPriceDataRequestParams): string {
-        console.log(priceDataRequestParams);
+        console.log("getHistoricalPriceDataQueryStringParams", priceDataRequestParams);
         return this.historicalPriceDataQueryStringParams;
     }
 
@@ -239,7 +238,21 @@ abstract class BrokerageProvider {
      * @param symbol The symbol of the security to liquidate
      * @returns {Promise<SellResult>} A promise that resolves to a SellResult object
      */
-    public abstract liquidate(symbol: string): Promise<SellResult>;
+
+    public async liquidate(symbol: string): Promise<SellResult> {
+        // Setup
+        const liquidateURI = `${this.getLiquidateUri(symbol)}`;
+        const headers = this.getLiquidateHeaders();
+
+        // Request
+        const response = await this.axios.delete(liquidateURI, { headers });
+
+        // Transform
+        const sellResult: SellResult = this.convertToSellResult(response.data);
+
+        // Return
+        return sellResult;
+    }
 
     /**
      * Retrieves a list of positions held in the brokerage account.

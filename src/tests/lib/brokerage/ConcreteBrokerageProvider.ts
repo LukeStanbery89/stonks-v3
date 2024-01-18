@@ -114,8 +114,8 @@ class ConcreteBrokerageProvider extends BrokerageProvider {
     public testGetHistoricalPriceDataUri(): string {
         return this.getHistoricalPriceDataUri();
     }
-    public testGetLiquidateUri(): string {
-        return this.getLiquidateUri();
+    public testGetLiquidateUri(symbol: string): string {
+        return this.getLiquidateUri(symbol);
     }
     public testGetPositionsUri(): string {
         return this.getPositionsUri();

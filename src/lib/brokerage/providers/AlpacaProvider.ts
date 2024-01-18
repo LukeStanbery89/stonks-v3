@@ -33,8 +33,8 @@ class AlpacaProvider extends BrokerageProvider {
     protected buyPath = "/v2/orders";
     protected sellPath = "/v2/orders";
     protected historicalPriceDataURIPath = "/v1beta3/crypto/us/bars";
-    protected liquidatePath = this.positionsPath;
     protected positionsPath = "/v2/positions";
+    protected liquidatePath = this.positionsPath;
 
     private HISTORICAL_PRICE_DATA_TIME_FRAME = "1Min";
     private DEFAULT_LIMIT = 1000;
@@ -53,6 +53,7 @@ class AlpacaProvider extends BrokerageProvider {
      * Protected Methods *
      *********************/
 
+    // Conversion methods
     protected convertBuyOrderToRequestData(buyOrder: BuyOrder): object {
         return {
             side: "buy",
@@ -118,10 +119,17 @@ class AlpacaProvider extends BrokerageProvider {
         };
     }
 
+    // Header methods
+    protected getLiquidateHeaders(): object {
+        return this.getPositionsHeaders();
+    }
+
+    // URI methods
     protected getHistoricalPriceDataUri(): string {
         return `${this.marketDataURI}${this.historicalPriceDataURIPath}`;
     }
 
+    // Query param methods
     protected getHistoricalPriceDataQueryStringParams(priceDataParams: HistoricalPriceDataRequestParams): string {
         return new URLSearchParams({
             symbols: priceDataParams.symbol,
@@ -130,10 +138,6 @@ class AlpacaProvider extends BrokerageProvider {
             limit: (priceDataParams.limit || this.DEFAULT_LIMIT).toString(),
             timeframe: this.HISTORICAL_PRICE_DATA_TIME_FRAME,
         }).toString();
-    }
-
-    protected getLiquidateHeaders(): object {
-        return this.getPositionsHeaders();
     }
 
     /******************
@@ -170,21 +174,6 @@ class AlpacaProvider extends BrokerageProvider {
         }
 
         return priceData;
-    }
-
-    public async liquidate(symbol: string): Promise<SellResult> {
-        // Setup
-        const liquidateURI = `${this.getPositionsUri()}/${symbol}`;
-        const headers = this.getLiquidateHeaders();
-
-        // Request
-        const response = await this.axios.delete(liquidateURI, { headers });
-
-        // Transform
-        const sellResult: SellResult = this.convertToSellResult(response.data);
-
-        // Return
-        return sellResult;
     }
 }
 
