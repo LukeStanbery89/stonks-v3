@@ -15,6 +15,7 @@ import {
     SellOrder,
     SellResult,
 } from "../../../types/types";
+import { round } from "../../utils";
 import BrokerageProvider from "../BrokerageProvider";
 
 class AlpacaProvider extends BrokerageProvider {
@@ -88,8 +89,8 @@ class AlpacaProvider extends BrokerageProvider {
         return {
             type: OrderType.BUY,
             symbol: buyResult.symbol,
-            notional: buyResult.notional ? parseFloat(buyResult.notional.toString()) : null,
-            qty: buyResult.qty ? parseFloat(buyResult.qty.toString()) : null,
+            notional: buyResult.notional ? round(buyResult.notional, 2) : null,
+            qty: buyResult.qty ? Number(buyResult.qty) : null,
         };
     }
 
@@ -97,26 +98,26 @@ class AlpacaProvider extends BrokerageProvider {
         return {
             type: OrderType.SELL,
             symbol: sellResult.symbol,
-            notional: sellResult.notional ? parseFloat(sellResult.notional.toString()) : null,
-            qty: sellResult.qty ? parseFloat(sellResult.qty.toString()) : null,
+            notional: sellResult.notional ? round(sellResult.notional, 2) : null,
+            qty: sellResult.qty ? Number(sellResult.qty) : null,
         };
     }
 
     protected convertToPriceData(priceData: AlpacaPriceData): PriceData {
         return {
             timestamp: priceData.t,
-            open: priceData.o,
-            high: priceData.h,
-            low: priceData.l,
-            close: priceData.c,
-            volume: priceData.v,
+            open: round(priceData.o, 2),
+            high: round(priceData.h, 2),
+            low: round(priceData.l, 2),
+            close: round(priceData.c, 2),
+            volume: round(priceData.v, 2),
         };
     }
 
     protected convertToPosition(position: AlpacaPosition): Position {
         return {
             symbol: position.symbol,
-            qty: parseFloat(position.qty_available.toString()),
+            qty: Number(position.qty_available),
         };
     }
 
