@@ -1,6 +1,7 @@
 export interface AppState {
     simProgress: number | null;
     simulationStatus: SimulationStatus;
+    tradeLoopProgress: number | null;
 }
 
 export interface CounterState {
