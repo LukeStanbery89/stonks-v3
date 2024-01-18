@@ -1,0 +1,42 @@
+[
+    {
+        "asset_id": "a1733398-6acc-4e92-af24-0d0667f78713",
+        "symbol": "ETHUSD",
+        "exchange": "CRYPTO",
+        "asset_class": "crypto",
+        "asset_marginable": false,
+        "qty": "0.9975",
+        "avg_entry_price": "2281.185",
+        "side": "long",
+        "market_value": "2277.07",
+        "cost_basis": "2277.07",
+        "unrealized_pl": "0",
+        "unrealized_plpc": "0",
+        "unrealized_intraday_pl": "0",
+        "unrealized_intraday_plpc": "0",
+        "current_price": "2281.755",
+        "lastday_price": "2281.185",
+        "change_today": "0.000259",
+        "qty_available": "0.9975"
+    },
+    {
+        "asset_id": "a1733398-6acc-4e92-af24-0d0667f78713",
+        "symbol": "BTCUSD",
+        "exchange": "CRYPTO",
+        "asset_class": "crypto",
+        "asset_marginable": false,
+        "qty": "0.998",
+        "avg_entry_price": "2281.185",
+        "side": "long",
+        "market_value": "2277.07",
+        "cost_basis": "2277.07",
+        "unrealized_pl": "0",
+        "unrealized_plpc": "0",
+        "unrealized_intraday_pl": "0",
+        "unrealized_intraday_plpc": "0",
+        "current_price": "2281.755",
+        "lastday_price": "2281.185",
+        "change_today": "0.000259",
+        "qty_available": "0.998"
+    }
+]

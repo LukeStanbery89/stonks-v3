@@ -1,6 +1,14 @@
 import AlpacaProvider from "../../../../lib/brokerage/providers/AlpacaProvider";
-import { AlpacaPosition, BuyOrder, OrderType, SellOrder } from "../../../../types/types";
+import { AlpacaPosition, BuyOrder, OrderType, Position, SellOrder } from "../../../../types/types";
 import axios from "axios";
+import mockSecuritiesResponse from "../../../mocks/responses/alpaca/mockSecuritiesResponse.json";
+import mockBuyByQtyResponse from "../../../mocks/responses/alpaca/mockBuyByQtyResponse.json";
+import mockBuyByNotionalResponse from "../../../mocks/responses/alpaca/mockBuyByNotionalResponse.json";
+import mockSellByQtyResponse from "../../../mocks/responses/alpaca/mockSellByQtyResponse.json";
+import mockSellByNotionalResponse from "../../../mocks/responses/alpaca/mockSellByNotionalResponse.json";
+import mockDeletePositionResponse from "../../../mocks/responses/alpaca/mockDeletePositionResponse.json";
+import mockGetPositionsResponse from "../../../mocks/responses/alpaca/mockGetPositionsResponse.json";
+import mockGetPositionResponse from "../../../mocks/responses/alpaca/mockGetPositionResponse.json";
 
 class TestAlpacaProvider extends AlpacaProvider {
     public testIsLive() {
@@ -29,23 +37,16 @@ describe("Alpaca Provider", () => {
         it("retrieves a list of buyable securities", async () => {
             // Arrange
             const alpacaProvider = new AlpacaProvider();
-            const expectedSecurities = [
-                {
-                    symbol: "BTCUSD",
-                    name: "Bitcoin",
-                },
-                {
-                    symbol: "ETHUSD",
-                    name: "Ethereum",
-                },
-                {
-                    symbol: "LTCUSD",
-                    name: "Litecoin",
-                },
-            ];
+
+            const expectedSecurities = mockSecuritiesResponse.map(security => {
+                return {
+                    symbol: security.symbol,
+                    name: security.name,
+                };
+            });
 
             // Mock the response from axios
-            jest.spyOn(axios, "get").mockResolvedValueOnce({ data: expectedSecurities });
+            jest.spyOn(axios, "get").mockResolvedValueOnce({ data: mockSecuritiesResponse });
 
             // Act
             const securitiesPromise = alpacaProvider.securities();
@@ -71,23 +72,50 @@ describe("Alpaca Provider", () => {
     });
 
     describe("buy()", () => {
-        it("returns a BuyResult", async () => {
+        it("returns a BuyResult when specifying a qty", async () => {
             // Arrange
             const alpacaProvider = new AlpacaProvider();
             const buyOrder: BuyOrder = {
                 type: OrderType.BUY,
-                symbol: "BTCUSD",
+                symbol: "ETHUSD",
+                qty: 1,
+            };
+
+            const expectedBuyResult = {
+                type: "BUY",
+                symbol: "ETH/USD",
+                qty: 1,
+                notional: null,
+            };
+
+            // Mock the response from axios
+            jest.spyOn(axios, "post").mockResolvedValueOnce({ data: mockBuyByQtyResponse });
+
+            // Act
+            const buyPromise = alpacaProvider.buy(buyOrder);
+
+            // Assert
+            await expect(buyPromise).resolves.toEqual(expectedBuyResult);
+        });
+
+        it("returns a BuyResult when specifying a notional", async () => {
+            // Arrange
+            const alpacaProvider = new AlpacaProvider();
+            const buyOrder: BuyOrder = {
+                type: OrderType.BUY,
+                symbol: "ETHUSD",
                 notional: 100,
             };
 
             const expectedBuyResult = {
                 type: "BUY",
-                symbol: "BTCUSD",
+                symbol: "ETH/USD",
                 notional: 100,
+                qty: null,
             };
 
             // Mock the response from axios
-            jest.spyOn(axios, "post").mockResolvedValueOnce({ data: expectedBuyResult });
+            jest.spyOn(axios, "post").mockResolvedValueOnce({ data: mockBuyByNotionalResponse });
 
             // Act
             const buyPromise = alpacaProvider.buy(buyOrder);
@@ -101,7 +129,7 @@ describe("Alpaca Provider", () => {
             const alpacaProvider = new AlpacaProvider();
             const buyOrder: BuyOrder = {
                 type: OrderType.BUY,
-                symbol: "BTCUSD",
+                symbol: "ETHUSD",
                 notional: 100,
             };
 
@@ -119,23 +147,50 @@ describe("Alpaca Provider", () => {
     });
 
     describe("sell()", () => {
-        it("returns a SellResult", async () => {
+        it("returns a SellResult when specifying a qty", async () => {
             // Arrange
             const alpacaProvider = new AlpacaProvider();
             const sellOrder: SellOrder = {
                 type: OrderType.SELL,
-                symbol: "BTCUSD",
+                symbol: "ETHUSD",
+                qty: 2,
+            };
+
+            const expectedSellResult = {
+                type: "SELL",
+                symbol: "ETH/USD",
+                qty: 2,
+                notional: null,
+            };
+
+            // Mock the response from axios
+            jest.spyOn(axios, "post").mockResolvedValueOnce({ data: mockSellByQtyResponse });
+
+            // Act
+            const sellPromise = alpacaProvider.sell(sellOrder);
+
+            // Assert
+            await expect(sellPromise).resolves.toEqual(expectedSellResult);
+        });
+
+        it("returns a SellResult when specifying a notional", async () => {
+            // Arrange
+            const alpacaProvider = new AlpacaProvider();
+            const sellOrder: SellOrder = {
+                type: OrderType.SELL,
+                symbol: "ETHUSD",
                 notional: 100,
             };
 
             const expectedSellResult = {
                 type: "SELL",
-                symbol: "BTCUSD",
+                symbol: "ETH/USD",
                 notional: 100,
+                qty: null,
             };
 
             // Mock the response from axios
-            jest.spyOn(axios, "post").mockResolvedValueOnce({ data: expectedSellResult });
+            jest.spyOn(axios, "post").mockResolvedValueOnce({ data: mockSellByNotionalResponse });
 
             // Act
             const sellPromise = alpacaProvider.sell(sellOrder);
@@ -149,7 +204,7 @@ describe("Alpaca Provider", () => {
             const alpacaProvider = new AlpacaProvider();
             const sellOrder: SellOrder = {
                 type: OrderType.SELL,
-                symbol: "BTCUSD",
+                symbol: "ETHUSD",
                 notional: 100,
             };
 
@@ -394,51 +449,15 @@ describe("Alpaca Provider", () => {
             const alpacaProvider = new AlpacaProvider();
             const symbol = "ETHUSD";
 
-            const mockLiquidateResponse = {
-                id: "7a1eec71-654e-4188-adda-a1fb39d6491e",
-                client_order_id: "0fa0d7f3-1715-4799-80f3-656a5b35ffe8",
-                created_at: "2024-01-17T06:35:21.876570575Z",
-                updated_at: "2024-01-17T06:35:21.876606175Z",
-                submitted_at: "2024-01-17T06:35:21.875363396Z",
-                filled_at: null,
-                expired_at: null,
-                canceled_at: null,
-                failed_at: null,
-                replaced_at: null,
-                replaced_by: null,
-                replaces: null,
-                asset_id: "a1733398-6acc-4e92-af24-0d0667f78713",
-                symbol: "ETH/USD",
-                asset_class: "crypto",
-                notional: null,
-                qty: "0.9975",
-                filled_qty: "0",
-                filled_avg_price: null,
-                order_class: "",
-                order_type: "market",
-                type: "market",
-                side: "sell",
-                time_in_force: "gtc",
-                limit_price: null,
-                stop_price: null,
-                status: "pending_new",
-                extended_hours: false,
-                legs: null,
-                trail_percent: null,
-                trail_price: null,
-                hwm: null,
-                subtag: null,
-                source: null,
-            };
-
             const expectedSellResult = {
                 type: OrderType.SELL,
-                symbol: "ETHUSD",
+                symbol: "ETH/USD",
                 qty: 0.9975,
+                notional: null,
             };
 
             // Mock the response from axios
-            jest.spyOn(axios, "delete").mockResolvedValueOnce({ data: expectedSellResult });
+            jest.spyOn(axios, "delete").mockResolvedValueOnce({ data: mockDeletePositionResponse });
 
             // Act
             const sellPromise = alpacaProvider.liquidate(symbol);
@@ -450,7 +469,7 @@ describe("Alpaca Provider", () => {
         it("rejects with an error when axios.delete() rejects", async () => {
             // Arrange
             const alpacaProvider = new AlpacaProvider();
-            const symbol = "BTCUSD";
+            const symbol = "ETHUSD";
 
             const expectedError = new Error("Test error");
 
@@ -469,48 +488,6 @@ describe("Alpaca Provider", () => {
         it("returns an array of Position objects", async () => {
             // Arrange
             const alpacaProvider = new AlpacaProvider();
-            const mockPositions: AlpacaPosition[] = [
-                {
-                    asset_id: "a1733398-6acc-4e92-af24-0d0667f78713",
-                    symbol: "ETHUSD",
-                    exchange: "CRYPTO",
-                    asset_class: "crypto",
-                    asset_marginable: false,
-                    qty: "0.9975",
-                    avg_entry_price: "2281.185",
-                    side: "long",
-                    market_value: "2277.07",
-                    cost_basis: "2277.07",
-                    unrealized_pl: "0",
-                    unrealized_plpc: "0",
-                    unrealized_intraday_pl: "0",
-                    unrealized_intraday_plpc: "0",
-                    current_price: "2281.755",
-                    lastday_price: "2281.185",
-                    change_today: "0.000259",
-                    qty_available: "0.9975",
-                },
-                {
-                    asset_id: "a1733398-6acc-4e92-af24-0d0667f78713",
-                    symbol: "BTCUSD",
-                    exchange: "CRYPTO",
-                    asset_class: "crypto",
-                    asset_marginable: false,
-                    qty: "0.998",
-                    avg_entry_price: "2281.185",
-                    side: "long",
-                    market_value: "2277.07",
-                    cost_basis: "2277.07",
-                    unrealized_pl: "0",
-                    unrealized_plpc: "0",
-                    unrealized_intraday_pl: "0",
-                    unrealized_intraday_plpc: "0",
-                    current_price: "2281.755",
-                    lastday_price: "2281.185",
-                    change_today: "0.000259",
-                    qty_available: "0.998",
-                },
-            ];
 
             const expectedPositions = [
                 {
@@ -524,7 +501,7 @@ describe("Alpaca Provider", () => {
             ];
 
             // Mock the response from axios
-            jest.spyOn(axios, "get").mockResolvedValueOnce({ data: mockPositions });
+            jest.spyOn(axios, "get").mockResolvedValueOnce({ data: mockGetPositionsResponse });
 
             // Act
             const positionsPromise = alpacaProvider.positions();
@@ -546,6 +523,42 @@ describe("Alpaca Provider", () => {
 
             // Assert
             await expect(positionsPromise).rejects.toEqual(expectedError);
+        });
+    });
+
+    describe("position()", () => {
+        it("returns a Position object", async () => {
+            // Arrange
+            const alpacaProvider = new AlpacaProvider();
+            const symbol = "ETHUSD";
+            const expectedPosition: Position = {
+                symbol,
+                qty: 0.9975,
+            };
+
+            // Mock the response from axios
+            jest.spyOn(axios, "get").mockResolvedValueOnce({ data: mockGetPositionResponse });
+
+            // Act
+            const positionPromise = alpacaProvider.position(symbol);
+
+            // Assert
+            await expect(positionPromise).resolves.toEqual(expectedPosition);
+        });
+
+        it("rejects with an error when axios.get() rejects", async () => {
+            // Arrange
+            const alpacaProvider = new AlpacaProvider();
+            const expectedError = new Error("Test error");
+
+            // Mock the response from axios
+            jest.spyOn(axios, "get").mockRejectedValueOnce(expectedError);
+
+            // Act
+            const positionPromise = alpacaProvider.position("ETHUSD");
+
+            // Assert
+            await expect(positionPromise).rejects.toEqual(expectedError);
         });
     });
 

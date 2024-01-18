@@ -118,16 +118,16 @@ describe("Brokerage Provider", () => {
         it("should return the URL for the production liquidate endpoint when isLive() returns true", () => {
             const brokerageProvider = new ConcreteBrokerageProvider();
             process.env.ENV = "production";
-            const expectedURI = "https://prod.example.com/liquidate";
-            const uri = brokerageProvider.testGetLiquidateUri();
+            const expectedURI = "https://prod.example.com/liquidate/ETHUSD";
+            const uri = brokerageProvider.testGetLiquidateUri("ETHUSD");
             expect(uri).toEqual(expectedURI);
         });
 
         it("should return the URL for the development liquidate endpoint when isLive() returns false", () => {
             const brokerageProvider = new ConcreteBrokerageProvider();
             process.env.ENV = "development";
-            const expectedURI = "https://dev.example.com/liquidate";
-            const uri = brokerageProvider.testGetLiquidateUri();
+            const expectedURI = "https://dev.example.com/liquidate/ETHUSD";
+            const uri = brokerageProvider.testGetLiquidateUri("ETHUSD");
             expect(uri).toEqual(expectedURI);
         });
     });
