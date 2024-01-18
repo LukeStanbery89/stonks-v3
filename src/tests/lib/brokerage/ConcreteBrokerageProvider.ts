@@ -27,6 +27,7 @@ class ConcreteBrokerageProvider extends BrokerageProvider {
     protected historicalPriceDataURIPath = "/historical-price-data";
     protected liquidatePath = "/liquidate";
     protected positionsPath = "/positions";
+    protected positionPath = "/position";
 
     protected securitiesQueryStringParams = "foo=bar";
     protected buyQueryStringParams = "foo=bar";

@@ -34,6 +34,7 @@ class AlpacaProvider extends BrokerageProvider {
     protected sellPath = "/v2/orders";
     protected historicalPriceDataURIPath = "/v1beta3/crypto/us/bars";
     protected positionsPath = "/v2/positions";
+    protected positionPath = this.positionsPath;
     protected liquidatePath = this.positionsPath;
 
     private HISTORICAL_PRICE_DATA_TIME_FRAME = "1Min";

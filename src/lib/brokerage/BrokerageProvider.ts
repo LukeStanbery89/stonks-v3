@@ -34,6 +34,7 @@ abstract class BrokerageProvider {
     protected abstract historicalPriceDataURIPath: string;
     protected abstract liquidatePath: string;
     protected abstract positionsPath: string;
+    protected abstract positionPath: string;
 
     // Query string params
     protected securitiesQueryStringParams = "";
@@ -41,6 +42,7 @@ abstract class BrokerageProvider {
     protected sellQueryStringParams = "";
     protected historicalPriceDataQueryStringParams = "";
     protected positionsQueryStringParams = "";
+    protected positionQueryStringParams = "";
 
     // Abstract helper methods
     protected abstract convertBuyOrderToRequestData(buyOrder: BuyOrder): object;
@@ -106,6 +108,10 @@ abstract class BrokerageProvider {
         return `${this.getDomain()}${this.positionsPath}`;
     }
 
+    protected getPositionUri(symbol: string): string {
+        return `${this.getDomain()}${this.positionPath}/${symbol}`;
+    }
+
     // Query string params methods
     protected getSecuritiesQueryStringParams(): string {
         return this.securitiesQueryStringParams;
@@ -128,6 +134,11 @@ abstract class BrokerageProvider {
 
     protected getPositionsQueryStringParams(): string {
         return this.positionsQueryStringParams;
+    }
+
+    protected getPositionQueryStringParams(symbol: string): string {
+        console.log("getPositionQueryStringParams", symbol);
+        return this.positionQueryStringParams;
     }
 
     // Header methods
@@ -159,6 +170,10 @@ abstract class BrokerageProvider {
     }
 
     protected getPositionsHeaders(): object {
+        return this.getRequestHeaders();
+    }
+
+    protected getPositionHeaders(): object {
         return this.getRequestHeaders();
     }
 
@@ -272,6 +287,27 @@ abstract class BrokerageProvider {
 
         // Return
         return positions;
+    }
+
+    /**
+     * Retrieves a single position held in the brokerage account.
+     *
+     * @param symbol The symbol of the position to retrieve
+     * @returns {Promise<Position>} A promise that resolves to a Position object
+     */
+    public async position(symbol: string): Promise<Position> {
+        // Setup
+        const positionURI = `${this.getPositionUri(symbol)}?${this.getPositionQueryStringParams(symbol)}`;
+        const headers = this.getPositionHeaders();
+
+        // Request
+        const response = await axios.get(positionURI, { headers });
+
+        // Transform
+        const position: Position = this.convertToPosition(response.data);
+
+        // Return
+        return position;
     }
 }
 
