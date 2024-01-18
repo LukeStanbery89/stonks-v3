@@ -1,6 +1,5 @@
 import request from "supertest";
 import apiRouter from "../../routes/apiRouter";
-import { Router } from "express";
 import express from "express";
 
 const app = express();

@@ -88,8 +88,8 @@ class AlpacaProvider extends BrokerageProvider {
         return {
             type: OrderType.BUY,
             symbol: buyResult.symbol,
-            notional: buyResult.notional,
-            qty: buyResult.qty,
+            notional: buyResult.notional ? parseFloat(buyResult.notional.toString()) : null,
+            qty: buyResult.qty ? parseFloat(buyResult.qty.toString()) : null,
         };
     }
 
@@ -97,8 +97,8 @@ class AlpacaProvider extends BrokerageProvider {
         return {
             type: OrderType.SELL,
             symbol: sellResult.symbol,
-            notional: sellResult.notional,
-            qty: sellResult.qty,
+            notional: sellResult.notional ? parseFloat(sellResult.notional.toString()) : null,
+            qty: sellResult.qty ? parseFloat(sellResult.qty.toString()) : null,
         };
     }
 

@@ -1,5 +1,5 @@
 import BrokerageProvider from "../../../lib/brokerage/BrokerageProvider";
-import { BuyOrder, BuyResult, HistoricalPriceDataRequestParams, OrderType, Position, PriceData, ProviderPosition, Security, SellOrder, SellResult } from "../../../types/types";
+import { BuyOrder, BuyResult, HistoricalPriceDataRequestParams, OrderType, Position, PriceData, Security, SellOrder, SellResult } from "../../../types/types";
 
 type Transformable = {
     transformed: boolean,
@@ -79,6 +79,7 @@ class ConcreteBrokerageProvider extends BrokerageProvider {
     }
 
     public historicalPriceData(priceDataParams: HistoricalPriceDataRequestParams): Promise<PriceData[]> {
+        console.log(priceDataParams);
         return Promise.resolve(
             [
                 { timestamp: "2022-01-01", open: 100, high: 110, low: 90, close: 105, volume: 0 },
