@@ -149,3 +149,29 @@ export type Position = {
     symbol: string;
     qty: number;
 }
+
+export enum Decision {
+    BUY = "BUY",
+    SELL = "SELL",
+    HOLD = "HOLD"
+}
+
+export type SecurityStats = {
+    currentPrice: number;
+    sampleMean: number;
+    sumOfSquares: number;
+    sampleVariance: number;
+    stdDev: number;
+    upperBand: number;
+    lowerBand: number;
+    slope: number;
+    isOwned: boolean;
+    decision: Decision;
+    decisionReason: string;
+    bars?: PriceData[];
+    [symbol: string]: any; // Add index signature
+};
+
+export type SecurityStatsMap = {
+    [symbol: string]: SecurityStatsMap;
+};

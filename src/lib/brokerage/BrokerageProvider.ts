@@ -309,6 +309,36 @@ abstract class BrokerageProvider {
         // Return
         return position;
     }
+
+    /**
+     * Determines whether or not a security is owned in the brokerage account.
+     *
+     * @param symbol The symbol of the security to check
+     * @returns {Promise<boolean>} A promise that resolves to a boolean indicating whether or not the security is owned
+     */
+    public async isSecurityOwned(symbol: string): Promise<boolean> {
+        try {
+            const positionResponse = await this.position(symbol);
+            if (positionResponse && positionResponse.qty > 0) {
+                return true;
+            }
+        } catch (error: any) {
+            console.log("positions error", error);
+            if (error.response.status === 404 && error.response.statusText === "position does not exist") {
+                // Security is not owned
+            } else if (error.response.status === 404 && error.response.statusText === "Not Found") {
+                // Security is not owned
+            } else if (error.response.status === 422) {
+                // Security does not exist
+                throw new Error(`Security ${symbol} does not exist`);
+            } else {
+                // Something else went wrong. Re-throw the error.
+                throw error;
+            }
+        }
+
+        return false;
+    }
 }
 
 export default BrokerageProvider;

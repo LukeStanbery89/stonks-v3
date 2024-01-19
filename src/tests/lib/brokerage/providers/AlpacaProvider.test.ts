@@ -1,5 +1,5 @@
 import AlpacaProvider from "../../../../lib/brokerage/providers/AlpacaProvider";
-import { AlpacaPosition, BuyOrder, OrderType, Position, SellOrder } from "../../../../types/types";
+import { BuyOrder, OrderType, Position, SellOrder } from "../../../../types/types";
 import axios from "axios";
 import mockSecuritiesResponse from "../../../mocks/responses/alpaca/mockSecuritiesResponse.json";
 import mockBuyByQtyResponse from "../../../mocks/responses/alpaca/mockBuyByQtyResponse.json";
@@ -262,18 +262,18 @@ describe("Alpaca Provider", () => {
 
             const expectedResponse = [
                 {
-                    close: 2281.185,
-                    high: 2281.755,
-                    low: 2281.185,
-                    open: 2281.755,
+                    close: 2281.19,
+                    high: 2281.76,
+                    low: 2281.19,
+                    open: 2281.76,
                     timestamp: "2024-01-01T00:00:00Z",
                     volume: 0,
                 },
                 {
-                    close: 2282.205,
-                    high: 2282.205,
-                    low: 2282.205,
-                    open: 2282.205,
+                    close: 2282.21,
+                    high: 2282.21,
+                    low: 2282.21,
+                    open: 2282.21,
                     timestamp: "2024-01-01T00:01:00Z",
                     volume: 0,
                 },
@@ -329,35 +329,34 @@ describe("Alpaca Provider", () => {
 
             const expectedResponse = [
                 {
-                    close: 2281.185,
-                    high: 2281.755,
-                    low: 2281.185,
-                    open: 2281.755,
+                    close: 2281.19,
+                    high: 2281.76,
+                    low: 2281.19,
+                    open: 2281.76,
                     timestamp: "2024-01-01T00:00:00Z",
                     volume: 0,
                 },
                 {
-                    close: 2282.205,
-                    high: 2282.205,
-                    low: 2282.205,
-                    open: 2282.205,
+                    close: 2282.21,
+                    high: 2282.21,
+                    low: 2282.21,
+                    open: 2282.21,
                     timestamp: "2024-01-01T00:01:00Z",
                     volume: 0,
                 },
                 {
-                    close: 2281.185,
-                    high: 2281.755,
-                    low: 2281.185,
-                    open: 2281.755,
+                    close: 2281.19,
+                    high: 2281.76,
+                    low: 2281.19,
+                    open: 2281.76,
                     timestamp: "2024-01-01T00:00:00Z",
                     volume: 0,
                 },
                 {
-                    close: 2282.205,
-                    high: 2282.205,
-                    low: 2282.205,
-                    open:
-                    2282.205,
+                    close: 2282.21,
+                    high: 2282.21,
+                    low: 2282.21,
+                    open: 2282.21,
                     timestamp: "2024-01-01T00:01:00Z",
                     volume: 0,
                 },

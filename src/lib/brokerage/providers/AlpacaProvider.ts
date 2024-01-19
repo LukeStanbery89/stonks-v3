@@ -15,7 +15,7 @@ import {
     SellOrder,
     SellResult,
 } from "../../../types/types";
-import { round } from "../../utils";
+import { round } from "../../math";
 import BrokerageProvider from "../BrokerageProvider";
 
 class AlpacaProvider extends BrokerageProvider {
