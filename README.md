@@ -1,3 +1,7 @@
+[![Node.js CI](https://github.com/LukeStanbery89/stonks-v3/actions/workflows/node.js.yml/badge.svg)](https://github.com/LukeStanbery89/stonks-v3/actions/workflows/node.js.yml)
+[![Dependency Review](https://github.com/LukeStanbery89/stonks-v3/actions/workflows/dependency-review.yml/badge.svg)](https://github.com/LukeStanbery89/stonks-v3/actions/workflows/dependency-review.yml)
+[![CodeQL](https://github.com/LukeStanbery89/stonks-v3/actions/workflows/codeql.yml/badge.svg)](https://github.com/LukeStanbery89/stonks-v3/actions/workflows/codeql.yml)
+
 # Stonks
 
 Stonks is an auto-trading cryptocurrency application that allows you to trade cryptocurrencies using customizable strategies and swappable brokerage APIs. It provides a simulation mode for analyzing the effectiveness of various trading strategies.
