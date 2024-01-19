@@ -155,6 +155,9 @@ class ConcreteBrokerageProvider extends BrokerageProvider {
     public testGetPositionsHeaders(): object {
         return this.getPositionsHeaders();
     }
+    public async testIsSecurityOwned(symbol: string): Promise<boolean> {
+        return await this.isSecurityOwned(symbol);
+    }
 }
 
 export default ConcreteBrokerageProvider;

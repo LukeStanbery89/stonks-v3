@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from "react";
 import socketEmitter from "../../lib/socketEmitter";
+import { RootState } from "../../types/types";
+import { useSelector } from "react-redux";
+import ProgressBar from "../ProgressBar";
 
 const TRADE_LOOP_START = "trade_loop_start";
 const TRADE_LOOP_UPDATE = "trade_loop_update";
@@ -14,6 +17,7 @@ const resultStyle = {
 
 const WebSocketTest = () => {
     const [data, setData] = useState<{ message: string }>({ message: "" });
+    const tradeLoopProgress = useSelector((state: RootState) => state.app.tradeLoopProgress);
 
     function emitTestWebSocketEvent() {
         setData({ message: "Emitting event..." });
@@ -41,6 +45,7 @@ const WebSocketTest = () => {
     return (
         <div>
             <button type='button' className='btn btn-primary' onClick={emitTestWebSocketEvent}>Test Trade</button>
+            <ProgressBar progress={tradeLoopProgress}/>
             <p>Trade Result:</p>
             <pre style={resultStyle}>{JSON.stringify(data, null, 4)}</pre>
         </div>
