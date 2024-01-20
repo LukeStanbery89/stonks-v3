@@ -3,15 +3,13 @@ import BrokerageProvider from "../lib/brokerage/BrokerageProvider";
 import eventEmitter from "../lib/eventEmitter";
 import { Decision, PriceData, Security, SecurityStats, SecurityStatsMap } from "../types/types";
 import { calculateSampleMean, calculateSlope, calculateStdDev } from "../lib/math";
+import { Config } from "../config";
 
-function getBrokerProvider() {
-    return new AlpacaProvider();
+function getBrokerProvider(config: Config) {
+    return new AlpacaProvider(config);
 }
 
-async function executeTradeLoop(brokerageProvider: BrokerageProvider) {
-    // TODO: move to config file
-    const TRADE_NOTIONAL = 10;
-
+async function executeTradeLoop(brokerageProvider: BrokerageProvider, config: Config) {
     // Initialize the object to store statistics for each security
     const securityStats: SecurityStatsMap = {};
 
@@ -24,7 +22,7 @@ async function executeTradeLoop(brokerageProvider: BrokerageProvider) {
         const security: Security = securities[i];
 
         // Determine if security is owned
-        securityStats[security.symbol] = await compileStatsForSecurity(brokerageProvider, security);
+        securityStats[security.symbol] = await compileStatsForSecurity(brokerageProvider, security, config);
     }
 
     console.log(securityStats);
@@ -35,17 +33,14 @@ async function executeTradeLoop(brokerageProvider: BrokerageProvider) {
 
 }
 
-async function compileStatsForSecurity(brokerageProvider: BrokerageProvider, security: Security): Promise<SecurityStats> {
-    // TODO move to config file
-    const TIME_TO_EVALUATE_IN_MINUTES = 20;
-
+async function compileStatsForSecurity(brokerageProvider: BrokerageProvider, security: Security, config: Config): Promise<SecurityStats> {
     const symbol = security.symbol.replace("/", "");
     const isOwned: boolean = await brokerageProvider.isSecurityOwned(symbol);
 
-    // Get the last 20 minutes of bars for the security
+    // Get the last n minutes of bars for the security
     // Set the timestamps in ISO 8601 format with with central time zone offset
     const now = new Date();
-    const start = new Date(now.getTime() - TIME_TO_EVALUATE_IN_MINUTES * 60 * 1000).toISOString();
+    const start = new Date(now.getTime() - config.TRADE.TIME_TO_EVALUATE_IN_MINUTES * 60 * 1000).toISOString();
     const end = now.toISOString();
 
     const bars: PriceData[] = await brokerageProvider.historicalPriceData({

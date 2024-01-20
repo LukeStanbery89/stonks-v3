@@ -14,10 +14,12 @@ import {
     Position,
     ProviderPosition,
 } from "../../types/types";
+import { Config } from "../../config";
 
 abstract class BrokerageProvider {
     // General props
     protected axios: Axios;
+    protected config: Config;
 
     // Headers
     protected defaultHeaders = {
@@ -53,7 +55,8 @@ abstract class BrokerageProvider {
     protected abstract convertToPriceData(priceData: ProviderPriceData): PriceData;
     protected abstract convertToPosition(position: ProviderPosition): Position;
 
-    constructor() {
+    constructor(config: Config) {
+        this.config = config;
         this.axios = axios;
     }
 
@@ -324,9 +327,7 @@ abstract class BrokerageProvider {
             }
         } catch (error: any) {
             console.log("positions error", error);
-            if (error.response.status === 404 && error.response.statusText === "position does not exist") {
-                // Security is not owned
-            } else if (error.response.status === 404 && error.response.statusText === "Not Found") {
+            if (error.response.status === 404) {
                 // Security is not owned
             } else if (error.response.status === 422) {
                 // Security does not exist

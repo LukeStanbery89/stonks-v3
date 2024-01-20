@@ -1,4 +1,4 @@
-import config from "../../../config";
+import { Config } from "../../../config";
 import {
     AlpacaBuyResult,
     AlpacaPosition,
@@ -21,8 +21,8 @@ import BrokerageProvider from "../BrokerageProvider";
 class AlpacaProvider extends BrokerageProvider {
     // Headers
     protected providerCommonHeaders: object = {
-        "APCA-API-KEY-ID": config.APCA_API_KEY_ID,
-        "APCA-API-SECRET-KEY": config.APCA_API_SECRET_KEY,
+        "APCA-API-KEY-ID": this.config.ALPACA.APCA_API_KEY_ID,
+        "APCA-API-SECRET-KEY": this.config.ALPACA.APCA_API_SECRET_KEY,
     };
 
     // URI values
@@ -38,17 +38,14 @@ class AlpacaProvider extends BrokerageProvider {
     protected positionPath = this.positionsPath;
     protected liquidatePath = this.positionsPath;
 
-    private HISTORICAL_PRICE_DATA_TIME_FRAME = "1Min";
-    private DEFAULT_LIMIT = 1000;
-
     // Query string params
     protected securitiesQueryStringParams: string = new URLSearchParams({
         status: "active",
         asset_class: "crypto",
     }).toString();
 
-    constructor() {
-        super();
+    constructor(config: Config) {
+        super(config);
     }
 
     /*********************
@@ -137,8 +134,8 @@ class AlpacaProvider extends BrokerageProvider {
             symbols: priceDataParams.symbol,
             start: priceDataParams.start,
             end: priceDataParams.end,
-            limit: (priceDataParams.limit || this.DEFAULT_LIMIT).toString(),
-            timeframe: this.HISTORICAL_PRICE_DATA_TIME_FRAME,
+            limit: (priceDataParams.limit || this.config.TRADE.DEFAULT_LIMIT).toString(),
+            timeframe: this.config.ALPACA.HISTORICAL_PRICE_DATA_TIME_FRAME,
         }).toString();
     }
 
@@ -158,7 +155,7 @@ class AlpacaProvider extends BrokerageProvider {
                 headers: this.getHistoricalPriceDataHeaders(),
                 data: {
                     ...priceDataParams,
-                    timeframe: this.HISTORICAL_PRICE_DATA_TIME_FRAME,
+                    timeframe: this.config.ALPACA.HISTORICAL_PRICE_DATA_TIME_FRAME,
                     page_token: pageToken,
                 },
             });

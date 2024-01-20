@@ -9,6 +9,7 @@ import mockSellByNotionalResponse from "../../../mocks/responses/alpaca/mockSell
 import mockDeletePositionResponse from "../../../mocks/responses/alpaca/mockDeletePositionResponse.json";
 import mockGetPositionsResponse from "../../../mocks/responses/alpaca/mockGetPositionsResponse.json";
 import mockGetPositionResponse from "../../../mocks/responses/alpaca/mockGetPositionResponse.json";
+import config from "../../../../config";
 
 class TestAlpacaProvider extends AlpacaProvider {
     public testIsLive() {
@@ -36,7 +37,7 @@ describe("Alpaca Provider", () => {
     describe("securities()", () => {
         it("retrieves a list of buyable securities", async () => {
             // Arrange
-            const alpacaProvider = new AlpacaProvider();
+            const alpacaProvider = new AlpacaProvider(config);
 
             const expectedSecurities = mockSecuritiesResponse.map(security => {
                 return {
@@ -57,7 +58,7 @@ describe("Alpaca Provider", () => {
 
         it("rejects with an error when axios.get() rejects", async () => {
             // Arrange
-            const alpacaProvider = new AlpacaProvider();
+            const alpacaProvider = new AlpacaProvider(config);
             const expectedError = new Error("Test error");
 
             // Mock the response from axios
@@ -74,7 +75,7 @@ describe("Alpaca Provider", () => {
     describe("buy()", () => {
         it("returns a BuyResult when specifying a qty", async () => {
             // Arrange
-            const alpacaProvider = new AlpacaProvider();
+            const alpacaProvider = new AlpacaProvider(config);
             const buyOrder: BuyOrder = {
                 type: OrderType.BUY,
                 symbol: "ETHUSD",
@@ -100,7 +101,7 @@ describe("Alpaca Provider", () => {
 
         it("returns a BuyResult when specifying a notional", async () => {
             // Arrange
-            const alpacaProvider = new AlpacaProvider();
+            const alpacaProvider = new AlpacaProvider(config);
             const buyOrder: BuyOrder = {
                 type: OrderType.BUY,
                 symbol: "ETHUSD",
@@ -126,7 +127,7 @@ describe("Alpaca Provider", () => {
 
         it("rejects with an error when axios.post() rejects", async () => {
             // Arrange
-            const alpacaProvider = new AlpacaProvider();
+            const alpacaProvider = new AlpacaProvider(config);
             const buyOrder: BuyOrder = {
                 type: OrderType.BUY,
                 symbol: "ETHUSD",
@@ -149,7 +150,7 @@ describe("Alpaca Provider", () => {
     describe("sell()", () => {
         it("returns a SellResult when specifying a qty", async () => {
             // Arrange
-            const alpacaProvider = new AlpacaProvider();
+            const alpacaProvider = new AlpacaProvider(config);
             const sellOrder: SellOrder = {
                 type: OrderType.SELL,
                 symbol: "ETHUSD",
@@ -175,7 +176,7 @@ describe("Alpaca Provider", () => {
 
         it("returns a SellResult when specifying a notional", async () => {
             // Arrange
-            const alpacaProvider = new AlpacaProvider();
+            const alpacaProvider = new AlpacaProvider(config);
             const sellOrder: SellOrder = {
                 type: OrderType.SELL,
                 symbol: "ETHUSD",
@@ -201,7 +202,7 @@ describe("Alpaca Provider", () => {
 
         it("rejects with an error when axios.post() rejects", async () => {
             // Arrange
-            const alpacaProvider = new AlpacaProvider();
+            const alpacaProvider = new AlpacaProvider(config);
             const sellOrder: SellOrder = {
                 type: OrderType.SELL,
                 symbol: "ETHUSD",
@@ -224,7 +225,7 @@ describe("Alpaca Provider", () => {
     describe("historicalPriceData()", () => {
         it("returns an array of PriceData objects", async () => {
             // Arrange
-            const alpacaProvider = new AlpacaProvider();
+            const alpacaProvider = new AlpacaProvider(config);
             const expectedPriceData = {
                 bars: {
                     "ETH/USD": [
@@ -291,7 +292,7 @@ describe("Alpaca Provider", () => {
 
         it("makes multiple requests when there are multiple pages of data", async () => {
             // Arrange
-            const alpacaProvider = new AlpacaProvider();
+            const alpacaProvider = new AlpacaProvider(config);
             const expectedPriceData = {
                 bars: {
                     "ETH/USD": [
@@ -374,7 +375,7 @@ describe("Alpaca Provider", () => {
 
         it("rejects with an error when axios.get() rejects", async () => {
             // Arrange
-            const alpacaProvider = new AlpacaProvider();
+            const alpacaProvider = new AlpacaProvider(config);
             const expectedPriceDataParams = {
                 symbol: "ETH/USD",
                 start: "2024-01-01T00:00:00.000Z",
@@ -396,7 +397,7 @@ describe("Alpaca Provider", () => {
 
         it("returns the correct query string params", () => {
             // Arrange
-            const alpacaProvider = new TestAlpacaProvider();
+            const alpacaProvider = new TestAlpacaProvider(config);
             const expectedQueryStringParams = "symbols=ETH%2FUSD&start=2024-01-01T00%3A00%3A00.000Z&end=2024-01-01T00%3A01%3A00.000Z&limit=1000&timeframe=1Min";
             const priceDataParams = {
                 symbol: "ETH/USD",
@@ -414,7 +415,7 @@ describe("Alpaca Provider", () => {
 
         it("returns the correct URI", () => {
             // Arrange
-            const testAlpacaProvider = new TestAlpacaProvider();
+            const testAlpacaProvider = new TestAlpacaProvider(config);
             const expectedURI = "https://data.alpaca.markets/v1beta3/crypto/us/bars";
 
             // Act
@@ -426,7 +427,7 @@ describe("Alpaca Provider", () => {
 
         it("makes the request using the default limit when no limit is provided", () => {
             // Arrange
-            const alpacaProvider = new TestAlpacaProvider();
+            const alpacaProvider = new TestAlpacaProvider(config);
             const expectedQueryStringParams = "symbols=ETH%2FUSD&start=2024-01-01T00%3A00%3A00.000Z&end=2024-01-01T00%3A01%3A00.000Z&limit=1000&timeframe=1Min";
             const priceDataParams = {
                 symbol: "ETH/USD",
@@ -445,7 +446,7 @@ describe("Alpaca Provider", () => {
     describe("liquidate()", () => {
         it("returns a SellResult", async () => {
             // Arrange
-            const alpacaProvider = new AlpacaProvider();
+            const alpacaProvider = new AlpacaProvider(config);
             const symbol = "ETHUSD";
 
             const expectedSellResult = {
@@ -467,7 +468,7 @@ describe("Alpaca Provider", () => {
 
         it("rejects with an error when axios.delete() rejects", async () => {
             // Arrange
-            const alpacaProvider = new AlpacaProvider();
+            const alpacaProvider = new AlpacaProvider(config);
             const symbol = "ETHUSD";
 
             const expectedError = new Error("Test error");
@@ -486,7 +487,7 @@ describe("Alpaca Provider", () => {
     describe("positions()", () => {
         it("returns an array of Position objects", async () => {
             // Arrange
-            const alpacaProvider = new AlpacaProvider();
+            const alpacaProvider = new AlpacaProvider(config);
 
             const expectedPositions = [
                 {
@@ -511,7 +512,7 @@ describe("Alpaca Provider", () => {
 
         it("rejects with an error when axios.get() rejects", async () => {
             // Arrange
-            const alpacaProvider = new AlpacaProvider();
+            const alpacaProvider = new AlpacaProvider(config);
             const expectedError = new Error("Test error");
 
             // Mock the response from axios
@@ -528,7 +529,7 @@ describe("Alpaca Provider", () => {
     describe("position()", () => {
         it("returns a Position object", async () => {
             // Arrange
-            const alpacaProvider = new AlpacaProvider();
+            const alpacaProvider = new AlpacaProvider(config);
             const symbol = "ETHUSD";
             const expectedPosition: Position = {
                 symbol,
@@ -547,7 +548,7 @@ describe("Alpaca Provider", () => {
 
         it("rejects with an error when axios.get() rejects", async () => {
             // Arrange
-            const alpacaProvider = new AlpacaProvider();
+            const alpacaProvider = new AlpacaProvider(config);
             const expectedError = new Error("Test error");
 
             // Mock the response from axios
@@ -565,7 +566,7 @@ describe("Alpaca Provider", () => {
         it("returns true when ENV is 'production'", () => {
             // Arrange
             process.env.ENV = "production";
-            const testAlpacaProvider = new TestAlpacaProvider();
+            const testAlpacaProvider = new TestAlpacaProvider(config);
 
             // Act
             const isLive = testAlpacaProvider.testIsLive();
@@ -577,7 +578,7 @@ describe("Alpaca Provider", () => {
         it("returns false when ENV is 'development'", () => {
             // Arrange
             process.env.ENV = "development";
-            const testAlpacaProvider = new TestAlpacaProvider();
+            const testAlpacaProvider = new TestAlpacaProvider(config);
 
             // Act
             const isLive = testAlpacaProvider.testIsLive();

@@ -1,9 +1,10 @@
+import config from "../../../config";
 import socketEmitter from "../../../lib/socketEmitter";
 import { executeTradeLoop, getBrokerProvider } from "../../../services/tradingService";
 
 export default async function trade_loop_start(): Promise<void> {
     console.log("trade_loop_start");
-    const brokerProvider = getBrokerProvider();
+    const brokerProvider = getBrokerProvider(config);
     let result;
     try {
         // const result = await brokerProvider.buy({
@@ -25,7 +26,7 @@ export default async function trade_loop_start(): Promise<void> {
         //     end: "2024-01-01T00:01:00.000Z",
         //     limit: 1000,
         // });
-        result = await executeTradeLoop(brokerProvider);
+        result = await executeTradeLoop(brokerProvider, config);
     } catch (error) {
         console.error(error);
         result = { error };
