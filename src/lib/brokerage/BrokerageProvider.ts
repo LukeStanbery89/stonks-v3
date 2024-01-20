@@ -326,10 +326,9 @@ abstract class BrokerageProvider {
                 return true;
             }
         } catch (error: any) {
-            console.log("positions error", error);
-            if (error.response.status === 404) {
+            if (error?.response?.status === 404) {
                 // Security is not owned
-            } else if (error.response.status === 422) {
+            } else if (error?.response?.status === 422) {
                 // Security does not exist
                 throw new Error(`Security ${symbol} does not exist`);
             } else {
