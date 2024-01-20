@@ -1,6 +1,7 @@
 import eventEmitter from "../lib/eventEmitter";
 import { sleep } from "../lib/utils";
 import { SimulationStatus } from "../types/types";
+import constants from "../config/constants.json";
 
 function getTradeSimulationService() {
     let shouldContinue = false;
@@ -12,11 +13,11 @@ function getTradeSimulationService() {
         while(shouldContinue) {
             i++;
             if (i > total) {
-                eventEmitter.emit("update_sim_status", { simulationStatus: SimulationStatus.COMPLETE });
+                eventEmitter.emit(constants.EVENTS.UPDATE_SIM_STATUS, { simulationStatus: SimulationStatus.COMPLETE });
                 return;
             }
             const progress = ((i / total) * 100).toFixed(0);
-            eventEmitter.emit("update_sim_progress", { progress });
+            eventEmitter.emit(constants.EVENTS.UPDATE_SIM_PROGRESS, { progress });
             await sleep(1000);
         }
     }

@@ -3,6 +3,7 @@ import ProgressBar from "../components/ProgressBar";
 import { BS_BACKGROUND, RootState, SimulationStatus } from "../types/types";
 import { useSelector } from "react-redux";
 import socketEmitter from "../lib/socketEmitter";
+import constants from "../config/constants.json";
 
 const Trade = () => {
     const {
@@ -29,7 +30,7 @@ const Trade = () => {
                 <div className="col-3">
                     <button
                         className="btn btn-primary mb-3"
-                        onClick={() => socketEmitter.emit("start_simulation")}>
+                        onClick={() => socketEmitter.emit(constants.SOCKET_EVENTS.START_SIMULATION)}>
                             Start Simulation
                     </button>
                 </div>
@@ -37,7 +38,7 @@ const Trade = () => {
                     <button
                         disabled={simulationStatus !== SimulationStatus.RUNNING}
                         className="btn btn-primary mb-3"
-                        onClick={() => socketEmitter.emit("stop_simulation")}>
+                        onClick={() => socketEmitter.emit(constants.SOCKET_EVENTS.STOP_SIMULATION)}>
                             Stop Simulation
                     </button>
                 </div>
