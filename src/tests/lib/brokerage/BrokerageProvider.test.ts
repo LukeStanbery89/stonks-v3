@@ -1,3 +1,5 @@
+import axios from "axios";
+import config from "../../../config";
 import ConcreteBrokerageProvider from "./ConcreteBrokerageProvider";
 
 describe("Brokerage Provider", () => {
@@ -11,7 +13,7 @@ describe("Brokerage Provider", () => {
 
     describe("convertToSecuritiesArray()", () => {
         it("should convert the provider's security type to the app's security type", () => {
-            const brokerageProvider = new ConcreteBrokerageProvider();
+            const brokerageProvider = new ConcreteBrokerageProvider(config);
             const providerSecurity = {
                 symbol: "AAPL",
                 name: "Apple",
@@ -28,7 +30,7 @@ describe("Brokerage Provider", () => {
 
     describe("convertToPriceDataArray()", () => {
         it("should convert the provider's price data type to the app's price data type", () => {
-            const brokerageProvider = new ConcreteBrokerageProvider();
+            const brokerageProvider = new ConcreteBrokerageProvider(config);
             const providerPriceData = [
                 { timestamp: "2022-01-01", open: 100, high: 110, low: 90, close: 105, volume: 0 },
                 { timestamp: "2022-01-02", open: 105, high: 115, low: 95, close: 110, volume: 0 },
@@ -44,7 +46,7 @@ describe("Brokerage Provider", () => {
 
     describe("getSecuritiesUri()", () => {
         it("should return the URI for the productin securities endpoint when isLive() returns true", () => {
-            const brokerageProvider = new ConcreteBrokerageProvider();
+            const brokerageProvider = new ConcreteBrokerageProvider(config);
             process.env.ENV = "production";
             const expectedURI = "https://prod.example.com/securities";
             const uri = brokerageProvider.testGetSecuritiesUri();
@@ -52,7 +54,7 @@ describe("Brokerage Provider", () => {
         });
 
         it("should return the URI for the development securities endpoint when isLive() returns false", () => {
-            const brokerageProvider = new ConcreteBrokerageProvider();
+            const brokerageProvider = new ConcreteBrokerageProvider(config);
             process.env.ENV = "development";
             const expectedURI = "https://dev.example.com/securities";
             const uri = brokerageProvider.testGetSecuritiesUri();
@@ -62,7 +64,7 @@ describe("Brokerage Provider", () => {
 
     describe("getBuyUri()", () => {
         it("should return the URL for the production buy endpoint when isLive() returns true", () => {
-            const brokerageProvider = new ConcreteBrokerageProvider();
+            const brokerageProvider = new ConcreteBrokerageProvider(config);
             process.env.ENV = "production";
             const expectedURI = "https://prod.example.com/buy";
             const uri = brokerageProvider.testGetBuyUri();
@@ -70,7 +72,7 @@ describe("Brokerage Provider", () => {
         });
 
         it("should return the URL for the development buy endpoint when isLive() returns false", () => {
-            const brokerageProvider = new ConcreteBrokerageProvider();
+            const brokerageProvider = new ConcreteBrokerageProvider(config);
             process.env.ENV = "development";
             const expectedURI = "https://dev.example.com/buy";
             const uri = brokerageProvider.testGetBuyUri();
@@ -80,7 +82,7 @@ describe("Brokerage Provider", () => {
 
     describe("getSellUri()", () => {
         it("should return the URL for the production sell endpoint when isLive() returns true", () => {
-            const brokerageProvider = new ConcreteBrokerageProvider();
+            const brokerageProvider = new ConcreteBrokerageProvider(config);
             process.env.ENV = "production";
             const expectedURI = "https://prod.example.com/sell";
             const uri = brokerageProvider.testGetSellUri();
@@ -88,7 +90,7 @@ describe("Brokerage Provider", () => {
         });
 
         it("should return the URL for the development sell endpoint when isLive() returns false", () => {
-            const brokerageProvider = new ConcreteBrokerageProvider();
+            const brokerageProvider = new ConcreteBrokerageProvider(config);
             process.env.ENV = "development";
             const expectedURI = "https://dev.example.com/sell";
             const uri = brokerageProvider.testGetSellUri();
@@ -98,7 +100,7 @@ describe("Brokerage Provider", () => {
 
     describe("getHistoricalPriceDataUri()", () => {
         it("should return the URL for the production historical price data endpoint when isLive() returns true", () => {
-            const brokerageProvider = new ConcreteBrokerageProvider();
+            const brokerageProvider = new ConcreteBrokerageProvider(config);
             process.env.ENV = "production";
             const expectedURI = "https://prod.example.com/historical-price-data";
             const uri = brokerageProvider.testGetHistoricalPriceDataUri();
@@ -106,7 +108,7 @@ describe("Brokerage Provider", () => {
         });
 
         it("should return the URL for the development historical price data endpoint when isLive() returns false", () => {
-            const brokerageProvider = new ConcreteBrokerageProvider();
+            const brokerageProvider = new ConcreteBrokerageProvider(config);
             process.env.ENV = "development";
             const expectedURI = "https://dev.example.com/historical-price-data";
             const uri = brokerageProvider.testGetHistoricalPriceDataUri();
@@ -116,7 +118,7 @@ describe("Brokerage Provider", () => {
 
     describe("getLiquidateUri()", () => {
         it("should return the URL for the production liquidate endpoint when isLive() returns true", () => {
-            const brokerageProvider = new ConcreteBrokerageProvider();
+            const brokerageProvider = new ConcreteBrokerageProvider(config);
             process.env.ENV = "production";
             const expectedURI = "https://prod.example.com/liquidate/ETHUSD";
             const uri = brokerageProvider.testGetLiquidateUri("ETHUSD");
@@ -124,7 +126,7 @@ describe("Brokerage Provider", () => {
         });
 
         it("should return the URL for the development liquidate endpoint when isLive() returns false", () => {
-            const brokerageProvider = new ConcreteBrokerageProvider();
+            const brokerageProvider = new ConcreteBrokerageProvider(config);
             process.env.ENV = "development";
             const expectedURI = "https://dev.example.com/liquidate/ETHUSD";
             const uri = brokerageProvider.testGetLiquidateUri("ETHUSD");
@@ -134,7 +136,7 @@ describe("Brokerage Provider", () => {
 
     describe("getPositionsUri()", () => {
         it("should return the URL for the production positions endpoint when isLive() returns true", () => {
-            const brokerageProvider = new ConcreteBrokerageProvider();
+            const brokerageProvider = new ConcreteBrokerageProvider(config);
             process.env.ENV = "production";
             const expectedURI = "https://prod.example.com/positions";
             const uri = brokerageProvider.testGetPositionsUri();
@@ -142,7 +144,7 @@ describe("Brokerage Provider", () => {
         });
 
         it("should return the URL for the development positions endpoint when isLive() returns false", () => {
-            const brokerageProvider = new ConcreteBrokerageProvider();
+            const brokerageProvider = new ConcreteBrokerageProvider(config);
             process.env.ENV = "development";
             const expectedURI = "https://dev.example.com/positions";
             const uri = brokerageProvider.testGetPositionsUri();
@@ -152,7 +154,7 @@ describe("Brokerage Provider", () => {
 
     describe("getSecuritiesQueryStringParams()", () => {
         it("should return the query string params for the securities endpoint", () => {
-            const brokerageProvider = new ConcreteBrokerageProvider();
+            const brokerageProvider = new ConcreteBrokerageProvider(config);
             const expectedQueryStringParams = "foo=bar";
             const queryStringParams = brokerageProvider.testGetSecuritiesQueryStringParams();
             expect(queryStringParams).toEqual(expectedQueryStringParams);
@@ -161,7 +163,7 @@ describe("Brokerage Provider", () => {
 
     describe("getBuyQueryStringParams()", () => {
         it("should return the query string params for the buy endpoint", () => {
-            const brokerageProvider = new ConcreteBrokerageProvider();
+            const brokerageProvider = new ConcreteBrokerageProvider(config);
             const expectedQueryStringParams = "foo=bar";
             const queryStringParams = brokerageProvider.testGetBuyQueryStringParams({} as any);
             expect(queryStringParams).toEqual(expectedQueryStringParams);
@@ -170,7 +172,7 @@ describe("Brokerage Provider", () => {
 
     describe("getSellQueryStringParams()", () => {
         it("should return the query string params for the sell endpoint", () => {
-            const brokerageProvider = new ConcreteBrokerageProvider();
+            const brokerageProvider = new ConcreteBrokerageProvider(config);
             const expectedQueryStringParams = "foo=bar";
             const queryStringParams = brokerageProvider.testGetSellQueryStringParams({} as any);
             expect(queryStringParams).toEqual(expectedQueryStringParams);
@@ -179,7 +181,7 @@ describe("Brokerage Provider", () => {
 
     describe("getHistoricalPriceDataQueryStringParams()", () => {
         it("should return the query string params for the historical price data endpoint", () => {
-            const brokerageProvider = new ConcreteBrokerageProvider();
+            const brokerageProvider = new ConcreteBrokerageProvider(config);
             const expectedQueryStringParams = "foo=bar";
             const queryStringParams = brokerageProvider.testGetHistoricalPriceDataQueryStringParams({} as any);
             expect(queryStringParams).toEqual(expectedQueryStringParams);
@@ -188,7 +190,7 @@ describe("Brokerage Provider", () => {
 
     describe("getRequestHeaders()", () => {
         it("should return the request headers", () => {
-            const brokerageProvider = new ConcreteBrokerageProvider();
+            const brokerageProvider = new ConcreteBrokerageProvider(config);
             const expectedHeaders = {
                 foo: "bar",
                 accept: "application/json",
@@ -200,7 +202,7 @@ describe("Brokerage Provider", () => {
 
     describe("getSecuritiesHeaders()", () => {
         it("should return the headers for the securities endpoint", () => {
-            const brokerageProvider = new ConcreteBrokerageProvider();
+            const brokerageProvider = new ConcreteBrokerageProvider(config);
             const expectedHeaders = {
                 foo: "bar",
                 accept: "application/json",
@@ -212,7 +214,7 @@ describe("Brokerage Provider", () => {
 
     describe("getBuyHeaders()", () => {
         it("should return the headers for the buy endpoint", () => {
-            const brokerageProvider = new ConcreteBrokerageProvider();
+            const brokerageProvider = new ConcreteBrokerageProvider(config);
             const expectedHeaders = {
                 foo: "bar",
                 accept: "application/json",
@@ -224,7 +226,7 @@ describe("Brokerage Provider", () => {
 
     describe("getSellHeaders()", () => {
         it("should return the headers for the sell endpoint", () => {
-            const brokerageProvider = new ConcreteBrokerageProvider();
+            const brokerageProvider = new ConcreteBrokerageProvider(config);
             const expectedHeaders = {
                 foo: "bar",
                 accept: "application/json",
@@ -236,7 +238,7 @@ describe("Brokerage Provider", () => {
 
     describe("getHistoricalPriceDataHeaders()", () => {
         it("should return the headers for the historical price data endpoint", () => {
-            const brokerageProvider = new ConcreteBrokerageProvider();
+            const brokerageProvider = new ConcreteBrokerageProvider(config);
             const expectedHeaders = {
                 foo: "bar",
                 accept: "application/json",
@@ -248,7 +250,7 @@ describe("Brokerage Provider", () => {
 
     describe("getLiquidateHeaders()", () => {
         it("should return the headers for the liquidate endpoint", () => {
-            const brokerageProvider = new ConcreteBrokerageProvider();
+            const brokerageProvider = new ConcreteBrokerageProvider(config);
             const expectedHeaders = {
                 foo: "bar",
                 accept: "application/json",
@@ -260,7 +262,7 @@ describe("Brokerage Provider", () => {
 
     describe("getPositionsHeaders()", () => {
         it("should return the headers for the positions endpoint", () => {
-            const brokerageProvider = new ConcreteBrokerageProvider();
+            const brokerageProvider = new ConcreteBrokerageProvider(config);
             const expectedHeaders = {
                 foo: "bar",
                 accept: "application/json",
