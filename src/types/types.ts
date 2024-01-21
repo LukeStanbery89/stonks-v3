@@ -175,3 +175,10 @@ export type SecurityStats = {
 export type SecurityStatsMap = {
     [symbol: string]: SecurityStatsMap;
 };
+
+// Trade types
+
+export enum TradeLoopStatus {
+    RUNNING = "RUNNING",
+    STOPPED = "STOPPED",
+}

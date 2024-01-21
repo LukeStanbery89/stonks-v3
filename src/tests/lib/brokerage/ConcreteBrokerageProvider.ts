@@ -104,6 +104,9 @@ class ConcreteBrokerageProvider extends BrokerageProvider {
     public testConvertToPriceDataArray(priceData: PriceData[]): PriceData[] {
         return this.convertToPriceDataArray(priceData);
     }
+    public testFilterOutNonTradableSecurities(securities: Security[]): Security[] {
+        return this.filterOutNonTradableSecurities(securities);
+    }
     public testGetSecuritiesUri(): string {
         return this.getSecuritiesUri();
     }

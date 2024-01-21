@@ -16,6 +16,7 @@ export type Config = {
         NOTIONAL: number;
         TIME_TO_EVALUATE_IN_MINUTES: number;
         DEFAULT_LIMIT: number;
+        TIME_BETWEEN_TRADES_IN_SECONDS: number;
     };
 };
 
@@ -34,5 +35,6 @@ export default {
         NOTIONAL: 10,
         TIME_TO_EVALUATE_IN_MINUTES: 20,
         DEFAULT_LIMIT: 1000,
+        TIME_BETWEEN_TRADES_IN_SECONDS: 60,
     },
 };
