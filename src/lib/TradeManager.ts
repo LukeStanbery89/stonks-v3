@@ -7,7 +7,7 @@ import { sleep } from "./utils";
 import constants from "../config/constants.json";
 
 export class TradeManager {
-    private shouldContinue = false;
+    protected shouldContinue = false;
     private brokerageProvider: BrokerageProvider;
     private config: Config;
 

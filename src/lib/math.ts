@@ -5,7 +5,7 @@ import { PriceData } from "../types/types";
  * @param bars Price data
  * @returns number
  */
-function calculateSampleMean(bars: PriceData[]): number {
+export function calculateSampleMean(bars: PriceData[]): number {
     return bars.reduce((sum, bar) => sum + bar.close, 0) / bars.length;
 }
 
@@ -17,7 +17,7 @@ function calculateSampleMean(bars: PriceData[]): number {
  * @param bars
  * @returns number
  */
-function calculateSlope(bars: PriceData[]): number {
+export function calculateSlope(bars: PriceData[]): number {
     const n = bars.length;
     const a = n * bars.reduce((sum, bar, i) => sum + ((i+1) * bar.close), 0);
     const sumOfXIndices = n * (n + 1) / 2;
@@ -35,7 +35,7 @@ function calculateSlope(bars: PriceData[]): number {
  * @param sampleMean Sample mean
  * @returns { stdDev: number; sumOfSquares: number; sampleVariance: number; upperBand: number; lowerBand: number; }
  */
-function calculateStdDev(bars: PriceData[], sampleMean: number): { stdDev: number; sumOfSquares: number; sampleVariance: number; upperBand: number; lowerBand: number; } {
+export function calculateStdDev(bars: PriceData[], sampleMean: number): { stdDev: number; sumOfSquares: number; sampleVariance: number; upperBand: number; lowerBand: number; } {
     const sumOfSquares: number = bars.reduce((sum, bar) => sum + Math.pow(bar.close - sampleMean, 2), 0);
     const sampleVariance: number = sumOfSquares / (bars.length - 1); // Sample variance, so divide by n - 1
     const stdDev: number = Math.sqrt(sampleVariance);
@@ -59,7 +59,7 @@ function calculateStdDev(bars: PriceData[], sampleMean: number): { stdDev: numbe
  * @param stdDev Standard deviation
  * @returns { upperBand: number; lowerBand: number; }
  */
-function calculateStdDevBounds(sampleMean: number, stdDev: number): { upperBand: number; lowerBand: number; } {
+export function calculateStdDevBounds(sampleMean: number, stdDev: number): { upperBand: number; lowerBand: number; } {
     const upperBand: number = sampleMean + (stdDev / 2);
     const lowerBand: number = sampleMean - (stdDev / 2);
     return { upperBand, lowerBand };
@@ -72,14 +72,6 @@ function calculateStdDevBounds(sampleMean: number, stdDev: number): { upperBand:
  * @param decimals Number of decimal places to round to
  * @returns number
  */
-function round(value: number, decimals: number): number {
+export function round(value: number, decimals: number): number {
     return Number(Math.round(Number(value + "e" + decimals)) + "e-" + decimals);
 }
-
-export {
-    calculateSampleMean,
-    calculateSlope,
-    calculateStdDevBounds,
-    calculateStdDev,
-    round,
-};
