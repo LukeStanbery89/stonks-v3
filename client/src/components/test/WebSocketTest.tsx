@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
 import socketEmitter from "../../lib/socketEmitter";
+import constants from "../../config/constants.json";
 
 const WebSocketTest = () => {
     const [data, setData] = useState<{ message: string }>({ message: "" });
 
     function emitTestWebSocketEvent() {
         setData({ message: "Emitting event..." });
-        socketEmitter.emit("my_websocket_event", { data: "WebSocket data from the client" });
+        socketEmitter.emit(constants.SOCKET_EVENTS.MY_WEBSOCKET_EVENT, { data: "WebSocket data from the client" });
     }
 
     useEffect(() => {

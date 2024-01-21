@@ -1,0 +1,20 @@
+{
+    "EVENTS": {
+        "MY_EVENT": "my_event",
+        "REPORT_TRADE_LOOP_PROGRESS": "report_trade_loop_progress",
+        "REPORT_TRADE_LOOP_STATUS": "report_trade_loop_status",
+        "UPDATE_SIM_STATUS": "update_sim_status",
+        "UPDATE_SIM_PROGRESS": "update_sim_progress"
+    },
+    "SOCKET_EVENTS": {
+        "MY_WEBSOCKET_EVENT": "my_websocket_event",
+        "START_SIMULATION": "start_simulation",
+        "STOP_SIMULATION": "stop_simulation",
+        "TRADE_LOOP_START": "trade_loop_start",
+        "TRADE_LOOP_UPDATE": "trade_loop_update",
+        "TRADE_LOOP_END": "trade_loop_end",
+        "UPDATE": "update",
+        "UPDATE_SIM_STATUS": "update_sim_status",
+        "UPDATE_SIM_PROGRESS": "update_sim_progress"
+    }
+}

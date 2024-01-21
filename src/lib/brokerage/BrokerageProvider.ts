@@ -85,6 +85,10 @@ abstract class BrokerageProvider {
         return positions.map((position: ProviderPosition) => this.convertToPosition(position));
     }
 
+    protected filterOutNonTradableSecurities(securities: Security[]): Security[] {
+        return securities.filter((security: Security) => security.symbol.endsWith("/USD"));
+    }
+
     // URI methods
     protected getSecuritiesUri(): string {
         return `${this.getDomain()}${this.securitiesPath}`;
@@ -194,7 +198,8 @@ abstract class BrokerageProvider {
         const headers = this.getSecuritiesHeaders();
         const response = await axios.get(securitiesURI, { headers });
         console.log("securities response", response.data);
-        return this.convertToSecuritiesArray(response.data);
+        const securities: Security[] = this.convertToSecuritiesArray(response.data);
+        return this.filterOutNonTradableSecurities(securities);
     }
 
     /**
@@ -330,7 +335,7 @@ abstract class BrokerageProvider {
                 // Security is not owned
             } else if (error?.response?.status === 422) {
                 // Security does not exist
-                throw new Error(`Security ${symbol} does not exist`);
+                throw new Error(`BrokerageProvider::isSecurityOwned() - Security ${symbol} does not exist`);
             } else {
                 // Something else went wrong. Re-throw the error.
                 throw error;

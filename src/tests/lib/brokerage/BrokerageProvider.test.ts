@@ -71,7 +71,7 @@ describe("Brokerage Provider", () => {
             }
 
             // Assert
-            expect(error).toEqual(new Error("Security FAKEUSD does not exist"));
+            expect(error).toEqual(new Error("BrokerageProvider::isSecurityOwned() - Security FAKEUSD does not exist"));
         });
 
         it("should throw an error if the axios request fails", async () => {
@@ -124,6 +124,25 @@ describe("Brokerage Provider", () => {
             ];
             const priceData = brokerageProvider.testConvertToPriceDataArray(providerPriceData);
             expect(priceData).toEqual(expectedPriceData);
+        });
+    });
+
+    describe("filterOutNonTradableSecurities()", () => {
+        it("should filter out securities that are not tradable", () => {
+            const brokerageProvider = new ConcreteBrokerageProvider(config);
+            const securities = [
+                { symbol: "ETH/USD", name: "Ethereum" },
+                { symbol: "BTC/USD", name: "Bitcoin" },
+                { symbol: "ETH/USDT", name: "Ethereum" },
+                { symbol: "BTC/USDT", name: "Bitcoin" },
+                { symbol: "AAPL", name: "Apple" },
+            ];
+            const expectedSecurities = [
+                { symbol: "ETH/USD", name: "Ethereum" },
+                { symbol: "BTC/USD", name: "Bitcoin" },
+            ];
+            const filteredSecurities = brokerageProvider.testFilterOutNonTradableSecurities(securities);
+            expect(filteredSecurities).toEqual(expectedSecurities);
         });
     });
 

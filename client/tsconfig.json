@@ -5,7 +5,8 @@
         "jsx": "react",
         "esModuleInterop": true,
         "outDir": "build",
-        "moduleResolution": "Node"
+        "moduleResolution": "Node",
+        "resolveJsonModule": true
     },
     "exclude": [
         "node_modules"

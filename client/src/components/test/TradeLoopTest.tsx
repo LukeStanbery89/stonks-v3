@@ -3,10 +3,7 @@ import socketEmitter from "../../lib/socketEmitter";
 import { RootState } from "../../types/types";
 import { useSelector } from "react-redux";
 import ProgressBar from "../ProgressBar";
-
-const TRADE_LOOP_START = "trade_loop_start";
-const TRADE_LOOP_UPDATE = "trade_loop_update";
-const TRADE_LOOP_END = "trade_loop_end";
+import constants from "../../config/constants.json";
 
 const resultStyle = {
     background: "#EEE",
@@ -21,7 +18,7 @@ const WebSocketTest = () => {
 
     function emitTestWebSocketEvent() {
         setData({ message: "Emitting event..." });
-        socketEmitter.emit(TRADE_LOOP_START);
+        socketEmitter.emit(constants.SOCKET_EVENTS.TRADE_LOOP_START);
     }
 
     useEffect(() => {
@@ -32,13 +29,13 @@ const WebSocketTest = () => {
         };
 
         // Register the event listener only once
-        socketEmitter.on(TRADE_LOOP_UPDATE, handleUpdate);
-        socketEmitter.on(TRADE_LOOP_END, handleUpdate);
+        socketEmitter.on(constants.SOCKET_EVENTS.TRADE_LOOP_UPDATE, handleUpdate);
+        socketEmitter.on(constants.SOCKET_EVENTS.TRADE_LOOP_END, handleUpdate);
 
         // Clean up the event listener when the component is unmounted
         return () => {
-            socketEmitter.off(TRADE_LOOP_END, handleUpdate);
-            socketEmitter.off(TRADE_LOOP_END, handleUpdate);
+            socketEmitter.off(constants.SOCKET_EVENTS.TRADE_LOOP_END, handleUpdate);
+            socketEmitter.off(constants.SOCKET_EVENTS.TRADE_LOOP_END, handleUpdate);
         };
     }, []);
 

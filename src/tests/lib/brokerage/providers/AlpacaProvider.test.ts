@@ -39,12 +39,89 @@ describe("Alpaca Provider", () => {
             // Arrange
             const alpacaProvider = new AlpacaProvider(config);
 
-            const expectedSecurities = mockSecuritiesResponse.map(security => {
-                return {
-                    symbol: security.symbol,
-                    name: security.name,
-                };
-            });
+            // Only securities ending in "/USD" are buyable
+            const expectedSecurities = [
+                {
+                    name: "Dogecoin / US Dollar",
+                    symbol: "DOGE/USD",
+                },
+                {
+                    name: "The Graph / US Dollar",
+                    symbol: "GRT/USD",
+                },
+                {
+                    name: "Curve / US Dollar",
+                    symbol: "CRV/USD",
+                },
+                {
+                    name: "Bitcoin Cash / US Dollar",
+                    symbol: "BCH/USD",
+                },
+                {
+                    name: "Bitcoin  / US Dollar",
+                    symbol: "BTC/USD",
+                },
+                {
+                    name: "Ethereum / US Dollar",
+                    symbol: "ETH/USD",
+                },
+                {
+                    name: "Uniswap / US Dollar",
+                    symbol: "UNI/USD",
+                },
+                {
+                    name: "USDC/USD pair",
+                    symbol: "USDC/USD",
+                },
+                {
+                    name: "USD Tether / US Dollar",
+                    symbol: "USDT/USD",
+                },
+                {
+                    name: "Tezos / US Dollar",
+                    symbol: "XTZ/USD",
+                },
+                {
+                    name: "Litecoin / US Dollar",
+                    symbol: "LTC/USD",
+                },
+                {
+                    name: "Chainlink / US Dollar",
+                    symbol: "LINK/USD",
+                },
+                {
+                    name: "Maker / US Dollar",
+                    symbol: "MKR/USD",
+                },
+                {
+                    name: "Shiba Inu / US Dollar",
+                    symbol: "SHIB/USD",
+                },
+                {
+                    name: "Aave / US Dollar",
+                    symbol: "AAVE/USD",
+                },
+                {
+                    name: "SushiSwap / US Dollar",
+                    symbol: "SUSHI/USD",
+                },
+                {
+                    name: "Yearn Finance / US Dollar",
+                    symbol: "YFI/USD",
+                },
+                {
+                    name: "Polkadot / US Dollar",
+                    symbol: "DOT/USD",
+                },
+                {
+                    name: "Avalanche / US Dollar",
+                    symbol: "AVAX/USD",
+                },
+                {
+                    name: "Basic Attention Token / US Dollar",
+                    symbol: "BAT/USD",
+                },
+            ];
 
             // Mock the response from axios
             jest.spyOn(axios, "get").mockResolvedValueOnce({ data: mockSecuritiesResponse });
