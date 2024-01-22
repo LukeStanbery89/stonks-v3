@@ -18,7 +18,7 @@
         "start": "node dist/app.bundle.js",
         "test": "npm run test:server && npm run test:client",
         "test:client": "cd client && npm run test",
-        "test:server": "jest"
+        "test:server": "jest --runInBand --detectOpenHandles"
     },
     "dependencies": {
         "@popperjs/core": "^2.11.8",

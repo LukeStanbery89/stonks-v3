@@ -15,7 +15,7 @@ module.exports = {
         "/node_modules/",
         "/tests/",
     ],
-    coverageReporters: ["text", "html"],
+    coverageReporters: ["text", "html", "lcov"],
     testPathIgnorePatterns: ["/client/"],
     // verbose: true,
 };

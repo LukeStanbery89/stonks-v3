@@ -6,8 +6,8 @@ import { calculateSampleMean, calculateSlope, calculateStdDev } from "./math";
 import { sleep } from "./utils";
 import constants from "../config/constants.json";
 
-export class TradeService {
-    private shouldContinue = false;
+export class TradeManager {
+    protected shouldContinue = false;
     private brokerageProvider: BrokerageProvider;
     private config: Config;
 
