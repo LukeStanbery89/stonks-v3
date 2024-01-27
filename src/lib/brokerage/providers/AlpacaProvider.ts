@@ -119,6 +119,7 @@ class AlpacaProvider extends BrokerageProvider {
         };
     }
 
+    // Helper methods
     public calculateFeesForOrder(order: Order, currentPrice: number): number {
         // Alpaca charges different fees for buy and sell orders
         let feePercentage = 1;
@@ -137,6 +138,10 @@ class AlpacaProvider extends BrokerageProvider {
         }
 
         return netFee;
+    }
+
+    protected getPositionSymbol(position: AlpacaPosition): string {
+        return position.symbol;
     }
 
     // Header methods

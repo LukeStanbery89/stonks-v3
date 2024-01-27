@@ -562,20 +562,20 @@ describe("Alpaca Provider", () => {
     });
 
     describe("positions()", () => {
-        it("returns an array of Position objects", async () => {
+        it("returns an map of Position objects", async () => {
             // Arrange
             const alpacaProvider = new AlpacaProvider(config);
 
-            const expectedPositions = [
-                {
+            const expectedPositions = {
+                ETHUSD: {
                     symbol: "ETHUSD",
                     qty: 0.9975,
                 },
-                {
+                BTCUSD: {
                     symbol: "BTCUSD",
                     qty: 0.998,
                 },
-            ];
+            };
 
             // Mock the response from axios
             jest.spyOn(axios, "get").mockResolvedValueOnce({ data: mockGetPositionsResponse });

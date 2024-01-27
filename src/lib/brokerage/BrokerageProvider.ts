@@ -14,6 +14,7 @@ import {
     Position,
     ProviderPosition,
     Order,
+    PositionsMap,
 } from "../../types/types";
 import { Config } from "../../config";
 
@@ -55,6 +56,7 @@ abstract class BrokerageProvider {
     protected abstract convertToSellResult(sellResult: ProviderSellResult): SellResult;
     protected abstract convertToPriceData(priceData: ProviderPriceData): PriceData;
     protected abstract convertToPosition(position: ProviderPosition): Position;
+    protected abstract getPositionSymbol(position: ProviderPosition): string;
     public abstract calculateFeesForOrder(order: Order, currentPrice: number): number;
 
     constructor(config: Config) {
@@ -83,8 +85,10 @@ abstract class BrokerageProvider {
         return priceData.map((priceDatum: ProviderPriceData) => this.convertToPriceData(priceDatum));
     }
 
-    protected convertToPositionsArray(positions: ProviderPosition[]): Position[] {
-        return positions.map((position: ProviderPosition) => this.convertToPosition(position));
+    protected convertToPositionsMap(positions: ProviderPosition[]): PositionsMap {
+        const positionsMap: PositionsMap = {};
+        positions.map((position: ProviderPosition) => positionsMap[this.getPositionSymbol(position)] = this.convertToPosition(position));
+        return positionsMap;
     }
 
     protected filterOutNonTradableSecurities(securities: Security[]): Security[] {
@@ -282,9 +286,9 @@ abstract class BrokerageProvider {
     /**
      * Retrieves a list of positions held in the brokerage account.
      *
-     * @returns {Promise<Position[]>} A promise that resolves to an array of Security objects
+     * @returns {Promise<PositionsMap>} A promise that resolves to an array of Security objects
      */
-    public async positions(): Promise<Position[]> {
+    public async positions(): Promise<PositionsMap> {
         // Setup
         const positionsURI = `${this.getPositionsUri()}?${this.getPositionsQueryStringParams()}}`;
         const headers = this.getPositionsHeaders();
@@ -293,7 +297,7 @@ abstract class BrokerageProvider {
         const response = await axios.get(positionsURI, { headers });
 
         // Transform
-        const positions: Position[] = this.convertToPositionsArray(response.data);
+        const positions: PositionsMap = this.convertToPositionsMap(response.data);
 
         // Return
         return positions;

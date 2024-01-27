@@ -82,6 +82,10 @@ class ConcreteBrokerageProvider extends BrokerageProvider {
         return 0;
     }
 
+    protected getPositionSymbol(position: { symbol: string }): string {
+        return position.symbol;
+    }
+
     public historicalPriceData(priceDataParams: HistoricalPriceDataRequestParams): Promise<PriceData[]> {
         console.log(priceDataParams);
         return Promise.resolve(
