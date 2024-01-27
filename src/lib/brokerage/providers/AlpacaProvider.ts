@@ -8,6 +8,7 @@ import {
     BuyOrder,
     BuyResult,
     HistoricalPriceDataRequestParams,
+    Order,
     OrderType,
     Position,
     PriceData,
@@ -116,6 +117,26 @@ class AlpacaProvider extends BrokerageProvider {
             symbol: position.symbol,
             qty: Number(position.qty_available),
         };
+    }
+
+    protected calculateFees(order: Order, currentPrice: number): number {
+        // Alpaca charges different fees for buy and sell orders
+        let feePercentage = 1;
+        if (order.type === OrderType.BUY) {
+            feePercentage = this.config.ALPACA.BUY_ORDER_FEE_PERCENTAGE;
+        } else if (order.type === OrderType.SELL) {
+            feePercentage = this.config.ALPACA.SELL_ORDER_FEE_PERCENTAGE;
+        }
+
+        // Calculate the net fee
+        let netFee = 0;
+        if (order.notional) {
+            netFee = order.notional * feePercentage;
+        } else if (order.qty) {
+            netFee = order.qty * currentPrice * feePercentage;
+        }
+
+        return netFee;
     }
 
     // Header methods

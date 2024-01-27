@@ -1,5 +1,5 @@
 import AlpacaProvider from "../../../../lib/brokerage/providers/AlpacaProvider";
-import { BuyOrder, OrderType, Position, SellOrder } from "../../../../types/types";
+import { BuyOrder, Order, OrderType, Position, SellOrder } from "../../../../types/types";
 import axios from "axios";
 import mockSecuritiesResponse from "../../../mocks/responses/alpaca/mockSecuritiesResponse.json";
 import mockBuyByQtyResponse from "../../../mocks/responses/alpaca/mockBuyByQtyResponse.json";
@@ -22,6 +22,10 @@ class TestAlpacaProvider extends AlpacaProvider {
 
     public testGetHistoricalPriceDataQueryStringParams(priceDataRequestParams: any): string {
         return this.getHistoricalPriceDataQueryStringParams(priceDataRequestParams);
+    }
+
+    public testCalculateFees(order: Order, currentPrice: number): number {
+        return this.calculateFees(order, currentPrice);
     }
 }
 
@@ -636,6 +640,60 @@ describe("Alpaca Provider", () => {
 
             // Assert
             await expect(positionPromise).rejects.toEqual(expectedError);
+        });
+    });
+
+    describe("calculateFees()", () => {
+        it("calculates the correct fee for a buy order", () => {
+            // Arrange
+            const testConfig = {
+                ...config,
+                ALPACA: {
+                    ...config.ALPACA,
+                    BUY_ORDER_FEE_PERCENTAGE: 0.03,
+                },
+            };
+            const alpacaProvider = new TestAlpacaProvider(testConfig);
+            const order: BuyOrder = {
+                type: OrderType.BUY,
+                symbol: "ETHUSD",
+                qty: 1,
+            };
+            const currentPrice = 100;
+
+            const expectedFee = 3;
+
+            // Act
+            const fee = alpacaProvider.testCalculateFees(order, currentPrice);
+
+            // Assert
+            expect(fee).toEqual(expectedFee);
+        });
+
+        it("calculates the correct fee for a sell order", () => {
+            // Arrange
+            const testConfig = {
+                ...config,
+                ALPACA: {
+                    ...config.ALPACA,
+                    SELL_ORDER_FEE_PERCENTAGE: 0.03,
+                },
+            };
+            const alpacaProvider = new TestAlpacaProvider(testConfig);
+            const order: SellOrder = {
+                type: OrderType.SELL,
+                symbol: "ETHUSD",
+                qty: 1,
+            };
+            const currentPrice = 100;
+
+            const expectedFee = 3;
+
+            // Act
+            const fee = alpacaProvider.testCalculateFees(order, currentPrice);
+
+            // Assert
+            expect(fee).toEqual(expectedFee);
         });
     });
 

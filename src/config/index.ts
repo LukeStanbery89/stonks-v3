@@ -11,6 +11,8 @@ export type Config = {
         APCA_API_KEY_ID: string;
         APCA_API_SECRET_KEY: string;
         HISTORICAL_PRICE_DATA_TIME_FRAME: string;
+        BUY_ORDER_FEE_PERCENTAGE: number;
+        SELL_ORDER_FEE_PERCENTAGE: number;
     };
     TRADE: {
         NOTIONAL: number;
@@ -32,6 +34,8 @@ export default {
         APCA_API_KEY_ID: process.env.APCA_API_KEY_ID || "",
         APCA_API_SECRET_KEY: process.env.APCA_API_SECRET_KEY || "",
         HISTORICAL_PRICE_DATA_TIME_FRAME: "1Min",
+        BUY_ORDER_FEE_PERCENTAGE: 0.03,
+        SELL_ORDER_FEE_PERCENTAGE: 0.003,
     },
     TRADE: {
         NOTIONAL: 100,
