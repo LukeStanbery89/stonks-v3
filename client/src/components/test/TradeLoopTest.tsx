@@ -10,6 +10,7 @@ const resultStyle = {
     borderRadius: "5px",
     padding: "10px",
     border: "1px solid #666",
+    maxHeight: "500px",
 };
 
 const WebSocketTest = () => {

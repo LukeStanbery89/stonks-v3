@@ -59,7 +59,7 @@ describe("TradeManager", () => {
             expect(emitSpies).toHaveBeenCalledTimes(3);
             expect(emitSpies).toHaveBeenCalledWith("report_trade_loop_status", { status: TradeLoopStatus.RUNNING });
             expect(emitSpies).toHaveBeenCalledWith("report_trade_loop_status", { status: TradeLoopStatus.STOPPED });
-            expect(emitSpies).toHaveBeenCalledWith("report_trade_loop_progress", { progress: 1 });
+            expect(emitSpies).toHaveBeenCalledWith("report_trade_loop_progress", { progress: 1, securityStatsMap: {} });
         });
     });
 

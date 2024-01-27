@@ -153,7 +153,7 @@ export class TradeManager {
         console.log(securityStatsMap);
 
         // Report 100% progress
-        eventEmitter.emit(constants.EVENTS.REPORT_TRADE_LOOP_PROGRESS, { progress: 1 });
+        eventEmitter.emit(constants.EVENTS.REPORT_TRADE_LOOP_PROGRESS, { progress: 1, securityStatsMap });
 
         // Report the stats for this iteration
         return securityStatsMap;
