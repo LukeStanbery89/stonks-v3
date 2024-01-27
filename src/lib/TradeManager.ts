@@ -3,6 +3,7 @@ import {
     Decision,
     OrderType,
     Position,
+    PositionsMap,
     PriceData,
     Security,
     SecurityStats,
@@ -99,7 +100,7 @@ export class TradeManager {
         const securities: Security[] = await this.brokerageProvider.securities();
 
         // Get positions
-        const positions: Position[] = await this.brokerageProvider.positions();
+        const positions: PositionsMap = await this.brokerageProvider.positions();
 
         for (let i = 0; i < securities.length; i++) {
             // Report progress
@@ -108,14 +109,10 @@ export class TradeManager {
             const security: Security = securities[i];
             console.log("Evaluating security:", security.symbol);
 
-            // Find the current position for this security
-            // FIXME: Refactor BrokerageProvider.positions() to return a map of positions for faster lookup
-            const position = positions.find((position) => position.symbol === security.symbol);
-
             let securityStats: SecurityStats;
             try {
                 // Gather stats for this security
-                securityStats = await this.compileStatsForSecurity(security, position);
+                securityStats = await this.compileStatsForSecurity(security, positions[security.symbol]);
 
             } catch (error) {
                 console.error("error compiling stats for security. Skipping...", error);

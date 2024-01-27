@@ -150,6 +150,10 @@ export type Position = {
     qty: number;
 }
 
+export type PositionsMap = {
+    [symbol: string]: Position;
+}
+
 export enum Decision {
     BUY = "BUY",
     SELL = "SELL",
