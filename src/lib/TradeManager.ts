@@ -1,5 +1,5 @@
 import { Config } from "../config";
-import { Decision, PriceData, Security, SecurityStats, SecurityStatsMap, TradeLoopStatus } from "../types/types";
+import { Decision, OrderType, PriceData, Security, SecurityStats, SecurityStatsMap, TradeLoopStatus } from "../types/types";
 import BrokerageProvider from "./brokerage/BrokerageProvider";
 import eventEmitter from "./eventEmitter";
 import { calculateSampleMean, calculateSlope, calculateStdDev } from "./math";
@@ -84,7 +84,7 @@ export class TradeManager {
      * @returns { Promise<SecurityStatsMap> }
      */
     public async executeTradesOnce(): Promise<SecurityStatsMap> {
-        const securityStats: SecurityStatsMap = {};
+        const securityStatsMap: SecurityStatsMap = {};
 
         // Get the securities available for trading
         const securities: Security[] = await this.brokerageProvider.securities();
@@ -94,25 +94,53 @@ export class TradeManager {
             eventEmitter.emit(constants.EVENTS.REPORT_TRADE_LOOP_PROGRESS, { progress: i / securities.length });
 
             const security: Security = securities[i];
+            console.log("Evaluating security:", security.symbol);
 
+            let securityStats: SecurityStats;
             try {
                 // Gather stats for this security
-                securityStats[security.symbol] = await this.compileStatsForSecurity(security);
+                securityStats = await this.compileStatsForSecurity(security);
+
             } catch (error) {
                 console.error("error compiling stats for security. Skipping...", error);
                 continue;
             }
+
+            // Take action based on the decision
+            try {
+                switch (securityStats.decision) {
+                case Decision.BUY:
+                    // TODO: Add a check to see if we have enough buying power to buy the security
+                    console.log("Decision: Buy");
+                    await this.brokerageProvider.buy({
+                        type: OrderType.BUY,
+                        symbol: security.symbol,
+                        notional: this.config.TRADE.NOTIONAL,
+                    });
+                    break;
+                case Decision.SELL:
+                    console.log("Decision: Sell");
+                    await this.brokerageProvider.liquidate(security.symbol);
+                    break;
+                default:
+                    console.log("Decision: Hold");
+                }
+            } catch (error) {
+                console.error("error buying security. Skipping...", error);
+                continue;
+            }
+
+            // Add the current security stats to the map
+            securityStatsMap[security.symbol] = securityStats;
         }
 
-        console.log(securityStats);
-
-        // TODO: Take action based on the decision
+        console.log(securityStatsMap);
 
         // Report 100% progress
         eventEmitter.emit(constants.EVENTS.REPORT_TRADE_LOOP_PROGRESS, { progress: 1 });
 
         // Report the stats for this iteration
-        return securityStats;
+        return securityStatsMap;
     }
 
     private async compileStatsForSecurity(security: Security): Promise<SecurityStats> {
@@ -144,7 +172,7 @@ export class TradeManager {
         const slope: number = calculateSlope(bars);
 
         // Make a decision based on the current price and the slope of the trendline
-        const { decision, decisionReason } = renderDecision(isOwned, currentPrice, upperBand, slope, lowerBand);
+        const { decision, decisionReason } = renderDecision(isOwned, currentPrice, upperBand, slope, lowerBand, this.config);
 
         // Write the statistics to the object
         const securityStats: SecurityStats = {
@@ -167,23 +195,23 @@ export class TradeManager {
 }
 
 // TODO: Figure out how to generalize this into a strategy pattern
-function renderDecision(isOwned: boolean, currentPrice: number, upperBand: number, slope: number, lowerBand: number): { decision: Decision; decisionReason: string; } {
+function renderDecision(isOwned: boolean, currentPrice: number, upperBand: number, slope: number, lowerBand: number, config: Config): { decision: Decision; decisionReason: string; } {
     let decision: Decision;
     let decisionReason: string;
     if (isOwned) {
-        if (currentPrice > upperBand && slope > 0) {
+        if (currentPrice > upperBand && slope > config.TRADE.BUY_SLOPE_THRESHOLD) {
             decision = Decision.HOLD;
             decisionReason = "Price is high, but could go higher. Hold.";
-        } else if (currentPrice > upperBand && slope <= 0) {
+        } else if (currentPrice > upperBand && slope <= config.TRADE.SELL_SLOPE_THRESHOLD) {
             decision = Decision.SELL;
             decisionReason = "Sell high";
-        } else if (currentPrice < lowerBand && slope > 0) {
+        } else if (currentPrice < lowerBand && slope > config.TRADE.BUY_SLOPE_THRESHOLD) {
             decision = Decision.BUY;
             decisionReason = "Buy low";
-        } else if (currentPrice < lowerBand && slope <= 0) {
+        } else if (currentPrice < lowerBand && slope <= config.TRADE.SELL_SLOPE_THRESHOLD) {
             decision = Decision.SELL;
             decisionReason = "Price is low and declining. Cut losses.";
-        } else if (slope <= 0) {
+        } else if (slope <= config.TRADE.SELL_SLOPE_THRESHOLD) {
             decision = Decision.SELL;
             decisionReason = "Trend is down. Cut losses.";
         } else {
@@ -191,19 +219,19 @@ function renderDecision(isOwned: boolean, currentPrice: number, upperBand: numbe
             decisionReason = "Price is stagnant. Hold.";
         }
     } else {
-        if (currentPrice > upperBand && slope > 0) {
+        if (currentPrice > upperBand && slope > config.TRADE.BUY_SLOPE_THRESHOLD) {
             decision = Decision.HOLD;
             decisionReason = "Price is rising, but could drop again. Avoid buying high.";
-        } else if (currentPrice > upperBand && slope <= 0) {
+        } else if (currentPrice > upperBand && slope <= config.TRADE.SELL_SLOPE_THRESHOLD) {
             decision = Decision.HOLD;
             decisionReason = "Price is high and declining. Wait for price drop.";
-        } else if (currentPrice < lowerBand && slope > 0) {
+        } else if (currentPrice < lowerBand && slope > config.TRADE.BUY_SLOPE_THRESHOLD) {
             decision = Decision.BUY;
             decisionReason = "Buy low";
-        } else if (currentPrice < lowerBand && slope <= 0) {
+        } else if (currentPrice < lowerBand && slope <= config.TRADE.SELL_SLOPE_THRESHOLD) {
             decision = Decision.HOLD;
             decisionReason = "Price is low and declining. Wait for positive trend before buying.";
-        } else if (slope <= 0) {
+        } else if (slope <= config.TRADE.SELL_SLOPE_THRESHOLD) {
             decision = Decision.HOLD;
             decisionReason = "Trend is down. Wait for positive trend before buying.";
         } else {
