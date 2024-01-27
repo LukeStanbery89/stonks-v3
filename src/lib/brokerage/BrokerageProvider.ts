@@ -13,6 +13,7 @@ import {
     ProviderPriceData,
     Position,
     ProviderPosition,
+    Order,
 } from "../../types/types";
 import { Config } from "../../config";
 
@@ -54,6 +55,7 @@ abstract class BrokerageProvider {
     protected abstract convertToSellResult(sellResult: ProviderSellResult): SellResult;
     protected abstract convertToPriceData(priceData: ProviderPriceData): PriceData;
     protected abstract convertToPosition(position: ProviderPosition): Position;
+    public abstract calculateFeesForOrder(order: Order, currentPrice: number): number;
 
     constructor(config: Config) {
         this.config = config;

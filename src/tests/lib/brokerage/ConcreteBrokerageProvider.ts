@@ -1,5 +1,5 @@
 import BrokerageProvider from "../../../lib/brokerage/BrokerageProvider";
-import { BuyOrder, BuyResult, HistoricalPriceDataRequestParams, OrderType, Position, PriceData, Security, SellOrder, SellResult } from "../../../types/types";
+import { BuyOrder, BuyResult, HistoricalPriceDataRequestParams, Order, OrderType, Position, PriceData, Security, SellOrder, SellResult } from "../../../types/types";
 
 type Transformable = {
     transformed: boolean,
@@ -76,6 +76,10 @@ class ConcreteBrokerageProvider extends BrokerageProvider {
             ...position,
             transformed: true,
         };
+    }
+
+    public calculateFeesForOrder(order: Order, currentPrice: number): number {
+        return 0;
     }
 
     public historicalPriceData(priceDataParams: HistoricalPriceDataRequestParams): Promise<PriceData[]> {
