@@ -1,5 +1,14 @@
 import { Config } from "../config";
-import { Decision, OrderType, PriceData, Security, SecurityStats, SecurityStatsMap, TradeLoopStatus } from "../types/types";
+import {
+    Decision,
+    OrderType,
+    Position,
+    PriceData,
+    Security,
+    SecurityStats,
+    SecurityStatsMap,
+    TradeLoopStatus,
+} from "../types/types";
 import BrokerageProvider from "./brokerage/BrokerageProvider";
 import eventEmitter from "./eventEmitter";
 import { calculateSampleMean, calculateSlope, calculateStdDev } from "./math";
@@ -89,6 +98,9 @@ export class TradeManager {
         // Get the securities available for trading
         const securities: Security[] = await this.brokerageProvider.securities();
 
+        // Get positions
+        const positions: Position[] = await this.brokerageProvider.positions();
+
         for (let i = 0; i < securities.length; i++) {
             // Report progress
             eventEmitter.emit(constants.EVENTS.REPORT_TRADE_LOOP_PROGRESS, { progress: i / securities.length });
@@ -96,10 +108,14 @@ export class TradeManager {
             const security: Security = securities[i];
             console.log("Evaluating security:", security.symbol);
 
+            // Find the current position for this security
+            // FIXME: Refactor BrokerageProvider.positions() to return a map of positions for faster lookup
+            const position = positions.find((position) => position.symbol === security.symbol);
+
             let securityStats: SecurityStats;
             try {
                 // Gather stats for this security
-                securityStats = await this.compileStatsForSecurity(security);
+                securityStats = await this.compileStatsForSecurity(security, position);
 
             } catch (error) {
                 console.error("error compiling stats for security. Skipping...", error);
@@ -143,7 +159,7 @@ export class TradeManager {
         return securityStatsMap;
     }
 
-    private async compileStatsForSecurity(security: Security): Promise<SecurityStats> {
+    private async compileStatsForSecurity(security: Security, position?: Position): Promise<SecurityStats> {
         const symbol = security.symbol.replace("/", "");
         const isOwned: boolean = await this.brokerageProvider.isSecurityOwned(symbol);
 
@@ -174,9 +190,13 @@ export class TradeManager {
         // Make a decision based on the current price and the slope of the trendline
         const { decision, decisionReason } = renderDecision(isOwned, currentPrice, upperBand, slope, lowerBand, this.config);
 
+        // Calculate the approximate fees for buying or selling the security
+        const approxFees = await this.calculateFeesForOrder(decision, security, currentPrice, position);
+
         // Write the statistics to the object
         const securityStats: SecurityStats = {
             currentPrice,
+            approxFees,
             sampleMean,
             sumOfSquares,
             sampleVariance,
@@ -191,6 +211,27 @@ export class TradeManager {
         };
 
         return securityStats;
+    }
+
+    private async calculateFeesForOrder(decision: Decision, security: Security, currentPrice: number, position?: Position) {
+        let approxFees = 0;
+        if (decision === Decision.BUY) {
+            approxFees = this.brokerageProvider.calculateFeesForOrder({
+                type: OrderType.BUY,
+                symbol: security.symbol,
+                notional: this.config.TRADE.NOTIONAL,
+            }, currentPrice);
+        } else if (decision === Decision.SELL) {
+            if (!position) {
+                throw new Error("Cannot calculate fees for selling a security without a position");
+            }
+            approxFees = this.brokerageProvider.calculateFeesForOrder({
+                type: OrderType.SELL,
+                symbol: security.symbol,
+                qty: position.qty,
+            }, currentPrice);
+        }
+        return approxFees;
     }
 }
 

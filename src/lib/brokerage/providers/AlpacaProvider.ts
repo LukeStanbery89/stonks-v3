@@ -119,7 +119,7 @@ class AlpacaProvider extends BrokerageProvider {
         };
     }
 
-    protected calculateFees(order: Order, currentPrice: number): number {
+    public calculateFeesForOrder(order: Order, currentPrice: number): number {
         // Alpaca charges different fees for buy and sell orders
         let feePercentage = 1;
         if (order.type === OrderType.BUY) {

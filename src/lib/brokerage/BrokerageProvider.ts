@@ -55,7 +55,7 @@ abstract class BrokerageProvider {
     protected abstract convertToSellResult(sellResult: ProviderSellResult): SellResult;
     protected abstract convertToPriceData(priceData: ProviderPriceData): PriceData;
     protected abstract convertToPosition(position: ProviderPosition): Position;
-    protected abstract calculateFees(order: Order, currentPrice: number): number;
+    public abstract calculateFeesForOrder(order: Order, currentPrice: number): number;
 
     constructor(config: Config) {
         this.config = config;

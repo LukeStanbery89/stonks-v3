@@ -78,7 +78,7 @@ class ConcreteBrokerageProvider extends BrokerageProvider {
         };
     }
 
-    protected calculateFees(order: Order, currentPrice: number): number {
+    public calculateFeesForOrder(order: Order, currentPrice: number): number {
         return 0;
     }
 

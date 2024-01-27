@@ -23,10 +23,6 @@ class TestAlpacaProvider extends AlpacaProvider {
     public testGetHistoricalPriceDataQueryStringParams(priceDataRequestParams: any): string {
         return this.getHistoricalPriceDataQueryStringParams(priceDataRequestParams);
     }
-
-    public testCalculateFees(order: Order, currentPrice: number): number {
-        return this.calculateFees(order, currentPrice);
-    }
 }
 
 describe("Alpaca Provider", () => {
@@ -664,7 +660,7 @@ describe("Alpaca Provider", () => {
             const expectedFee = 3;
 
             // Act
-            const fee = alpacaProvider.testCalculateFees(order, currentPrice);
+            const fee = alpacaProvider.calculateFeesForOrder(order, currentPrice);
 
             // Assert
             expect(fee).toEqual(expectedFee);
@@ -690,7 +686,7 @@ describe("Alpaca Provider", () => {
             const expectedFee = 3;
 
             // Act
-            const fee = alpacaProvider.testCalculateFees(order, currentPrice);
+            const fee = alpacaProvider.calculateFeesForOrder(order, currentPrice);
 
             // Assert
             expect(fee).toEqual(expectedFee);
