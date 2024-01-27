@@ -17,6 +17,8 @@ export type Config = {
         TIME_TO_EVALUATE_IN_MINUTES: number;
         DEFAULT_LIMIT: number;
         TIME_BETWEEN_TRADES_IN_SECONDS: number;
+        BUY_SLOPE_THRESHOLD: number;
+        SELL_SLOPE_THRESHOLD: number;
     };
 };
 
@@ -32,9 +34,11 @@ export default {
         HISTORICAL_PRICE_DATA_TIME_FRAME: "1Min",
     },
     TRADE: {
-        NOTIONAL: 10,
+        NOTIONAL: 100,
         TIME_TO_EVALUATE_IN_MINUTES: 20,
         DEFAULT_LIMIT: 1000,
         TIME_BETWEEN_TRADES_IN_SECONDS: 60,
+        BUY_SLOPE_THRESHOLD: 0.1,
+        SELL_SLOPE_THRESHOLD: -0.1,
     },
 };
