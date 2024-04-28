@@ -48,7 +48,7 @@ connection.connect(async (err) => {
     console.log("Connected to database!");
 
     createTableCommands.forEach((command) => {
-        connection.query(command, (err, results, fields) => {
+        connection.query(command, (err, results, _fields) => {
             if (err) {
                 console.error("Error creating table: ", err);
                 return;

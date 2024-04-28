@@ -1,5 +1,5 @@
 import AlpacaProvider from "../../../../lib/brokerage/providers/AlpacaProvider";
-import { BuyOrder, Order, OrderType, Position, SellOrder } from "../../../../types/types";
+import { BuyOrder, OrderType, Position, SellOrder } from "../../../../types/types";
 import axios from "axios";
 import mockSecuritiesResponse from "../../../mocks/responses/alpaca/mockSecuritiesResponse.json";
 import mockBuyByQtyResponse from "../../../mocks/responses/alpaca/mockBuyByQtyResponse.json";
