@@ -110,6 +110,6 @@
     "node_modules",
     "dist",
     "client",
-    "client_OLD"
+    "scripts",
   ]
 }

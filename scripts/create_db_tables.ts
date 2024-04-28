@@ -1,5 +1,5 @@
-const dotenv = require("dotenv");
-const mysql = require("mysql2");
+import dotenv from "dotenv";
+import mysql from "mysql2";
 
 dotenv.config();
 
@@ -11,7 +11,7 @@ const connection = mysql.createConnection({
 });
 
 const createTableCommands = [
-    `CREATE TABLE securities (
+    `CREATE TABLE IF NOT EXISTS securities (
         id bigint unsigned NOT NULL AUTO_INCREMENT,
         symbol varchar(20) NOT NULL,
         name varchar(255) NOT NULL,
@@ -21,7 +21,7 @@ const createTableCommands = [
         PRIMARY KEY (id)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;`,
 
-    `CREATE TABLE bars (
+    `CREATE TABLE IF NOT EXISTS bars (
         id bigint unsigned NOT NULL AUTO_INCREMENT,
         security_id bigint unsigned NOT NULL,
         timestamp timestamp NOT NULL,
