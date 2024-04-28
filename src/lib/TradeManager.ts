@@ -1,5 +1,5 @@
-import { Config } from "../config";
 import {
+    Config,
     Decision,
     OrderType,
     Position,

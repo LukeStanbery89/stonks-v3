@@ -1,29 +1,6 @@
 import dotenv from "dotenv";
 dotenv.config();
 
-export type Config = {
-    PORT: string | number;
-    RATE_LIMITER: {
-        windowMs: number;
-        max: number;
-    };
-    ALPACA: {
-        APCA_API_KEY_ID: string;
-        APCA_API_SECRET_KEY: string;
-        HISTORICAL_PRICE_DATA_TIME_FRAME: string;
-        BUY_ORDER_FEE_PERCENTAGE: number;
-        SELL_ORDER_FEE_PERCENTAGE: number;
-    };
-    TRADE: {
-        NOTIONAL: number;
-        TIME_TO_EVALUATE_IN_MINUTES: number;
-        DEFAULT_LIMIT: number;
-        TIME_BETWEEN_TRADES_IN_SECONDS: number;
-        BUY_SLOPE_THRESHOLD: number;
-        SELL_SLOPE_THRESHOLD: number;
-    };
-};
-
 export default {
     PORT: process.env.PORT || 3000,
     RATE_LIMITER: {
