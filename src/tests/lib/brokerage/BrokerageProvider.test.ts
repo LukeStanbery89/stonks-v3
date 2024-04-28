@@ -1,7 +1,6 @@
 import axios from "axios";
 import config from "../../../config";
 import ConcreteBrokerageProvider from "./ConcreteBrokerageProvider";
-import MockAdapter from "axios-mock-adapter";
 
 describe("Brokerage Provider", () => {
     beforeAll(() => {
@@ -37,10 +36,14 @@ describe("Brokerage Provider", () => {
 
         it("should return false if the security is not owned and the response is 404", async () => {
             // Mock
-            const mockAdapter = new MockAdapter(axios);
-            mockAdapter.onGet("https://dev.example.com/position/BTCUSD?").reply(404, {
-                code: 40410000,
-                message: "position does not exist",
+            jest.spyOn(axios, "get").mockRejectedValue({
+                response: {
+                    status: 404,
+                    data: {
+                        code: 40410000,
+                        message: "position does not exist",
+                    },
+                },
             });
             const brokerageProvider = new ConcreteBrokerageProvider(config);
 
@@ -54,10 +57,14 @@ describe("Brokerage Provider", () => {
 
         it("should return false if the security is not owned and the response is 422", async () => {
             // Mock
-            const mockAdapter = new MockAdapter(axios);
-            mockAdapter.onGet("https://dev.example.com/position/FAKEUSD?").reply(422, {
-                code: 42210000,
-                message: "invalid symbol",
+            jest.spyOn(axios, "get").mockRejectedValue({
+                response: {
+                    status: 422,
+                    data: {
+                        code: 42210000,
+                        message: "invalid symbol",
+                    },
+                },
             });
             const brokerageProvider = new ConcreteBrokerageProvider(config);
 
@@ -76,8 +83,7 @@ describe("Brokerage Provider", () => {
 
         it("should throw an error if the axios request fails", async () => {
             // Mock
-            const mockAdapter = new MockAdapter(axios);
-            mockAdapter.onGet("https://dev.example.com/position/BTCUSD?").networkError();
+            jest.spyOn(axios, "get").mockRejectedValue(new Error("Network Error"));
             const brokerageProvider = new ConcreteBrokerageProvider(config);
 
             // Act
