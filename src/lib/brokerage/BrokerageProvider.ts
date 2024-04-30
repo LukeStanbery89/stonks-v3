@@ -15,8 +15,8 @@ import {
     ProviderPosition,
     Order,
     PositionsMap,
+    Config,
 } from "../../types/types";
-import { Config } from "../../config";
 
 abstract class BrokerageProvider {
     // General props

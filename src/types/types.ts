@@ -1,3 +1,5 @@
+import config from "../config";
+
 // Generic Types
 export type NullOrUndefined = null | undefined;
 export type NullableNumber = number | null;
@@ -10,6 +12,8 @@ export enum RestMethods {
     UPDATE = "UPDATE",
     DELETE = "DELETE",
 }
+
+export type Config = typeof config;
 
 // Simulation Types
 export enum SimulationStatus {
@@ -181,7 +185,6 @@ export type SecurityStatsMap = {
 };
 
 // Trade types
-
 export enum TradeLoopStatus {
     RUNNING = "RUNNING",
     STOPPED = "STOPPED",

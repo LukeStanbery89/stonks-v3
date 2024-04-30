@@ -1,4 +1,3 @@
-import { Config } from "../../../config";
 import {
     AlpacaBuyResult,
     AlpacaPosition,
@@ -7,6 +6,7 @@ import {
     AlpacaSellResult,
     BuyOrder,
     BuyResult,
+    Config,
     HistoricalPriceDataRequestParams,
     Order,
     OrderType,

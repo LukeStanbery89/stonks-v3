@@ -1,5 +1,5 @@
-// import AlpacaProvider from "../lib/brokerage/providers/AlpacaProvider";
-import config, { Config } from "../config";
+import config from "../config";
+import { Config } from "../types/types";
 import { TradeManager } from "../lib/TradeManager";
 import BrokerageProvider from "../lib/brokerage/BrokerageProvider";
 import AlpacaProvider from "../lib/brokerage/providers/AlpacaProvider";
