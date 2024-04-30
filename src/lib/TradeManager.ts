@@ -31,7 +31,7 @@ export class TradeManager {
      *
      * @returns { Promise<void> }
      */
-    public async start() {
+    public async start(): Promise<void> {
         this.shouldContinue = true;
         eventEmitter.emit(constants.EVENTS.REPORT_TRADE_LOOP_STATUS, { status: TradeLoopStatus.RUNNING });
         while(this.shouldContinue) {
