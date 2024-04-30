@@ -36,9 +36,11 @@ Stonks v3 provides the following npm scripts for different purposes:
 - `build`: Build the server and client code in production mode.
 - `build:client`: Build the client code.
 - `build:server`: Build the server code.
-- `dev`: Start the development server.
+- `db:create-tables`: Creates the database tables.
+- `dev`: Start the client and backend development servers.
 - `dev:client`: Start the client development server.
-- `dev:server`: Start the server in development mode.
+- `dev:server:watch`: Watch for changes to the backend development server.
+- `dev:server:serve`: Serve the backend development server.
 - `lint`: Run ESLint to check for lint errors.
 - `lint:fix`: Run ESLint and automatically fix lint errors.
 - `start`: Start the application.
