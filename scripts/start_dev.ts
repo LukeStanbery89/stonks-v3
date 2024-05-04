@@ -1,4 +1,4 @@
-const concurrently = require("concurrently");
+import concurrently from "concurrently";
 
 (async () => {
     try {
