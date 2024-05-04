@@ -9,7 +9,7 @@
         "build:client": "cd client && npm run build",
         "build:server": "webpack --config webpack.server.js",
         "db:create-tables": "ts-node scripts/create_db_tables.ts",
-        "dev": "node scripts/start_dev.js",
+        "dev": "ts-node scripts/start_dev.ts",
         "dev:client": "cd client && npm run dev",
         "dev:server:watch": "webpack --watch --config webpack.server.js",
         "dev:server:serve": "nodemon dist/app.bundle.js",
