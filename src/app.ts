@@ -4,6 +4,7 @@ import path from "path";
 import initLoaders from "./loaders";
 import routes from "./routes";
 import config from "./config";
+import Logger from "./lib/Logger";
 
 const app = express();
 const server = http.createServer(app);
@@ -19,5 +20,5 @@ app.use(routes);
 
 // Start the app
 server.listen(config.PORT, () => {
-    console.log(`Server running on port ${config.PORT}`);
+    Logger.log(`Server running on port ${config.PORT}`);
 });

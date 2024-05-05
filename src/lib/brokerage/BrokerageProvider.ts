@@ -17,6 +17,7 @@ import {
     PositionsMap,
     Config,
 } from "../../types/types";
+import Logger from "../Logger";
 
 abstract class BrokerageProvider {
     // General props
@@ -113,7 +114,7 @@ abstract class BrokerageProvider {
     }
 
     protected getLiquidateUri(symbol: string): string {
-        console.log("getLiquidateUri", symbol);
+        Logger.log("getLiquidateUri", symbol);
         return `${this.getDomain()}${this.liquidatePath}/${symbol}`;
     }
 
@@ -131,17 +132,17 @@ abstract class BrokerageProvider {
     }
 
     protected getBuyQueryStringParams(buyOrder: BuyOrder): string {
-        console.log("getBuyQueryStringParams", buyOrder);
+        Logger.log("getBuyQueryStringParams", buyOrder);
         return this.buyQueryStringParams;
     }
 
     protected getSellQueryStringParams(sellOrder: SellOrder): string {
-        console.log("getSellQueryStringParams", sellOrder);
+        Logger.log("getSellQueryStringParams", sellOrder);
         return this.sellQueryStringParams;
     }
 
     protected getHistoricalPriceDataQueryStringParams(priceDataRequestParams: HistoricalPriceDataRequestParams): string {
-        console.log("getHistoricalPriceDataQueryStringParams", priceDataRequestParams);
+        Logger.log("getHistoricalPriceDataQueryStringParams", priceDataRequestParams);
         return this.historicalPriceDataQueryStringParams;
     }
 
@@ -150,7 +151,7 @@ abstract class BrokerageProvider {
     }
 
     protected getPositionQueryStringParams(symbol: string): string {
-        console.log("getPositionQueryStringParams", symbol);
+        Logger.log("getPositionQueryStringParams", symbol);
         return this.positionQueryStringParams;
     }
 
@@ -203,7 +204,7 @@ abstract class BrokerageProvider {
         const securitiesURI = `${this.getSecuritiesUri()}?${this.getSecuritiesQueryStringParams()}`;
         const headers = this.getSecuritiesHeaders();
         const response = await axios.get(securitiesURI, { headers });
-        console.log("securities response", response.data);
+        Logger.log("securities response", response.data);
         const securities: Security[] = this.convertToSecuritiesArray(response.data);
         return this.filterOutNonTradableSecurities(securities);
     }
@@ -224,7 +225,7 @@ abstract class BrokerageProvider {
         const response = await axios.post(buyURI, requestData, { headers });
 
         // Return
-        console.log("buy response: ", response.data);
+        Logger.log("buy response: ", response.data);
         return this.convertToBuyResult(response.data);
     }
 
@@ -244,7 +245,7 @@ abstract class BrokerageProvider {
         const response = await axios.post(sellURI, requestData, { headers });
 
         // Return
-        console.log("sell response: ", response.data);
+        Logger.log("sell response: ", response.data);
         return this.convertToSellResult(response.data);
     }
 

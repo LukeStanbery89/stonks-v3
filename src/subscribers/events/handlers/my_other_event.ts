@@ -1,3 +1,5 @@
+import Logger from "../../../lib/Logger";
+
 export default function my_other_event(payload: any) {
-    console.log("Received other event:", payload);
+    Logger.log("Received other event:", payload);
 }
