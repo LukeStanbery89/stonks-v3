@@ -1,14 +1,7 @@
 import dotenv from "dotenv";
-import mysql from "mysql2";
+import Database from "../src/lib/Database";
 
 dotenv.config();
-
-const connection = mysql.createConnection({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
-});
 
 const createTableCommands = [
     `CREATE TABLE IF NOT EXISTS securities (
@@ -39,23 +32,7 @@ const createTableCommands = [
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;`,
 ];
 
-connection.connect(async (err) => {
-    if (err) {
-        console.error("Error connecting to database: ", err);
-        return;
-    }
-
-    console.log("Connected to database!");
-
-    createTableCommands.forEach((command) => {
-        connection.query(command, (err, results, _fields) => {
-            if (err) {
-                console.error("Error creating table: ", err);
-                return;
-            }
-            console.log("Table created: ", results);
-        });
-    });
-
-    connection.end();
-});
+(async () => {
+    const db = Database.getInstance();
+    await db.queriesRaw(createTableCommands);
+})();
