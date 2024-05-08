@@ -4,7 +4,7 @@ import path from "path";
 import initLoaders from "./loaders";
 import routes from "./routes";
 import config from "./config";
-import Logger from "./lib/Logger";
+import Logger from "@lukestanbery/ledger";
 
 const app = express();
 const server = http.createServer(app);

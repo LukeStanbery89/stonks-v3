@@ -16,7 +16,7 @@ import {
     SellOrder,
     SellResult,
 } from "../../../types/types";
-import Logger from "../../Logger";
+import Logger from "@lukestanbery/ledger";
 import { round } from "../../math";
 import BrokerageProvider from "../BrokerageProvider";
 

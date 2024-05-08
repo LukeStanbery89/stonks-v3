@@ -20,7 +20,7 @@ describe("socketEvents", () => {
     const mockSocketOn = jest.fn();
 
     beforeAll(() => {
-        console.log = jest.fn();
+        // console.log = jest.fn();
     });
 
     beforeEach(() => {

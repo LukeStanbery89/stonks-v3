@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Logger from "@lukestanbery/ledger";
 
 const XHRTest = () => {
     const [data, setData] = useState<{ message: string }>({ message: "" });
@@ -11,10 +12,10 @@ const XHRTest = () => {
                 throw new Error("Network response was not ok.");
             }
             const responseData = await response.json();
-            console.log("response from XHR:", responseData);
+            Logger.log("response from XHR:", responseData);
             setData(responseData);
         } catch (error) {
-            console.error("Error during XHR:", error);
+            Logger.error("Error during XHR:", error);
             setData({ message: "Error during XHR" });
         }
     }

@@ -4,6 +4,7 @@ import { RootState } from "../../types/types";
 import { useSelector } from "react-redux";
 import ProgressBar from "../ProgressBar";
 import constants from "../../config/constants.json";
+import Logger from "@lukestanbery/ledger";
 
 const resultStyle = {
     background: "#EEE",
@@ -25,7 +26,7 @@ const WebSocketTest = () => {
     useEffect(() => {
         // Define the event listener function
         const handleUpdate = (receivedData: any) => {
-            console.log("trade loop update from server:", receivedData);
+            Logger.log("trade loop update from server:", receivedData);
             setData(receivedData);
         };
 

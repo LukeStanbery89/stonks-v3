@@ -1,5 +1,5 @@
 import mysql from "mysql2";
-import Logger from "./Logger";
+import Logger from "@lukestanbery/ledger";
 
 export default class Database {
     private static instance: Database;

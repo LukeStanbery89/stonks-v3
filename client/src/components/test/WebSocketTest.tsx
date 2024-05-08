@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import socketEmitter from "../../lib/socketEmitter";
 import constants from "../../config/constants.json";
+import Logger from "@lukestanbery/ledger";
 
 const WebSocketTest = () => {
     const [data, setData] = useState<{ message: string }>({ message: "" });
@@ -13,7 +14,7 @@ const WebSocketTest = () => {
     useEffect(() => {
         // Define the event listener function
         const handleUpdate = (receivedData: any) => {
-            console.log("response from WebSocket:", receivedData);
+            Logger.log("response from WebSocket:", receivedData);
             setData(receivedData);
         };
 

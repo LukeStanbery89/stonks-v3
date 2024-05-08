@@ -15,7 +15,7 @@ import eventEmitter from "./eventEmitter";
 import { calculateSampleMean, calculateSlope, calculateStdDev } from "./math";
 import { sleep } from "./utils";
 import constants from "../config/constants.json";
-import Logger from "./Logger";
+import Logger from "@lukestanbery/ledger";
 
 export class TradeManager {
     protected shouldContinue = false;

@@ -1,7 +1,7 @@
 import { Socket } from "socket.io";
 import socketEmitter from "../../lib/socketEmitter";
 import webSocketEventHandlers from "../../subscribers/sockets/handlers/index";
-import Logger from "../../lib/Logger";
+import Logger from "@lukestanbery/ledger";
 
 export function registerSocketEvents(io: any) {
     Logger.log("Registering WebSocket handlers...");

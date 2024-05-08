@@ -27,7 +27,7 @@ class TestAlpacaProvider extends AlpacaProvider {
 
 describe("Alpaca Provider", () => {
     beforeAll(() => {
-        console.log = jest.fn();
+        // console.log = jest.fn();
     });
 
     afterEach(() => {

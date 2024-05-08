@@ -25,7 +25,8 @@
         "object-curly-spacing": ["error", "always"],
         "quotes": ["error", "double"],
         "quote-props": ["error", "as-needed"],
-        "semi": ["error", "always"]
+        "semi": ["error", "always"],
+        "no-console": ["error", { "allow": ["none"]}]
     },
     "overrides": [
         {

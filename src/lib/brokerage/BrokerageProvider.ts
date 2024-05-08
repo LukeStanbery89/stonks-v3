@@ -17,7 +17,7 @@ import {
     PositionsMap,
     Config,
 } from "../../types/types";
-import Logger from "../Logger";
+import Logger from "@lukestanbery/ledger";
 
 abstract class BrokerageProvider {
     // General props

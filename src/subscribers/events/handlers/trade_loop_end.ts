@@ -1,5 +1,5 @@
 import constants from "../../../config/constants.json";
-import Logger from "../../../lib/Logger";
+import Logger from "@lukestanbery/ledger";
 import socketEmitter from "../../../lib/socketEmitter";
 import { SecurityStatsMap } from "../../../types/types";
 

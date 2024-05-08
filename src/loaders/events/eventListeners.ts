@@ -1,4 +1,4 @@
-import Logger from "../../lib/Logger";
+import Logger from "@lukestanbery/ledger";
 import eventEmitter from "../../lib/eventEmitter";
 import eventListeners from "../../subscribers/events/handlers";
 

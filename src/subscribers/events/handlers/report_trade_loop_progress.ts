@@ -1,7 +1,7 @@
 import socketEmitter from "../../../lib/socketEmitter";
 import constants from "../../../config/constants.json";
 import { SecurityStatsMap } from "../../../types/types";
-import Logger from "../../../lib/Logger";
+import Logger from "@lukestanbery/ledger";
 
 type PayloadType = {
     progress: number,

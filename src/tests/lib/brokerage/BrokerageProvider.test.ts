@@ -4,7 +4,7 @@ import ConcreteBrokerageProvider from "./ConcreteBrokerageProvider";
 
 describe("Brokerage Provider", () => {
     beforeAll(() => {
-        console.log = jest.fn();
+        // console.log = jest.fn();
     });
 
     afterEach(() => {

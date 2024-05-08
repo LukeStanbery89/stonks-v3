@@ -1,4 +1,5 @@
 import concurrently from "concurrently";
+import Logger from "@lukestanbery/ledger";
 
 (async () => {
     try {
@@ -23,6 +24,6 @@ import concurrently from "concurrently";
             timestampFormat: "yyyy-MM-dd HH:mm:ss",
         });
     } catch (err) {
-        console.error(err);
+        Logger.error(err);
     }
 })();
