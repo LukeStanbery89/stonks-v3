@@ -29,8 +29,8 @@ describe("TradeManager", () => {
         jest.spyOn(eventEmitter, "emit").mockImplementation(() => true);
 
         // Mock console.log and console.error to prevent the app from logging
-        console.log = jest.fn();
-        console.error = jest.fn();
+        // console.log = jest.fn();
+        // console.error = jest.fn();
     });
 
     afterEach(() => {

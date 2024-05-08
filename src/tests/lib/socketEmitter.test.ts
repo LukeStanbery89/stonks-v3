@@ -1,12 +1,13 @@
 import { Server } from "socket.io";
 import emitter, { SocketEmitter } from "../../lib/socketEmitter";
+import Logger from "@lukestanbery/ledger";
 
 describe("SocketEmitter", () => {
     let socketEmitter: SocketEmitter;
     let io: Server;
 
     beforeAll(() => {
-        console.log = jest.fn();
+        Logger.log = jest.fn();
     });
 
     beforeEach(() => {

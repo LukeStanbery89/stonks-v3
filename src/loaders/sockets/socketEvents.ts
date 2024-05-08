@@ -1,12 +1,13 @@
 import { Socket } from "socket.io";
 import socketEmitter from "../../lib/socketEmitter";
 import webSocketEventHandlers from "../../subscribers/sockets/handlers/index";
+import Logger from "@lukestanbery/ledger";
 
 export function registerSocketEvents(io: any) {
-    console.log("Registering WebSocket handlers...");
+    Logger.log("Registering WebSocket handlers...");
 
     io.on("connection", (socket: Socket) => {
-        console.log("Opening new WebSocket connection");
+        Logger.log("Opening new WebSocket connection");
 
         // Register WebSocket handlers
         for (const [event, handler] of Object.entries(webSocketEventHandlers)) {
@@ -15,7 +16,7 @@ export function registerSocketEvents(io: any) {
 
         // Handle socket disconnection
         socket.on("disconnect", () => {
-            console.log("Socket connection closed");
+            Logger.log("Socket connection closed");
         });
     });
 

@@ -1,4 +1,5 @@
 import mysql from "mysql2";
+import Logger from "@lukestanbery/ledger";
 
 export default class Database {
     private static instance: Database;
@@ -15,7 +16,7 @@ export default class Database {
 
     public static getInstance(): Database {
         if (!Database.instance) {
-            console.log("Creating new database instance");
+            Logger.log("Creating new database instance");
             Database.instance = new Database();
         }
         return Database.instance;
@@ -33,7 +34,7 @@ export default class Database {
                     reject("Error connecting to database: " + err);
                 }
 
-                console.log("Connected to database!");
+                Logger.log("Connected to database!");
 
                 const queryResults: object[][] = [];
 

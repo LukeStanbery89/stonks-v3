@@ -15,6 +15,7 @@ import eventEmitter from "./eventEmitter";
 import { calculateSampleMean, calculateSlope, calculateStdDev } from "./math";
 import { sleep } from "./utils";
 import constants from "../config/constants.json";
+import Logger from "@lukestanbery/ledger";
 
 export class TradeManager {
     protected shouldContinue = false;
@@ -107,7 +108,7 @@ export class TradeManager {
             eventEmitter.emit(constants.EVENTS.REPORT_TRADE_LOOP_PROGRESS, { progress: i / securities.length });
 
             const security: Security = securities[i];
-            console.log("Evaluating security:", security.symbol);
+            Logger.log("Evaluating security:", security.symbol);
 
             let securityStats: SecurityStats;
             try {
@@ -115,7 +116,7 @@ export class TradeManager {
                 securityStats = await this.compileStatsForSecurity(security, positions[security.symbol]);
 
             } catch (error) {
-                console.error("error compiling stats for security. Skipping...", error);
+                Logger.error("error compiling stats for security. Skipping...", error);
                 continue;
             }
 
@@ -124,7 +125,7 @@ export class TradeManager {
                 switch (securityStats.decision) {
                 case Decision.BUY:
                     // TODO: Add a check to see if we have enough buying power to buy the security
-                    console.log("Decision: Buy");
+                    Logger.log("Decision: Buy");
                     await this.brokerageProvider.buy({
                         type: OrderType.BUY,
                         symbol: security.symbol,
@@ -132,14 +133,14 @@ export class TradeManager {
                     });
                     break;
                 case Decision.SELL:
-                    console.log("Decision: Sell");
+                    Logger.log("Decision: Sell");
                     await this.brokerageProvider.liquidate(security.symbol);
                     break;
                 default:
-                    console.log("Decision: Hold");
+                    Logger.log("Decision: Hold");
                 }
             } catch (error) {
-                console.error("error buying security. Skipping...", error);
+                Logger.error("error buying security. Skipping...", error);
                 continue;
             }
 
@@ -147,7 +148,7 @@ export class TradeManager {
             securityStatsMap[security.symbol] = securityStats;
         }
 
-        console.log(securityStatsMap);
+        Logger.log(securityStatsMap);
 
         // Report 100% progress
         eventEmitter.emit(constants.EVENTS.REPORT_TRADE_LOOP_PROGRESS, { progress: 1, securityStatsMap });

@@ -1,3 +1,5 @@
+import Logger from "@lukestanbery/ledger";
+
 export default function my_event(payload: any) {
-    console.log("Received event:", payload);
+    Logger.log("Received event:", payload);
 }

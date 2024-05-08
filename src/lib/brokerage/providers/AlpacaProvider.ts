@@ -16,6 +16,7 @@ import {
     SellOrder,
     SellResult,
 } from "../../../types/types";
+import Logger from "@lukestanbery/ledger";
 import { round } from "../../math";
 import BrokerageProvider from "../BrokerageProvider";
 
@@ -185,7 +186,7 @@ class AlpacaProvider extends BrokerageProvider {
                     page_token: pageToken,
                 },
             });
-            console.log("historicalPriceData response", JSON.stringify(response.data));
+            Logger.log("historicalPriceData response", JSON.stringify(response.data));
 
             // Transform
             priceData.push(...this.convertToPriceDataArray(response.data.bars[priceDataParams.symbol]));

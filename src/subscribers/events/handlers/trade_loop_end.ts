@@ -1,4 +1,5 @@
 import constants from "../../../config/constants.json";
+import Logger from "@lukestanbery/ledger";
 import socketEmitter from "../../../lib/socketEmitter";
 import { SecurityStatsMap } from "../../../types/types";
 
@@ -7,6 +8,6 @@ type PayloadType = {
 };
 
 export default function trade_loop_end(payload: PayloadType) {
-    console.log(constants.SOCKET_EVENTS.TRADE_LOOP_END, payload);
+    Logger.log(constants.SOCKET_EVENTS.TRADE_LOOP_END, payload);
     socketEmitter.emit(constants.SOCKET_EVENTS.TRADE_LOOP_END, payload);
 }
