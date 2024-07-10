@@ -37,14 +37,15 @@ export default class Database {
                 Logger.log("Connected to database!");
 
                 const queryResults: object[][] = [];
+                let result;
 
                 for (const query of queries) {
-                    this.connection.query(query, (err, results, _fields) => {
-                        if (err) {
-                            reject("Error querying database: " + err);
-                        }
-                        queryResults.push(results as object[]);
-                    });
+                    try {
+                        result = await this.connection.promise().query(query);
+                        queryResults.push(result[0] as object[]);
+                    } catch (err) {
+                        reject("Error querying database: " + err);
+                    }
                 }
 
                 this.connection.end();
