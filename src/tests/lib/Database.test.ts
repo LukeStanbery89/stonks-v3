@@ -1,13 +1,15 @@
+import { get } from "http";
 import Database from "../../lib/Database";
 
 // Mocked mysql connection
 jest.mock("mysql2", () => ({
-    createConnection: jest.fn(() => ({
-        connect: jest.fn((callback: (err: any) => void) => callback(null)),
-        query: jest.fn(),
-        end: jest.fn(),
+    createPool: jest.fn(() => ({
         promise: jest.fn(() => ({
             query: jest.fn(),
+            getConnection: jest.fn(() => ({
+                query: jest.fn(),
+                release: jest.fn(),
+            })),
         })),
     })),
 }));
@@ -32,11 +34,14 @@ describe("Database", () => {
 
     it("should throw an error when there is an error connecting to the database", async () => {
         // Mock the connect method to throw an error
-        (database as any).connection.connect.mockImplementationOnce((callback: (err: any) => void) => {
-            callback(new Error("Connection error"));
-        });
+        const mockError = new Error("Connection error");
+        (database as any).connectionPool.promise.mockImplementationOnce(() => ({
+            getConnection: jest.fn(() => {
+                throw mockError;
+            }),
+        }));
 
-        await expect(database.queryRaw("SELECT * FROM users")).rejects.toEqual("Error connecting to database: Error: Connection error");
+        await expect(database.queryRaw("SELECT * FROM users")).rejects.toEqual(new Error("Error querying database: " + mockError));
     });
 
     it("should execute a raw query", async () => {
@@ -45,11 +50,12 @@ describe("Database", () => {
 
         // Mock the query method
         const mockQueryMethod = jest.fn(() => [expectedResult]);
-        (database as any).connection.promise.mockImplementationOnce(() => {
-            return {
+        (database as any).connectionPool.promise.mockImplementationOnce(() => ({
+            getConnection: jest.fn(() => ({
                 query: mockQueryMethod,
-            };
-        });
+                release: jest.fn(),
+            })),
+        }));
 
         const result = await database.queryRaw(sql);
 
@@ -69,11 +75,12 @@ describe("Database", () => {
                 return [expectedResults[1]];
             }
         });
-        (database as any).connection.promise.mockImplementation(() => {
-            return {
+        (database as any).connectionPool.promise.mockImplementation(() => ({
+            getConnection: jest.fn(() => ({
                 query: mockQueryMethod,
-            };
-        });
+                release: jest.fn(),
+            })),
+        }));
 
         const results = await database.queriesRaw(queries);
 
@@ -85,16 +92,18 @@ describe("Database", () => {
 
     it("should throw an error when there is an error querying the database", async () => {
         const sql = "SELECT * FROM users";
+        const mockError = new Error("Query error");
 
         // Mock the query method to throw an error
-        (database as any).connection.promise.mockImplementationOnce(() => {
-            return {
+        (database as any).connectionPool.promise.mockImplementationOnce(() => ({
+            getConnection: jest.fn(() => ({
                 query: jest.fn(() => {
-                    throw new Error("Query error");
+                    throw mockError;
                 }),
-            };
-        });
+                release: jest.fn(),
+            })),
+        }));
 
-        await expect(database.queryRaw(sql)).rejects.toEqual("Error querying database: Error: Query error");
+        await expect(database.queryRaw(sql)).rejects.toEqual(new Error("Error querying database: " + mockError));
     });
 });
