@@ -17,5 +17,6 @@ module.exports = {
     ],
     coverageReporters: ["text", "html", "lcov"],
     testPathIgnorePatterns: ["/client/"],
-    // verbose: true,
+    verbose: true,
+    setupFiles: ["<rootDir>/src/tests/setup.ts"],
 };

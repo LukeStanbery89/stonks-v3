@@ -1,11 +1,16 @@
+import { get } from "http";
 import Database from "../../lib/Database";
 
 // Mocked mysql connection
 jest.mock("mysql2", () => ({
-    createConnection: jest.fn(() => ({
-        connect: jest.fn((callback: (err: any) => void) => callback(null)),
-        query: jest.fn(),
-        end: jest.fn(),
+    createPool: jest.fn(() => ({
+        promise: jest.fn(() => ({
+            query: jest.fn(),
+            getConnection: jest.fn(() => ({
+                query: jest.fn(),
+                release: jest.fn(),
+            })),
+        })),
     })),
 }));
 
@@ -29,11 +34,14 @@ describe("Database", () => {
 
     it("should throw an error when there is an error connecting to the database", async () => {
         // Mock the connect method to throw an error
-        (database as any).connection.connect.mockImplementationOnce((callback: (err: any) => void) => {
-            callback(new Error("Connection error"));
-        });
+        const mockError = new Error("Connection error");
+        (database as any).connectionPool.promise.mockImplementationOnce(() => ({
+            getConnection: jest.fn(() => {
+                throw mockError;
+            }),
+        }));
 
-        await expect(database.queryRaw("SELECT * FROM users")).rejects.toEqual("Error connecting to database: Error: Connection error");
+        await expect(database.queryRaw("SELECT * FROM users")).rejects.toEqual(new Error("Error querying database: " + mockError));
     });
 
     it("should execute a raw query", async () => {
@@ -41,14 +49,18 @@ describe("Database", () => {
         const expectedResult = [{ id: 1, name: "John" }];
 
         // Mock the query method
-        (database as any).connection.query.mockImplementationOnce((query: string, callback: (error: any, results: any) => void) => {
-            callback(null, expectedResult);
-        });
+        const mockQueryMethod = jest.fn(() => [expectedResult]);
+        (database as any).connectionPool.promise.mockImplementationOnce(() => ({
+            getConnection: jest.fn(() => ({
+                query: mockQueryMethod,
+                release: jest.fn(),
+            })),
+        }));
 
         const result = await database.queryRaw(sql);
 
         expect(result).toEqual(expectedResult);
-        expect((database as any).connection.query).toHaveBeenCalledWith(sql, expect.any(Function));
+        expect(mockQueryMethod).toHaveBeenCalledWith(sql);
     });
 
     it("should execute multiple raw queries", async () => {
@@ -56,30 +68,42 @@ describe("Database", () => {
         const expectedResults = [[{ id: 1, name: "John" }], [{ id: 1, name: "Product 1" }]];
 
         // Mock the query method
-        (database as any).connection.query.mockImplementation((query: string, callback: (error: any, results: any) => void) => {
+        const mockQueryMethod = jest.fn((query: string) => {
             if (query === queries[0]) {
-                callback(null, expectedResults[0]);
+                return [expectedResults[0]];
             } else if (query === queries[1]) {
-                callback(null, expectedResults[1]);
+                return [expectedResults[1]];
             }
         });
+        (database as any).connectionPool.promise.mockImplementation(() => ({
+            getConnection: jest.fn(() => ({
+                query: mockQueryMethod,
+                release: jest.fn(),
+            })),
+        }));
 
         const results = await database.queriesRaw(queries);
 
         expect(results).toEqual(expectedResults);
-        expect((database as any).connection.query).toHaveBeenCalledTimes(2);
-        expect((database as any).connection.query).toHaveBeenNthCalledWith(1, queries[0], expect.any(Function));
-        expect((database as any).connection.query).toHaveBeenNthCalledWith(2, queries[1], expect.any(Function));
+        expect(mockQueryMethod).toHaveBeenCalledTimes(2);
+        expect(mockQueryMethod).toHaveBeenNthCalledWith(1, queries[0]);
+        expect(mockQueryMethod).toHaveBeenNthCalledWith(2, queries[1]);
     });
 
     it("should throw an error when there is an error querying the database", async () => {
         const sql = "SELECT * FROM users";
+        const mockError = new Error("Query error");
 
         // Mock the query method to throw an error
-        (database as any).connection.query.mockImplementationOnce((query: string, callback: (error: any, results: any) => void) => {
-            callback(new Error("Query error"), null);
-        });
+        (database as any).connectionPool.promise.mockImplementationOnce(() => ({
+            getConnection: jest.fn(() => ({
+                query: jest.fn(() => {
+                    throw mockError;
+                }),
+                release: jest.fn(),
+            })),
+        }));
 
-        await expect(database.queryRaw(sql)).rejects.toEqual("Error querying database: Error: Query error");
+        await expect(database.queryRaw(sql)).rejects.toEqual(new Error("Error querying database: " + mockError));
     });
 });
