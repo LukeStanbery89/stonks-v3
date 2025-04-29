@@ -78,7 +78,7 @@
         "sass": "^1.75.0",
         "sass-loader": "^13.3.3",
         "style-loader": "^3.3.4",
-        "supertest": "^6.3.4",
+        "supertest": "^7.1.0",
         "terser-webpack-plugin": "^5.3.10",
         "ts-jest": "^29.1.2",
         "ts-loader": "^9.5.1",
